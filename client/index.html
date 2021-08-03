@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Artists - YTMusic</title>
+
+    {{meta}}{{tabler}}
+  </head>
+  <body>
+    {{navbar}}
+
+    <div class="page-body container-fluid text-center">
+      <h1>Artists</h1>
+      <div class="input-icon mt-3 mb-2">
+        <span class="input-icon-addon ti ti-search"></span>
+        <input type="text" class="form-control" placeholder="Search by Name" id="name-input" />
+      </div>
+      <div id="artists" class="row row-cards" data-masonry='{"percentPosition": true }'>
+        No artists yet. Try <a href="/add">adding one</a>!
+      </div>
+    </div>
+
+    <script>
+      let artists = document.getElementById("artists");
+
+      function openArtist(a) {}
+
+      fetch(`/api/artists/all`)
+        .then((res) => res.json())
+        .then(async (res) => {
+          if (res.err) return;
+
+          let artists = document.getElementById("artists");
+          artists.innerHTML = "";
+          res
+            .sort((a, b) => {
+              return a.name.toLowerCase().replace(/the /i, "") >
+                b.name.toLowerCase().replace(/the /i, "")
+                ? 1
+                : -1;
+            })
+            .forEach((a) => {
+              let artist = document.createElement("div");
+              artist.innerHTML = `{{artist-card}}`;
+              artist.classList.add("col-sm-6", "col-lg-4");
+              artist.onclick = function () {
+                openArtist(a);
+              };
+              artists.appendChild(artist);
+              document.getElementById(`card-overlay-${a.id}`).remove();
+            });
+        })
+        .catch((err) => {
+          console.log("Server is down? Error: " + err);
+        });
+    </script>
+  </body>
+</html>

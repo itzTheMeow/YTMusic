@@ -1,0 +1,16 @@
+<div class="card mb-1" style="text-align: left">
+  <div class="card-body" style="position: relative" id="artist-${a.id}">
+    <h3 class="card-title">
+      ${a.added ? `<span class="badge badge-pill bg-green"><span class="ti ti-check"></span></span>`
+      : ''} ${a.name} ${a.country ? `<span
+        class="flag flag-country-${a.country.toLowerCase()} ms-1"
+        style="float: right; width: 1.7em; height: 1.25em"
+      ></span
+      >` : ''} ${a.type ? `<span class="badge bg-blue" style="float: right">${a.type}</span>` : ''}
+    </h3>
+    <p>${a.disambiguation||"None"}</p>
+    <div id="card-overlay-${a.id}">
+      <span class="ti ti-${a.added?'check text-green':'plus'}"></span>
+    </div>
+  </div>
+</div>

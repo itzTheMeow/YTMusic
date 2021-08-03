@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Add Artist - YTMusic</title>
+
+    {{meta}}{{tabler}}
+  </head>
+  <body>
+    {{navbar}}
+
+    <div class="page-body container-fluid text-center">
+      <h1>Add Artist</h1>
+      <div class="input-icon mt-3 mb-2">
+        <span class="input-icon-addon ti ti-search"></span>
+        <input type="text" class="form-control" placeholder="Search by Name" id="name-input" />
+      </div>
+      <div id="artists" class="row row-cards" data-masonry='{"percentPosition": true }'></div>
+    </div>
+
+    <script>
+      let input = document.getElementById("name-input");
+      let wantSearch = false;
+      input.select();
+      let inputSelected = true;
+      input.onclick = function () {
+        if (!inputSelected) input.select();
+        inputSelected = true;
+      };
+      input.onblur = function () {
+        inputSelected = false;
+      };
+
+      let search = function () {
+        fetch(`/api/artist?name=${encodeURIComponent(input.value)}`)
+          .then((res) => res.json())
+          .then(async (res) => {
+            if (res.err) return;
+
+            let artistList = await (
+              await fetch(`/api/artists/list`).catch((err) => {
+                console.log("Server is down? Error: " + err);
+              })
+            ).json();
+
+            let artists = document.getElementById("artists");
+            artists.innerHTML = "";
+            res.artists.forEach((a) => {
+              if (artistList.includes(a.id)) a.added = true;
+
+              let artist = document.createElement("span");
+              artist.innerHTML = `{{artist-card}}`;
+              artist.classList.add("col-sm-6", "col-lg-4");
+              artists.appendChild(artist);
+              let art = document.getElementById(`artist-${a.id}`);
+              art.onclick = function () {
+                if (a.added) return;
+                fetch(`/api/artists/add?id=${a.id}`)
+                  .then((r) => r.json())
+                  .then((r) => {
+                    if (r.err) return;
+                    a.added = true;
+                    artist.innerHTML = `{{artist-card}}`;
+                  })
+                  .catch((err) => {
+                    console.log("Server is down? Error: " + err);
+                  });
+              };
+            });
+            if (!res.artists.length) artist.innerHTML = "No results found.";
+          })
+          .catch((err) => {
+            console.log("Server is down? Error: " + err);
+          });
+      };
+
+      setInterval(function () {
+        if (wantSearch) {
+          search();
+          wantSearch = false;
+        }
+      }, 1000);
+      let int;
+
+      input.onkeyup = function (e) {
+        wantSearch = true;
+        clearTimeout(int);
+        int = setTimeout(search, 500);
+      };
+    </script>
+  </body>
+</html>
