@@ -46,7 +46,9 @@
                 openArtist(a);
               };
               artists.appendChild(artist);
-              document.getElementById(`card-overlay-${a.id}`).querySelector("span").className = "ti ti-settings text-blue";
+              let hover = document.getElementById(`card-overlay-${a.id}`).querySelector("span")
+              hover.className = "ti ti-settings text-indigo";
+              hover.style.textShadow = "none"
             });
         })
         .catch((err) => {
