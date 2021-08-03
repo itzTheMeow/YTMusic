@@ -1,7 +1,7 @@
 {
-  "name": "adventure-game",
+  "name": "ytmusic",
   "version": "0.0.1",
-  "description": "sus game",
+  "description": "Youtube music manager.",
   "main": "libr/server.js",
   "scripts": {
     "build": "tsc -b tsconfig.json",
