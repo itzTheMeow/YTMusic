@@ -1,6 +1,6 @@
 libr
 node_modules
 package-lock.json
-client/compiled.css
+client/style.css
 client/compiled.js
 Music
