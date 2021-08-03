@@ -46,7 +46,7 @@
                 openArtist(a);
               };
               artists.appendChild(artist);
-              document.getElementById(`card-overlay-${a.id}`).remove();
+              document.getElementById(`card-overlay-${a.id}`).querySelector("span").className = "ti ti-settings text-blue";
             });
         })
         .catch((err) => {
