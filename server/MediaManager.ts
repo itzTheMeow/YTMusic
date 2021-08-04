@@ -1,6 +1,15 @@
 import fs from "fs";
 import Artist from "./Artist";
 
+function filterName(name: string) {
+  let allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_()!@#%& .,";
+  let newName = "";
+  name.split("").forEach((n) => {
+    if (allowed.includes(n)) newName += n;
+  });
+  return newName;
+}
+
 class MediaManager {
   public location: string;
   public artists: Artist[] = [];
@@ -24,6 +33,8 @@ class MediaManager {
       fs.writeFileSync(this.MediaPaths.artists, "[]");
     }
     this.artists = JSON.parse(String(fs.readFileSync(this.MediaPaths.artists))) as Artist[];
+
+    this.scanDisk();
   }
 
   writeData() {
@@ -34,6 +45,21 @@ class MediaManager {
     if (this.artists.find((a) => a.id == data.id)) return;
     this.artists.push(data);
     this.writeData();
+    this.scanDisk();
+  }
+
+  scanArtistFolders() {
+    this.artists.forEach((artist) => {
+      let apath = `${this.location}/${filterName(artist.name)}`;
+      try {
+        fs.accessSync(apath);
+      } catch (err) {
+        fs.mkdirSync(apath);
+      }
+    });
+  }
+  scanDisk() {
+    this.scanArtistFolders();
   }
 }
 
