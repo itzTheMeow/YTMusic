@@ -14,15 +14,30 @@
         <span class="input-icon-addon ti ti-search"></span>
         <input type="text" class="form-control" placeholder="Search by Name" id="name-input" />
       </div>
-      <div id="artists" class="row row-cards" data-masonry='{"percentPosition": true }'>
-        No artists yet. Try <a href="/add">adding one</a>!
-      </div>
+      <div id="artists" class="row row-cards" data-masonry='{"percentPosition": true }'></div>
     </div>
 
+    <style>
+      #artist-modal {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: black;
+      }
+    </style>
     <script>
       let artists = document.getElementById("artists");
 
-      function openArtist(a) {}
+      function openArtist(a) {
+        let old = document.getElementById("artist-modal");
+        if (old) old.remove();
+
+        let modal = document.createElement("span");
+        modal.id = "artist-modal";
+        modal.innerHTML = `{{artist-open}}`;
+        document.body.appendChild(modal);
+      }
 
       fetch(`/api/artists/all`)
         .then((res) => res.json())
@@ -46,9 +61,9 @@
                 openArtist(a);
               };
               artists.appendChild(artist);
-              let hover = document.getElementById(`card-overlay-${a.id}`).querySelector("span")
+              let hover = document.getElementById(`card-overlay-${a.id}`).querySelector("span");
               hover.className = "ti ti-settings text-indigo";
-              hover.style.textShadow = "none"
+              hover.style.textShadow = "none";
             });
         })
         .catch((err) => {
