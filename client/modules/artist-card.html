@@ -6,7 +6,10 @@
         class="flag flag-country-${a.country.toLowerCase()} ms-1"
         style="float: right; width: 1.7em; height: 1.25em"
       ></span
-      >` : ''} ${a.type ? `<span class="badge bg-blue" style="float: right">${a.type}</span>` : ''}
+      >` : ''} ${a.type ? `<span class="badge bg-blue ms-1" style="float: right">${a.type}</span>` :
+      ''} ${a.gender.toLowerCase()!='null' ? `<span class="badge bg-blue" style="float: right"
+        >${a.gender}</span
+      >` : ''}
     </h3>
     <p>${a.disambiguation||"None"}</p>
     <div id="card-overlay-${a.id}">
