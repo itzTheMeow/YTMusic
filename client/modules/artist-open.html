@@ -1,13 +1,36 @@
-<div class="modal-dialog artist-modal" role="document">
-  <div class="modal-content">
+<div
+  class="modal-dialog artist-modal"
+  role="document"
+  style="width: 90%; height: 85%; max-width: none"
+>
+  <div class="modal-content" style="height: 100%">
     <div class="modal-header">
       <h5 class="modal-title">${a.name}</h5>
       <button type="button" class="btn-close"></button>
     </div>
     <div class="modal-body">
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci animi beatae delectus
-      deleniti dolorem eveniet facere fuga iste nemo nesciunt nihil odio perspiciatis, quia quis
-      reprehenderit sit tempora totam unde.
+      <table class="table table-responsive">
+        <thead>
+          <tr id="artist-songs-fields">
+            <th class="text-nowrap">Name</th>
+            <th class="text-nowrap">Album</th>
+            <th class="text-nowrap">Type</th>
+            <th class="w-1"></th>
+          </tr>
+        </thead>
+        <tbody id="artist-songs-data">
+          <tr>
+            <th>Song Name</th>
+            <td>Cool Album</td>
+            <td>Single</td>
+            <td>
+              <a class="btn btn-primary btn-icon">
+                <span class="ti ti-download"></span>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
