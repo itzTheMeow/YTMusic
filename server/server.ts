@@ -2,17 +2,16 @@ import express from "express";
 import sass from "sass";
 import fs from "fs";
 import path from "path";
-import { MusicBrainzApi } from "musicbrainz-api";
+import { Includes, MusicBrainzApi } from "musicbrainz-api";
 import config from "./config";
 import MediaManager from "./MediaManager";
-
-const mediaman = new MediaManager(config.library);
 
 const mb = new MusicBrainzApi({
   appName: config.brandName,
   appVersion: config.version,
   appContactInfo: "erty2pop@gmail.com",
 });
+const mediaman = new MediaManager(config.library, mb);
 
 let allStyle = "";
 fs.readdirSync("client/css").forEach((css) => {
@@ -65,14 +64,16 @@ app.get("/api/artists/:action", async (req, res) => {
   switch (req.params.action) {
     case "add":
       if (!req.query.id) return res.status(501).json({ err: true });
-      let artist = await mb.getArtist(String(req.query.id));
+      let artist = await mb.getArtist(String(req.query.id), ["releases", "release-groups"]);
       mediaman.addArtist({
         id: artist.id,
         name: artist.name,
         disambiguation: artist.disambiguation || "None",
         type: artist.type,
-        gender: String(artist.gender),
+        gender: String(artist.gender) == "null" ? undefined : String(artist.gender),
         country: artist.country,
+        releases: artist.releases?.map((r) => r.id),
+        releaseGroups: artist["release-groups"]?.map((g) => g.id),
       });
       res.json(artist);
       break;

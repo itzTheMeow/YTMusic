@@ -5,5 +5,7 @@ type Artist = {
   type?: string;
   gender?: string;
   country?: string;
+  releases?: string[];
+  releaseGroups?: string[];
 };
 export default Artist;
