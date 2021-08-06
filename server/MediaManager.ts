@@ -94,8 +94,22 @@ class MediaManager {
               artist.releaseGroups.forEach(async (g) => {
                 this.mb
                   .getReleaseGroup(g, ["releases", "release-rels"])
-                  .then((group) => {
-                    fs.writeFileSync("test2", JSON.stringify(group));
+                  .then(async (group) => {
+                    if (!group.releases) return req--;
+                    let release =
+                      group.releases.find((r) => r.country == "US") || group.releases[0];
+                    if (!release) return;
+                    let songs = await this.mb
+                      .getRelease(release.id, [
+                        "discids",
+                        "media",
+                        "release-rels",
+                        "series-rels",
+                        "work-rels",
+                      ])
+                      .catch(console.error);
+
+                    fs.writeFileSync("test3", JSON.stringify(songs));
                     groupSongs.push(group.releases);
                   })
                   .catch((err) => {

@@ -9,7 +9,7 @@ import MediaManager from "./MediaManager";
 const mb = new MusicBrainzApi({
   appName: config.brandName,
   appVersion: config.version,
-  appContactInfo: "erty2pop@gmail.com",
+  appContactInfo: "erty2popr@gmail.com",
 });
 const mediaman = new MediaManager(config.library, mb);
 
