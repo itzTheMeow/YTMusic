@@ -44,7 +44,7 @@
 
             let artists = document.getElementById("artists");
             artists.innerHTML = "";
-            res.artists.forEach((a) => {
+            res.artists.items.forEach((a) => {
               if (artistList.includes(a.id)) a.added = true;
 
               let artist = document.createElement("span");

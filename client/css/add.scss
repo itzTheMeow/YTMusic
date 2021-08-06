@@ -9,16 +9,27 @@
   border-radius: 4px;
   cursor: pointer;
 
-  .ti {
+  .icont {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 400%;
-    text-shadow: 2px 2px 0px #a4a4a4;
-  }
-  .ti[class*="ti-check"] {
-    text-shadow: none;
+
+    .ti {
+      font-size: 400%;
+      text-shadow: 2px 2px 0px #a4a4a4;
+    }
+    .ti[class*="ti-check"] {
+      text-shadow: none;
+    }
+    .ti[class*="ti-external-link"] {
+      text-shadow: none;
+      text-decoration: none;
+      color: var(--tblr-info);
+      &:hover {
+        color: #3780bd;
+      }
+    }
   }
 }
 .card-body {

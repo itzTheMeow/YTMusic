@@ -3,4 +3,5 @@ node_modules
 package-lock.json
 client/style.css
 client/compiled.js
+auth.json
 Music

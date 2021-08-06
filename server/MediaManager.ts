@@ -1,5 +1,5 @@
 import fs from "fs";
-import { MusicBrainzApi } from "musicbrainz-api";
+import SpotifyWebApi from "spotify-web-api-node";
 import Artist from "./Artist";
 import MediaCollection from "./MediaCollection";
 
@@ -14,13 +14,13 @@ function filterName(name: string) {
 
 class MediaManager {
   public location: string;
-  public mb: MusicBrainzApi;
+  public mb: SpotifyWebApi;
 
   public artists: Artist[] = [];
   public collections: MediaCollection[] = [];
   public MediaPaths: { [key: string]: string };
 
-  constructor(dir: string, mb: MusicBrainzApi) {
+  constructor(dir: string, mb: SpotifyWebApi) {
     this.location = dir;
     this.mb = mb;
     this.MediaPaths = {
@@ -83,45 +83,7 @@ class MediaManager {
         let mpath = `${this.location}/${filterName(artist.name)}${this.MediaPaths.songs}`;
         try {
           fs.accessSync(mpath);
-        } catch (err) {
-          let allSongs: any[] = [];
-          if (artist.releases) allSongs = [...artist.releases];
-
-          new Promise(async (res, rej) => {
-            let groupSongs: any[] = [];
-            let req = artist.releaseGroups?.length || 0;
-            if (artist.releaseGroups)
-              artist.releaseGroups.forEach(async (g) => {
-                this.mb
-                  .getReleaseGroup(g, ["releases", "release-rels"])
-                  .then(async (group) => {
-                    if (!group.releases) return req--;
-                    let release =
-                      group.releases.find((r) => r.country == "US") || group.releases[0];
-                    if (!release) return;
-                    let songs = await this.mb
-                      .getRelease(release.id, [
-                        "discids",
-                        "media",
-                        "release-rels",
-                        "series-rels",
-                        "work-rels",
-                      ])
-                      .catch(console.error);
-
-                    fs.writeFileSync("test3", JSON.stringify(songs));
-                    groupSongs.push(group.releases);
-                  })
-                  .catch((err) => {
-                    req--;
-                  });
-              });
-            else res([]);
-          }).then((groupSongs) => {
-            allSongs = [...allSongs, ...(groupSongs as any[])];
-            resm(void 0);
-          });
-        }
+        } catch (err) {}
       });
     });
   }
