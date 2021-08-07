@@ -1,13 +1,13 @@
 <div class="card mb-1" style="text-align: left">
   <div class="card-body" style="position: relative" id="artist-${a.id}">
     <h3 class="card-title">
-      <span class="badge badge-pill bg-green"><span class="ti ti-check"></span></span>
-      ${a.name}
+      ${a.added ? '<span class="badge badge-pill bg-green"><span class="ti ti-check"></span></span>'
+      : ''} ${a.name}
       <span class="badge bg-blue ms-1" style="float: right">${a.type}</span>
     </h3>
     <p>
       Tags: ${a.genres.join(", ")}<br />
-      Followers: ${a.followers.total}<br />
+      Followers: ${a.followers.total.toLocaleString()}<br />
     </p>
     <div id="card-overlay-${a.id}">
       <div class="icont">

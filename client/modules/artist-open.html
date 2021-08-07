@@ -8,7 +8,7 @@
       <h5 class="modal-title">${a.name}</h5>
       <button type="button" class="btn-close"></button>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" style="overflow: auto">
       <table class="table table-responsive">
         <thead>
           <tr id="artist-songs-fields">
@@ -18,19 +18,43 @@
             <th class="w-1"></th>
           </tr>
         </thead>
-        <tbody id="artist-songs-data">
-          <tr>
-            <th>Song Name</th>
-            <td>Cool Album</td>
-            <td>Single</td>
-            <td>
-              <a class="btn btn-primary btn-icon">
-                <span class="ti ti-download"></span>
-              </a>
-            </td>
-          </tr>
-        </tbody>
+        <tbody id="artist-songs-data"></tbody>
       </table>
+      <div class="d-flex align-items-center">
+        <p class="m-0 text-muted">
+          Showing <span id="showing-min">0</span>-<span id="showing-max">0</span> of
+          <span id="showing-all">0</span> songs.
+        </p>
+        <ul class="pagination m-0 ms-auto">
+          <li class="page-item" id="switcher-back">
+            <a class="page-link" href="javascript:void(0)">
+              <span class="ti ti-chevron-left"></span>
+              prev
+            </a>
+          </li>
+          <li class="page-item" id="switcher-1">
+            <a class="page-link" href="javascript:void(0)">1</a>
+          </li>
+          <li class="page-item" id="switcher-2">
+            <a class="page-link" href="javascript:void(0)">2</a>
+          </li>
+          <li class="page-item" id="switcher-3">
+            <a class="page-link" href="javascript:void(0)">3</a>
+          </li>
+          <li class="page-item" id="switcher-4">
+            <a class="page-link" href="javascript:void(0)">4</a>
+          </li>
+          <li class="page-item" id="switcher-5">
+            <a class="page-link" href="javascript:void(0)">5</a>
+          </li>
+          <li class="page-item" id="switcher-next">
+            <a class="page-link" href="javascript:void(0)">
+              next
+              <span class="ti ti-chevron-right"></span>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>

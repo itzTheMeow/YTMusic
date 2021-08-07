@@ -19,6 +19,14 @@
 
     <script>
       let artists = document.getElementById("artists");
+      function filterName(name) {
+        let allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_()!@#%& .,";
+        let newName = "";
+        name.split("").forEach((n) => {
+          if (allowed.includes(n)) newName += n;
+        });
+        return newName;
+      }
 
       function openArtist(a) {
         let old = document.getElementById("artist-modal");
@@ -47,6 +55,103 @@
         };
         document.body.style.overflow = "hidden";
         document.body.appendChild(modal);
+
+        let limit = 15;
+
+        let currentPage = 0;
+        let pages = [];
+        let current = 0;
+
+        function buildPages() {
+          pages = [];
+          currentPage = 0;
+          current = 0;
+
+          a.albums
+            .sort((a_, b) => {
+              return filterName(a_.name.toLowerCase().replace(/the /i, "")) >
+                filterName(b.name.toLowerCase().replace(/the /i, ""))
+                ? 1
+                : -1;
+            })
+            .forEach((al, i) => {
+              a.albums[i].songs = al.songs.sort((a_, b) => {
+                return filterName(a_.name.toLowerCase().replace(/the /i, "")) >
+                  filterName(b.name.toLowerCase().replace(/the /i, ""))
+                  ? 1
+                  : -1;
+              });
+            });
+
+          a.albums.forEach((al) => {
+            al.songs.forEach((song) => {
+              pages[currentPage] = pages[currentPage] || [];
+              pages[currentPage].push({ a: al, song });
+              current++;
+              if (current % limit == 0) currentPage++;
+            });
+          });
+        }
+        buildPages();
+
+        let loadedPage = 1;
+        function loadPage(num) {
+          loadedPage = num;
+          let asd = document.getElementById("artist-songs-data");
+          asd.innerHTML = "";
+          let page = pages[num - 1];
+          page.forEach((d) => {
+            let a = d.a,
+              song = d.song;
+            let s = document.createElement("tr");
+            s.innerHTML = `{{artist-songs-data}}`;
+            asd.appendChild(s);
+          });
+          document.getElementById("showing-min").innerHTML = (
+            num * limit - limit || 1
+          ).toLocaleString();
+          document.getElementById("showing-max").innerHTML = Math.min(
+            num * limit,
+            current - 1
+          ).toLocaleString();
+          document.getElementById("showing-all").innerHTML = (current - 1).toLocaleString();
+
+          let minPage = num - 2;
+          if (minPage < 1) minPage = 1;
+          if (minPage + 3 > pages.length) minPage -= 2;
+          if (minPage + 4 > pages.length) minPage--;
+
+          [1, 2, 3, 4, 5].forEach((sw) => {
+            let swe = document.getElementById(`switcher-${sw}`);
+            let pageNum = minPage + sw - 1;
+            swe.firstElementChild.innerHTML = pageNum;
+            if (num == pageNum) swe.classList.add("active");
+            else swe.classList.remove("active");
+            swe.onclick = function () {
+              swe.firstElementChild.blur();
+              loadPage(pageNum);
+            };
+          });
+
+          let back = document.getElementById("switcher-back");
+          if (num <= 1) back.classList.add("disabled");
+          else back.classList.remove("disabled");
+          back.onclick = function () {
+            back.firstElementChild.blur();
+            if (back.classList.contains("disabled")) return;
+            loadPage(num - 1 || 1);
+          };
+
+          let next = document.getElementById("switcher-next");
+          if (num >= pages.length) next.classList.add("disabled");
+          else next.classList.remove("disabled");
+          next.onclick = function () {
+            next.firstElementChild.blur();
+            if (next.classList.contains("disabled")) return;
+            loadPage(num + 1);
+          };
+        }
+        loadPage(loadedPage);
       }
 
       fetch(`/api/artists/all`)
@@ -56,10 +161,11 @@
 
           let artists = document.getElementById("artists");
           artists.innerHTML = "";
+
           res
             .sort((a, b) => {
-              return a.name.toLowerCase().replace(/the /i, "") >
-                b.name.toLowerCase().replace(/the /i, "")
+              return filterName(a.name.toLowerCase().replace(/the /i, "")) >
+                filterName(b.name.toLowerCase().replace(/the /i, ""))
                 ? 1
                 : -1;
             })
