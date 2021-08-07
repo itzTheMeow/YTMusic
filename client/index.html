@@ -103,6 +103,11 @@
           page.forEach((d) => {
             let a = d.a,
               song = d.song;
+            let formatTime = (ms) => {
+              var minutes = Math.floor(ms / 60000);
+              var seconds = ((ms % 60000) / 1000).toFixed(0);
+              return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+            };
             let s = document.createElement("tr");
             s.innerHTML = `{{artist-songs-data}}`;
             asd.appendChild(s);
