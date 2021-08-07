@@ -60,6 +60,13 @@ class MediaManager {
       } catch (err) {
         fs.mkdirSync(apath);
       }
+      artist.albums?.forEach((album) => {
+        try {
+          fs.accessSync(`${apath}/${filterName(album.name)}`);
+        } catch (err) {
+          fs.mkdirSync(`${apath}/${filterName(album.name)}`);
+        }
+      });
     });
   }
 }
