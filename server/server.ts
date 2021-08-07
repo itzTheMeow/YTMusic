@@ -7,20 +7,22 @@ import config from "./config";
 import MediaManager from "./MediaManager";
 import SpotifyAuthManager from "./SpotifyAuthManager";
 import ModifiedArtist from "./ModifiedArtist";
+import GetArtist from "./GetArtist";
 
 // Required music file meta:
 // title, artist, album, year, track/total, genre
 // cover if applicable
 // singles album=Single track/total=track/1
 
+// register app and input credentials into auth.json
+// https://developer.spotify.com/documentation/general/guides/app-settings/#register-your-app
+const sauth = require("../auth.json");
+const spapi = new SpotifyApi({
+  clientId: sauth.clientID,
+  clientSecret: sauth.clientSecret,
+});
+
 (async function () {
-  // register app and input credentials into auth.json
-  // https://developer.spotify.com/documentation/general/guides/app-settings/#register-your-app
-  const sauth = require("../auth.json");
-  const spapi = new SpotifyApi({
-    clientId: sauth.clientID,
-    clientSecret: sauth.clientSecret,
-  });
   const authman = new SpotifyAuthManager(sauth.clientID, sauth.clientSecret, spapi);
   spapi.setAccessToken(await authman.generateToken());
 
@@ -78,23 +80,9 @@ import ModifiedArtist from "./ModifiedArtist";
     switch (req.params.action) {
       case "add":
         if (!req.query.id) return res.status(501).json({ err: true });
-        let newArtist: ModifiedArtist;
-        let artist = (await spapi.getArtist(String(req.query.id))).body;
-        newArtist = artist;
-        let artistAlbums = (await spapi.getArtistAlbums(String(req.query.id), { limit: 50 })).body
-          .items;
-        newArtist.albums = artistAlbums;
-        let albumsDone = 0;
-        artistAlbums.forEach(async (a) => {
-          let albumSongs = (await spapi.getAlbumTracks(a.id, { limit: 50 })).body.items;
-          albumsDone++;
-          if (!newArtist.albums) return;
-          newArtist.albums[newArtist.albums.indexOf(a)].songs = albumSongs;
-          if (albumsDone >= artistAlbums.length) {
-            mediaman.addArtist(newArtist);
-            res.json(newArtist);
-          }
-        });
+        let newArtist = await GetArtist(String(req.query.id));
+        mediaman.addArtist(newArtist);
+        res.json(newArtist);
         break;
       case "list":
         res.json(mediaman.artists.map((a) => a.id));
@@ -115,3 +103,5 @@ import ModifiedArtist from "./ModifiedArtist";
     console.log(`Server is online and listening at http://localhost:${config.port}`);
   });
 })();
+
+export { spapi };
