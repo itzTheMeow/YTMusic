@@ -2,6 +2,7 @@ import fs from "fs";
 import SpotifyWebApi from "spotify-web-api-node";
 import Artist from "./Artist";
 import MediaCollection from "./MediaCollection";
+import ModifiedArtist from "./ModifiedArtist";
 
 function filterName(name: string) {
   let allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_()!@#%& .,";
@@ -16,7 +17,7 @@ class MediaManager {
   public location: string;
   public mb: SpotifyWebApi;
 
-  public artists: Artist[] = [];
+  public artists: ModifiedArtist[] = [];
   public collections: MediaCollection[] = [];
   public MediaPaths: { [key: string]: string };
 
@@ -39,7 +40,7 @@ class MediaManager {
     } catch (err) {
       fs.writeFileSync(this.MediaPaths.artists, "[]");
     }
-    this.artists = JSON.parse(String(fs.readFileSync(this.MediaPaths.artists))) as Artist[];
+    this.artists = JSON.parse(String(fs.readFileSync(this.MediaPaths.artists))) as ModifiedArtist[];
     this.scanArtistFolders().then(() => {
       this.artists.forEach((a) => {
         let collection = JSON.parse(
@@ -50,21 +51,11 @@ class MediaManager {
     });
   }
 
-  getCollection(artist: Artist) {
-    return this.collections.find((c) => c.artist == artist);
-  }
-
   writeData() {
     fs.writeFileSync(this.MediaPaths.artists, JSON.stringify(this.artists));
-    this.artists.forEach((a) => {
-      fs.writeFileSync(
-        `${this.location}/${filterName(a.name)}${this.MediaPaths.songs}`,
-        JSON.stringify(this.getCollection(a) || {})
-      );
-    });
   }
 
-  addArtist(data: Artist) {
+  addArtist(data: ModifiedArtist) {
     if (this.artists.find((a) => a.id == data.id)) return;
     this.artists.push(data);
     this.scanArtistFolders();

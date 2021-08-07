@@ -6,6 +6,12 @@ import SpotifyApi from "spotify-web-api-node";
 import config from "./config";
 import MediaManager from "./MediaManager";
 import SpotifyAuthManager from "./SpotifyAuthManager";
+import ModifiedArtist from "./ModifiedArtist";
+
+// Required music file meta:
+// title, artist, album, year, track/total, genre
+// cover if applicable
+// singles album=Single track/total=track/1
 
 (async function () {
   // register app and input credentials into auth.json
@@ -72,17 +78,23 @@ import SpotifyAuthManager from "./SpotifyAuthManager";
     switch (req.params.action) {
       case "add":
         if (!req.query.id) return res.status(501).json({ err: true });
-        let newArtist: any;
+        let newArtist: ModifiedArtist;
         let artist = (await spapi.getArtist(String(req.query.id))).body;
         newArtist = artist;
-        let artistAlbums = (await spapi.getArtistAlbums(String(req.query.id), { limit: 50 })).body;
+        let artistAlbums = (await spapi.getArtistAlbums(String(req.query.id), { limit: 50 })).body
+          .items;
         newArtist.albums = artistAlbums;
-        /*mediaman.addArtist({
-          id: artist.id,
-          name: artist.name,
-          type: artist.type,
-        });*/
-        res.json(newArtist);
+        let albumsDone = 0;
+        artistAlbums.forEach(async (a) => {
+          let albumSongs = (await spapi.getAlbumTracks(a.id, { limit: 50 })).body.items;
+          albumsDone++;
+          if (!newArtist.albums) return;
+          newArtist.albums[newArtist.albums.indexOf(a)].songs = albumSongs;
+          if (albumsDone >= artistAlbums.length) {
+            mediaman.addArtist(newArtist);
+            res.json(newArtist);
+          }
+        });
         break;
       case "list":
         res.json(mediaman.artists.map((a) => a.id));
