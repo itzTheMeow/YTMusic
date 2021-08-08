@@ -12,7 +12,7 @@
       <h1>Artists</h1>
       <div class="input-icon mt-3 mb-2">
         <span class="input-icon-addon ti ti-search"></span>
-        <input type="text" class="form-control" placeholder="Search by Name" id="name-input" />
+        <input type="text" class="form-control" placeholder="Search by Name" id="artist-search" />
       </div>
       <div id="artists" class="row row-cards" data-masonry='{"percentPosition": true }'></div>
     </div>
@@ -164,6 +164,17 @@
         .then(async (res) => {
           if (res.err) return;
 
+          let input = document.getElementById("artist-search");
+          input.select();
+          let inputSelected = true;
+          input.onclick = function () {
+            if (!inputSelected) input.select();
+            inputSelected = true;
+          };
+          input.onblur = function () {
+            inputSelected = false;
+          };
+
           let artists = document.getElementById("artists");
           artists.innerHTML = "";
 
@@ -177,6 +188,7 @@
             .forEach((a) => {
               let artist = document.createElement("div");
               artist.innerHTML = `{{artist-card}}`;
+              artist.id = `artist-card-${a.id}`;
               artist.classList.add("col-sm-6", "col-lg-4");
               artist.onclick = function () {
                 openArtist(a);
@@ -186,6 +198,20 @@
               hover.className = "ti ti-settings text-indigo";
               hover.style.textShadow = "none";
             });
+
+          let asearch = document.getElementById("artist-search");
+          asearch.onkeyup = function () {
+            let searchTerm = asearch.value;
+            if (!searchTerm) return [...artists.children].map((c) => (c.style.display = ""));
+            let found = res
+              .filter((a) => a.name.toLowerCase().includes(searchTerm.toLowerCase()))
+              .map((e) => e.id);
+            console.log(searchTerm, found);
+            [...artists.children].forEach((a) => {
+              if (found.includes(a.id.split("-").pop())) a.style.display = "";
+              else a.style.display = "none";
+            });
+          };
         })
         .catch((err) => {
           console.log("Server is down? Error: " + err);
