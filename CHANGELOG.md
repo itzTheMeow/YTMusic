@@ -1,6 +1,7 @@
 ## 8/8/2021
 
 - search artists
+- fix logo underline on hover
 
 # TODO
 
@@ -9,7 +10,6 @@
 - add loading icon to add artist card
 - delete artist
 - refresh artist metadata
-- fix logo underline on hover
 - fix favicon stretching
 - fix empty scrollbar on artist list
 - no tags fallback
