@@ -25,9 +25,9 @@ class SpotifyAuthManager {
     });
     let data = (await res.json()) as any;
     let api = this.spapi;
-    /*setTimeout(function () {
-      api.refreshAccessToken();
-    }, (data.expires_in as number) * 1000);*/
+    setTimeout(function () {
+      api.resetRefreshToken();
+    }, (data.expires_in as number) * 1000);
 
     return data.access_token as string;
   }

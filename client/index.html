@@ -28,7 +28,7 @@
         return newName;
       }
 
-      function openArtist(a) {
+      function openArtist(artist) {
         let old = document.getElementById("artist-modal");
         if (old) old.remove();
 
@@ -67,7 +67,7 @@
           currentPage = 0;
           current = 0;
 
-          a.albums
+          artist.albums
             .sort((a_, b) => {
               return filterName(a_.name.toLowerCase().replace(/the /i, "")) >
                 filterName(b.name.toLowerCase().replace(/the /i, ""))
@@ -75,7 +75,7 @@
                 : -1;
             })
             .forEach((al, i) => {
-              a.albums[i].songs = al.songs.sort((a_, b) => {
+              artist.albums[i].songs = al.songs.sort((a_, b) => {
                 return filterName(a_.name.toLowerCase().replace(/the /i, "")) >
                   filterName(b.name.toLowerCase().replace(/the /i, ""))
                   ? 1
@@ -83,7 +83,7 @@
               });
             });
 
-          a.albums.forEach((al) => {
+          artist.albums.forEach((al) => {
             al.songs.forEach((song) => {
               pages[currentPage] = pages[currentPage] || [];
               pages[currentPage].push({ a: al, song });
@@ -111,6 +111,41 @@
             let s = document.createElement("tr");
             s.innerHTML = `{{artist-songs-data}}`;
             asd.appendChild(s);
+            let songAdd = document.getElementById(`song-add-${song.id}`);
+            songAdd.onclick = async function () {
+              songAdd.blur();
+              let oldYt = document.getElementById("yt-modal");
+              if (oldYt) oldYt.remove();
+              let searchTerm = `${filterName(artist.name)} - ${filterName(song.name)}`;
+
+              let ytModal = document.createElement("span");
+              ytModal.id = "yt-modal";
+              ytModal.innerHTML = `{{yt-search}}`;
+              Object.keys(styles).forEach((s) => {
+                ytModal.style[s] = styles[s];
+              });
+              let btn2 = ytModal.querySelector(".btn-close");
+              btn2.style.background = `transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23${color}'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/.75rem auto no-repeat`;
+              btn2.onclick = function () {
+                ytModal.remove();
+                document.body.style.overflow = "";
+              };
+              document.body.style.overflow = "hidden";
+              document.body.appendChild(ytModal);
+              let searchres = await (
+                await fetch(`/api/youtube/search?q=${encodeURIComponent(searchTerm)}`)
+              ).json();
+              searchres.forEach((search) => {
+                let searchItem = document.createElement("div");
+                searchItem.classList.add("list-group-item", "yt-search-result");
+                searchItem.innerHTML = `{{yt-search-data}}`;
+                document.getElementById("yt-search").appendChild(searchItem);
+              });
+              if (!searchres.length)
+                document.getElementById(
+                  "yt-search"
+                ).innerHTML = `<p class="text-muted text-center">No results found. Try a different phrase?</p>`;
+            };
           });
           document.getElementById("showing-min").innerHTML = (
             num * limit - limit || 1
@@ -154,6 +189,7 @@
             next.firstElementChild.blur();
             if (next.classList.contains("disabled")) return;
             loadPage(num + 1);
+            song.name;
           };
         }
         loadPage(loadedPage);

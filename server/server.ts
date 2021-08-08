@@ -8,6 +8,7 @@ import MediaManager from "./MediaManager";
 import SpotifyAuthManager from "./SpotifyAuthManager";
 import ModifiedArtist from "./ModifiedArtist";
 import GetArtist from "./GetArtist";
+import { search } from "youtube-search-without-api-key";
 
 // Required music file meta:
 // title, artist, album, year, track/total, genre
@@ -89,6 +90,18 @@ const spapi = new SpotifyApi({
         break;
       case "all":
         res.json(mediaman.artists);
+        break;
+      default:
+        res.status(501).json({ err: true });
+        break;
+    }
+  });
+  app.get("/api/youtube/:action", async (req, res) => {
+    switch (req.params.action) {
+      case "search":
+        if (!req.query.q) return res.status(501).json({ err: true });
+        let searchResults = await search(decodeURIComponent(String(req.query.q)));
+        res.json(searchResults);
         break;
       default:
         res.status(501).json({ err: true });

@@ -2,6 +2,8 @@
 
 - search artists
 - fix logo underline on hover
+- auto reload spotify token
+- add youtube search modal
 
 # TODO
 
@@ -14,7 +16,9 @@
 - fix empty scrollbar on artist list
 - no tags fallback
 - esc to close modals
-- auto reload spotify token
+- add loading icon to youtube search
+- add manual search to youtube modal
+- add direct url to youtube modal
 
 # STEPS
 
@@ -22,8 +26,9 @@
 - [*] artist searching
 - [*] artist folder creation and storing
 - [*] artist song list
-- [ ] youtube modal and searching (WORKING)
-- [ ] youtube downloading
+- [ ] settings page
+- [*] youtube modal and searching
+- [ ] youtube downloading (WORKING)
 - [ ] mp3 tagging
 - [ ] login
 - [ ] install and use instructions
