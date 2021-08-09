@@ -25,6 +25,7 @@
 - add video external link to youtube modal
 - make album search return songs in an album
 - make album/song search a radio button
+- add fallback for blur effect
 
 # STEPS
 

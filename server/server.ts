@@ -6,7 +6,6 @@ import SpotifyApi from "spotify-web-api-node";
 import config from "./config";
 import MediaManager from "./MediaManager";
 import SpotifyAuthManager from "./SpotifyAuthManager";
-import ModifiedArtist from "./ModifiedArtist";
 import GetArtist from "./GetArtist";
 import { search } from "youtube-search-without-api-key";
 
