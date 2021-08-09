@@ -57,6 +57,7 @@
         document.body.appendChild(modal);
 
         let limit = 15;
+        let albs = artist.albums;
 
         let currentPage = 0;
         let pages = [];
@@ -67,7 +68,7 @@
           currentPage = 0;
           current = 0;
 
-          artist.albums
+          albs
             .sort((a_, b) => {
               return filterName(a_.name.toLowerCase().replace(/the /i, "")) >
                 filterName(b.name.toLowerCase().replace(/the /i, ""))
@@ -75,7 +76,7 @@
                 : -1;
             })
             .forEach((al, i) => {
-              artist.albums[i].songs = al.songs.sort((a_, b) => {
+              albs[i].songs = al.songs.sort((a_, b) => {
                 return filterName(a_.name.toLowerCase().replace(/the /i, "")) >
                   filterName(b.name.toLowerCase().replace(/the /i, ""))
                   ? 1
@@ -83,14 +84,16 @@
               });
             });
 
-          artist.albums.forEach((al) => {
-            al.songs.forEach((song) => {
-              pages[currentPage] = pages[currentPage] || [];
-              pages[currentPage].push({ a: al, song });
-              current++;
-              if (current % limit == 0) currentPage++;
+          albs
+            .filter((a) => !["compilation"].includes(a.album_type.toLowerCase()))
+            .forEach((al) => {
+              al.songs.forEach((song) => {
+                pages[currentPage] = pages[currentPage] || [];
+                pages[currentPage].push({ a: al, song });
+                current++;
+                if (current % limit == 0) currentPage++;
+              });
             });
-          });
         }
         buildPages();
 
@@ -100,53 +103,55 @@
           let asd = document.getElementById("artist-songs-data");
           asd.innerHTML = "";
           let page = pages[num - 1];
-          page.forEach((d) => {
-            let a = d.a,
-              song = d.song;
-            let formatTime = (ms) => {
-              var minutes = Math.floor(ms / 60000);
-              var seconds = ((ms % 60000) / 1000).toFixed(0);
-              return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-            };
-            let s = document.createElement("tr");
-            s.innerHTML = `{{artist-songs-data}}`;
-            asd.appendChild(s);
-            let songAdd = document.getElementById(`song-add-${song.id}`);
-            songAdd.onclick = async function () {
-              songAdd.blur();
-              let oldYt = document.getElementById("yt-modal");
-              if (oldYt) oldYt.remove();
-              let searchTerm = `${filterName(artist.name)} - ${filterName(song.name)}`;
-
-              let ytModal = document.createElement("span");
-              ytModal.id = "yt-modal";
-              ytModal.innerHTML = `{{yt-search}}`;
-              Object.keys(styles).forEach((s) => {
-                ytModal.style[s] = styles[s];
-              });
-              let btn2 = ytModal.querySelector(".btn-close");
-              btn2.style.background = `transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23${color}'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/.75rem auto no-repeat`;
-              btn2.onclick = function () {
-                ytModal.remove();
-                document.body.style.overflow = "";
+          if (page)
+            page.forEach((d) => {
+              let a = d.a,
+                song = d.song;
+              let formatTime = (ms) => {
+                var minutes = Math.floor(ms / 60000);
+                var seconds = ((ms % 60000) / 1000).toFixed(0);
+                return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
               };
-              document.body.style.overflow = "hidden";
-              document.body.appendChild(ytModal);
-              let searchres = await (
-                await fetch(`/api/youtube/search?q=${encodeURIComponent(searchTerm)}`)
-              ).json();
-              searchres.forEach((search) => {
-                let searchItem = document.createElement("div");
-                searchItem.classList.add("list-group-item", "yt-search-result");
-                searchItem.innerHTML = `{{yt-search-data}}`;
-                document.getElementById("yt-search").appendChild(searchItem);
-              });
-              if (!searchres.length)
-                document.getElementById(
-                  "yt-search"
-                ).innerHTML = `<p class="text-muted text-center">No results found. Try a different phrase?</p>`;
-            };
-          });
+              let s = document.createElement("tr");
+              s.innerHTML = `{{artist-songs-data}}`;
+              asd.appendChild(s);
+              let songAdd = document.getElementById(`song-add-${song.id}`);
+              songAdd.onclick = async function () {
+                songAdd.blur();
+                let oldYt = document.getElementById("yt-modal");
+                if (oldYt) oldYt.remove();
+                let searchTerm = `${filterName(artist.name)} - ${filterName(song.name)}`;
+
+                let ytModal = document.createElement("span");
+                ytModal.id = "yt-modal";
+                ytModal.innerHTML = `{{yt-search}}`;
+                Object.keys(styles).forEach((s) => {
+                  ytModal.style[s] = styles[s];
+                });
+                let btn2 = ytModal.querySelector(".btn-close");
+                btn2.style.background = `transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23${color}'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/.75rem auto no-repeat`;
+                btn2.onclick = function () {
+                  ytModal.remove();
+                  document.body.style.overflow = "";
+                };
+                document.body.style.overflow = "hidden";
+                document.body.appendChild(ytModal);
+                let searchres = await (
+                  await fetch(`/api/youtube/search?q=${encodeURIComponent(searchTerm)}`)
+                ).json();
+                searchres.forEach((search) => {
+                  let searchItem = document.createElement("div");
+                  searchItem.classList.add("list-group-item", "yt-search-result");
+                  searchItem.innerHTML = `{{yt-search-data}}`;
+                  document.getElementById("yt-search").appendChild(searchItem);
+                });
+                if (!searchres.length)
+                  document.getElementById(
+                    "yt-search"
+                  ).innerHTML = `<p class="text-muted text-center">No results found. Try a different phrase?</p>`;
+              };
+            });
+          else document.getElementById("artist-songs-data").innerText = "No results found.";
           document.getElementById("showing-min").innerHTML = (
             num * limit - limit || 1
           ).toLocaleString();
@@ -160,6 +165,7 @@
           if (minPage < 1) minPage = 1;
           if (minPage + 3 > pages.length) minPage -= 2;
           if (minPage + 4 > pages.length) minPage--;
+          if (minPage < 1) minPage = 1;
 
           [1, 2, 3, 4, 5].forEach((sw) => {
             let swe = document.getElementById(`switcher-${sw}`);
@@ -167,10 +173,12 @@
             swe.firstElementChild.innerHTML = pageNum;
             if (num == pageNum) swe.classList.add("active");
             else swe.classList.remove("active");
-            swe.onclick = function () {
-              swe.firstElementChild.blur();
-              loadPage(pageNum);
-            };
+            if (sw > pages.length % limit && pages.length <= 5) swe.classList.add("disabled");
+            else
+              swe.onclick = function () {
+                swe.firstElementChild.blur();
+                loadPage(pageNum);
+              };
           });
 
           let back = document.getElementById("switcher-back");
@@ -189,10 +197,59 @@
             next.firstElementChild.blur();
             if (next.classList.contains("disabled")) return;
             loadPage(num + 1);
-            song.name;
           };
         }
         loadPage(loadedPage);
+
+        let aSongSearch = document.getElementById("song-search");
+        aSongSearch.select();
+        let inputSelected = true;
+        aSongSearch.onclick = function () {
+          if (!inputSelected) aSongSearch.select();
+          inputSelected = true;
+        };
+        aSongSearch.onblur = function () {
+          inputSelected = false;
+        };
+
+        let searchSongs = document.getElementById("search-songs");
+        let searchAlbums = document.getElementById("search-albums");
+        let searchParams = {
+          songs: true,
+          albums: false,
+        };
+        searchSongs.onchange = searchAlbums.onchange = function (ev) {
+          searchParams[ev.target.id.split("-").pop()] = ev.target.checked;
+          console.log(searchParams);
+        };
+
+        aSongSearch.onkeyup = function () {
+          let searchTerm = aSongSearch.value;
+          if (!searchTerm) {
+            albs = artist.albums;
+            buildPages();
+            loadedPage = 1;
+            loadPage(loadedPage);
+          } else {
+            if (searchParams.albums)
+              albs = artist.albums.filter((alb) =>
+                alb.name.toLowerCase().includes(searchTerm.toLowerCase())
+              );
+            else albs = artist.albums;
+            if (searchParams.songs) {
+              albs.forEach((alb, i) => {
+                let foundSongs = [];
+                alb.songs.forEach((s) => {
+                  if (s.name.toLowerCase().includes(searchTerm.toLowerCase())) foundSongs.push(s);
+                });
+                albs[i].songs = foundSongs;
+              });
+            }
+            buildPages();
+            loadedPage = 1;
+            loadPage(loadedPage);
+          }
+        };
       }
 
       fetch(`/api/artists/all`)
@@ -242,7 +299,6 @@
             let found = res
               .filter((a) => a.name.toLowerCase().includes(searchTerm.toLowerCase()))
               .map((e) => e.id);
-            console.log(searchTerm, found);
             [...artists.children].forEach((a) => {
               if (found.includes(a.id.split("-").pop())) a.style.display = "";
               else a.style.display = "none";

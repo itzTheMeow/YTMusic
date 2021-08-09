@@ -5,10 +5,13 @@
 - auto reload spotify token
 - add youtube search modal
 
-# TODO
+## 8/9/2021
 
 - search songs in table
 - fix less than 5 page bug
+
+# TODO
+
 - add loading icon to add artist card
 - delete artist
 - refresh artist metadata
@@ -19,6 +22,9 @@
 - add loading icon to youtube search
 - add manual search to youtube modal
 - add direct url to youtube modal
+- add video external link to youtube modal
+- make album search return songs in an album
+- make album/song search a radio button
 
 # STEPS
 

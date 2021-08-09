@@ -5,10 +5,30 @@
 >
   <div class="modal-content" style="height: 100%">
     <div class="modal-header">
-      <h5 class="modal-title">${a.name}</h5>
+      <h5 class="modal-title">${artist.name}</h5>
       <button type="button" class="btn-close"></button>
     </div>
     <div class="modal-body" style="overflow: auto">
+      <div class="d-inline-block mt-2">
+        <span class="text-muted me-1">Search for:</span>
+        <label class="form-check form-check-inline">
+          <input class="form-check-input fci" id="search-songs" type="checkbox" checked />
+          <span class="form-check-label">Song Name</span>
+        </label>
+        <label class="form-check form-check-inline">
+          <input class="form-check-input fci" id="search-albums" type="checkbox" />
+          <span class="form-check-label">Album Name</span>
+        </label>
+        <style>
+          .fci:not(:checked) {
+            background-color: white !important;
+          }
+        </style>
+      </div>
+      <div class="input-icon mb-3 float-end d-inline-block">
+        <span class="input-icon-addon ti ti-search"></span>
+        <input type="text" class="form-control" placeholder="Search Index" id="song-search" />
+      </div>
       <table class="table table-responsive">
         <thead>
           <tr id="artist-songs-fields">
