@@ -24,12 +24,13 @@ class SpotifyAuthManager {
       throw err;
     });
     let data = (await res.json()) as any;
-    let api = this.spapi;
-    setTimeout(function () {
-      api.resetRefreshToken();
-    }, (data.expires_in as number) * 1000);
+    setTimeout(this.regenToken.bind(this), (data.expires_in as number) * 1000);
 
     return data.access_token as string;
+  }
+
+  async regenToken() {
+    this.spapi.setAccessToken(await this.generateToken());
   }
 }
 export default SpotifyAuthManager;
