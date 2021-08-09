@@ -28,12 +28,12 @@
 
 # STEPS
 
-- [*] core website
-- [*] artist searching
-- [*] artist folder creation and storing
-- [*] artist song list
+- [x] core website
+- [x] artist searching
+- [x] artist folder creation and storing
+- [x] artist song list
 - [ ] settings page
-- [*] youtube modal and searching
+- [x] youtube modal and searching
 - [ ] youtube downloading (WORKING)
 - [ ] mp3 tagging
 - [ ] login
