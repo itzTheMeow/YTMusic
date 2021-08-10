@@ -7,7 +7,7 @@ import config from "./config";
 import MediaManager from "./MediaManager";
 import SpotifyAuthManager from "./SpotifyAuthManager";
 import GetArtist from "./GetArtist";
-import { search } from "youtube-search-without-api-key";
+import search from "youtube-search";
 
 // Required music file meta:
 // title, artist, album, year, track/total, genre
@@ -21,6 +21,10 @@ const spapi = new SpotifyApi({
   clientId: sauth.clientID,
   clientSecret: sauth.clientSecret,
 });
+
+// make a project and generate an api key and input into auth.json
+// https://console.cloud.google.com/apis/credentials
+// enable youtube at https://console.cloud.google.com/apis/api/youtube.googleapis.com/overview
 
 (async function () {
   const authman = new SpotifyAuthManager(sauth.clientID, sauth.clientSecret, spapi);
@@ -99,8 +103,12 @@ const spapi = new SpotifyApi({
     switch (req.params.action) {
       case "search":
         if (!req.query.q) return res.status(501).json({ err: true });
-        let searchResults = await search(decodeURIComponent(String(req.query.q)));
-        res.json(searchResults);
+        let searchResults = await search(decodeURIComponent(String(req.query.q)), {
+          key: sauth.youtube,
+          order: "relevance",
+          part: "contentDetails",
+        });
+        res.json(searchResults.results);
         break;
       default:
         res.status(501).json({ err: true });
