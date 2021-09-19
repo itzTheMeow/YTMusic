@@ -1,6 +1,7 @@
 import fs from "fs";
 import SpotifyWebApi from "spotify-web-api-node";
-import ModifiedArtist from "./ModifiedArtist";
+import ytdl from "ytdl-core";
+import { ModifiedAlbum, ModifiedArtist } from "./ModifiedArtist";
 
 function filterName(name: string) {
   let allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_()!@#%& .,";
@@ -50,6 +51,33 @@ class MediaManager {
     this.artists.push(data);
     this.scanArtistFolders();
     this.writeData();
+  }
+
+  downloadSong(
+    id: string,
+    artist: ModifiedArtist,
+    album: ModifiedAlbum,
+    song: SpotifyApi.TrackObjectSimplified
+  ) {
+    return new Promise((res, rej) => {
+      try {
+        let writeStream = fs.createWriteStream(
+          `${this.location}/${filterName(artist.name)}/${filterName(album.name)}/${filterName(
+            song.name
+          )}.mp3`
+        );
+        ytdl(`https://youtube.com/watch?v=${id}`, {
+          filter: "audioonly",
+          quality: "highestaudio",
+        })
+          .pipe(writeStream)
+          .on("finish", () => {
+            res(void 0);
+          });
+      } catch (e) {
+        return rej(e);
+      }
+    });
   }
 
   scanArtistFolders() {

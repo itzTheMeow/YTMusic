@@ -1,12 +1,15 @@
 <div class="row">
   <div class="col-auto">
-    <span class="avatar" style="background-image: url(${search.snippet.thumbnails.url})"></span>
+    <span
+      class="avatar"
+      style="background-image: url('${(search.thumbnails.medium||search.thumbnails.default).url}')"
+    ></span>
   </div>
   <div class="col text-truncate">
     <b class="d-block text-${Theme.current=='dark'?'light':'dark'}">${search.title}</b>
     <div class="text-muted text-truncate mt-n1">
-      ${search.snippet.publishedAt}, ${Number(search.views).toLocaleString()} views,
-      ${search.duration_raw}
+      <b>On ${searchDate} by ${search.channelTitle}</b><br />
+      ${search.description}
     </div>
   </div>
 </div>

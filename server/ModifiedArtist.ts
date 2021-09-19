@@ -4,4 +4,4 @@ interface ModifiedAlbum extends SpotifyApi.AlbumObjectSimplified {
 interface ModifiedArtist extends SpotifyApi.SingleArtistResponse {
   albums?: ModifiedAlbum[];
 }
-export default ModifiedArtist;
+export { ModifiedAlbum, ModifiedArtist };

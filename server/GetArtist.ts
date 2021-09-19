@@ -1,4 +1,4 @@
-import ModifiedArtist from "./ModifiedArtist";
+import { ModifiedArtist } from "./ModifiedArtist";
 import { spapi } from "./server";
 
 async function GetArtist(id: string): Promise<ModifiedArtist> {

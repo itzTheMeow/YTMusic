@@ -30,7 +30,7 @@ const spapi = new SpotifyApi({
   const authman = new SpotifyAuthManager(sauth.clientID, sauth.clientSecret, spapi);
   spapi.setAccessToken(await authman.generateToken());
 
-  const mediaman = new MediaManager(config.library, spapi);
+  const mediaman = new MediaManager(path.join(__dirname, "..", config.library), spapi);
 
   let allStyle = "";
   fs.readdirSync("client/css").forEach((css) => {
@@ -76,8 +76,13 @@ const spapi = new SpotifyApi({
     res.sendFile(path.resolve("client/logo.png"));
   });
   app.get("/api/artist", async (req, res) => {
-    if (req.query.name)
-      res.json((await spapi.searchArtists(String(req.query.name), { limit: 35 })).body);
+    let artistRes;
+    try {
+      artistRes = await spapi.searchArtists(String(req.query.name), { limit: 35 });
+    } catch (e) {
+      return res.status(502).json({ err: true });
+    }
+    if (req.query.name) res.json(artistRes.body);
     else res.status(501).json({ err: true });
   });
   app.get("/api/artists/:action", async (req, res) => {
@@ -106,9 +111,32 @@ const spapi = new SpotifyApi({
         let searchResults = await search(decodeURIComponent(String(req.query.q)), {
           key: sauth.youtube,
           order: "relevance",
-          part: "contentDetails",
+          part: "id,snippet",
         });
-        res.json(searchResults.results);
+        res.json(searchResults.results.slice(0, 10));
+        break;
+      case "download":
+        if (!req.query.artist || !req.query.song || !req.query.id)
+          return res.status(501).json({ err: true });
+        let artist = mediaman.artists.find((a) => a.id == req.query.artist);
+        let song, album;
+        artist?.albums?.forEach((a) => {
+          a.songs?.forEach((so) => {
+            if (so.id == req.query.song) {
+              album = a;
+              song = so;
+            }
+          });
+        });
+        if (!artist || !song || !album) return res.status(502).json({ err: true });
+        mediaman
+          .downloadSong(String(req.query.id), artist, album, song)
+          .then(() => {
+            res.status(200).json({});
+          })
+          .catch((a) => {
+            res.status(502).json({ err: true });
+          });
         break;
       default:
         res.status(501).json({ err: true });

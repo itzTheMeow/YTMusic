@@ -140,9 +140,27 @@
                   await fetch(`/api/youtube/search?q=${encodeURIComponent(searchTerm)}`)
                 ).json();
                 searchres.forEach((search) => {
+                  let date = new Date(search.publishedAt);
+                  let searchDate =
+                    (date.getMonth() > 8 ? date.getMonth() + 1 : "0" + (date.getMonth() + 1)) +
+                    "/" +
+                    (date.getDate() > 9 ? date.getDate() : "0" + date.getDate()) +
+                    "/" +
+                    date.getFullYear();
+
                   let searchItem = document.createElement("div");
                   searchItem.classList.add("list-group-item", "yt-search-result");
                   searchItem.innerHTML = `{{yt-search-data}}`;
+                  searchItem.onclick = function () {
+                    fetch(
+                      `/api/youtube/download?id=${search.id}&artist=${artist.id}&song=${song.id}`
+                    )
+                      .then((r) => r.json())
+                      .then((r) => {
+                        if (r.err) return;
+                        document.getElementById("yt-modal").querySelector(".btn-close").click();
+                      });
+                  };
                   document.getElementById("yt-search").appendChild(searchItem);
                 });
                 if (!searchres.length)
