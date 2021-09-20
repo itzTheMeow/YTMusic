@@ -45,6 +45,7 @@
 - ability to remove songs
 - confirmation for artist delete
 - artist delete meta only or songs as well
+- auto refresh existing songs after adding one
 
 # STEPS
 
