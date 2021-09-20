@@ -117,6 +117,9 @@ const spapi = new SpotifyApi({
           })
         );
         break;
+      case "get":
+        res.json(mediaman.artists.find((ar) => ar.id == req.query.id) || { err: true });
+        break;
       case "remove":
         mediaman.remArtist(String(req.query.id));
         res.json({});
