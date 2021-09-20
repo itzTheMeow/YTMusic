@@ -97,7 +97,21 @@ const spapi = new SpotifyApi({
         res.json(mediaman.artists.map((a) => a.id));
         break;
       case "all":
-        res.json(mediaman.artists);
+        res.json(
+          mediaman.artists.map((ar) => {
+            let a: any = ar;
+            ar.albums?.forEach((al, albI) => {
+              let newAlb: any = al;
+              al.songs?.forEach((so, songI) => {
+                let newSong: any = so;
+                newSong.exists = mediaman.songExists[a.id].includes(so.id);
+                newAlb.songs[songI] = newSong;
+              });
+              a.albums[albI] = newAlb;
+            });
+            return a;
+          })
+        );
         break;
       default:
         res.status(501).json({ err: true });

@@ -22,6 +22,7 @@ class MediaManager {
   public ffmpeg: any = require("ffmetadata");
 
   public artists: ModifiedArtist[] = [];
+  public songExists: { [key: string]: string[] } = {};
   public MediaPaths: { [key: string]: string };
 
   constructor(dir: string, mb: SpotifyWebApi) {
@@ -59,6 +60,15 @@ class MediaManager {
     this.writeData();
   }
 
+  songPath(artist: ModifiedArtist, album: ModifiedAlbum, song: SpotifyApi.TrackObjectSimplified) {
+    return path.join(
+      this.location,
+      filterName(artist.name),
+      filterName(album.name),
+      ("0" + song.track_number).slice(-2) + " - " + filterName(song.name) + ".mp3"
+    );
+  }
+
   downloadSong(
     id: string,
     artist: ModifiedArtist,
@@ -66,12 +76,9 @@ class MediaManager {
     song: SpotifyApi.TrackObjectSimplified
   ) {
     return new Promise((res, rej) => {
-      let mp3 = path.join(
-        this.location,
-        filterName(artist.name),
-        filterName(album.name),
-        ("0" + song.track_number).slice(-2) + " - " + filterName(song.name) + ".mp3"
-      );
+      let mp3 = this.songPath(artist, album, song);
+      let scan = this.scanArtistFolders.bind(this);
+
       try {
         let downloadStream = ytdl(`https://youtube.com/watch?v=${id}`, {
           filter: "audioonly",
@@ -112,7 +119,10 @@ class MediaManager {
                 this.ffmpeg.write(mp3, tags, opts, function (err: any) {
                   fs.unlinkSync(img);
                   if (err) rej("tagging err: " + err);
-                  else res(void 0);
+                  else {
+                    scan();
+                    res(void 0);
+                  }
                 });
               })
               .catch((e: any) => {
@@ -136,12 +146,19 @@ class MediaManager {
       } catch (err) {
         fs.mkdirSync(apath);
       }
+      this.songExists[artist.id] = this.songExists[artist.id] || [];
       artist.albums?.forEach((album) => {
+        let albumPath = `${apath}/${filterName(album.name)}`;
         try {
-          fs.accessSync(`${apath}/${filterName(album.name)}`);
+          fs.accessSync(albumPath);
         } catch (err) {
-          fs.mkdirSync(`${apath}/${filterName(album.name)}`);
+          fs.mkdirSync(albumPath);
         }
+        album.songs?.forEach((s) => {
+          if (fs.existsSync(this.songPath(artist, album, s))) {
+            this.songExists[artist.id].push(s.id);
+          }
+        });
       });
     });
   }

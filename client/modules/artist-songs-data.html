@@ -14,10 +14,10 @@
 </td>
 <td>
   <a
-    class="btn btn-primary btn-icon"
+    class="btn ${song.exists ? 'btn-success' : 'btn-primary'} btn-icon"
     id="song-add-${song.id}"
     style="padding: 6px; min-width: auto"
   >
-    <span class="ti ti-download"></span>
+    ${song.exists ? '<span class="ti ti-check"></span>' : '<span class="ti ti-download"></span>'}
   </a>
 </td>
