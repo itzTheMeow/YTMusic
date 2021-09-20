@@ -117,6 +117,10 @@ const spapi = new SpotifyApi({
           })
         );
         break;
+      case "remove":
+        mediaman.remArtist(String(req.query.id));
+        res.json({});
+        break;
       default:
         res.status(501).json({ err: true });
         break;

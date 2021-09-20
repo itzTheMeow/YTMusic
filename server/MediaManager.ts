@@ -59,6 +59,14 @@ class MediaManager {
     this.scanArtistFolders();
     this.writeData();
   }
+  remArtist(id: string) {
+    let artist = this.artists.find((a) => a.id == id);
+    if (!artist) return;
+    fs.rmSync(`${this.location}/${filterName(artist.name)}`, { recursive: true });
+    this.artists = this.artists.filter((a) => a.id !== id);
+    this.writeData();
+    this.scanArtistFolders();
+  }
 
   songPath(artist: ModifiedArtist, album: ModifiedAlbum, song: SpotifyApi.TrackObjectSimplified) {
     return path.join(

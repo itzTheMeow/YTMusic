@@ -266,64 +266,74 @@
             loadPage(loadedPage);
           }
         };
+
+        document.getElementById("header-btn-remove").onclick = function () {
+          fetch(`/api/artists/remove?id=${artist.id}`).then(() => {
+            document.getElementById("artist-modal").querySelector(".btn-close").click();
+            doArtists();
+          });
+        };
       }
 
-      fetch(`/api/artists/all`)
-        .then((res) => res.json())
-        .then(async (res) => {
-          if (res.err) return;
+      function doArtists() {
+        fetch(`/api/artists/all`)
+          .then((res) => res.json())
+          .then(async (res) => {
+            if (res.err) return;
 
-          let input = document.getElementById("artist-search");
-          input.select();
-          let inputSelected = true;
-          input.onclick = function () {
-            if (!inputSelected) input.select();
-            inputSelected = true;
-          };
-          input.onblur = function () {
-            inputSelected = false;
-          };
+            let input = document.getElementById("artist-search");
+            input.select();
+            let inputSelected = true;
+            input.onclick = function () {
+              if (!inputSelected) input.select();
+              inputSelected = true;
+            };
+            input.onblur = function () {
+              inputSelected = false;
+            };
 
-          let artists = document.getElementById("artists");
-          artists.innerHTML = "";
+            let artists = document.getElementById("artists");
+            artists.innerHTML = "";
 
-          res
-            .sort((a, b) => {
-              return filterName(a.name.toLowerCase().replace(/the /i, "")) >
-                filterName(b.name.toLowerCase().replace(/the /i, ""))
-                ? 1
-                : -1;
-            })
-            .forEach((a) => {
-              let artist = document.createElement("div");
-              artist.innerHTML = `{{artist-card}}`;
-              artist.id = `artist-card-${a.id}`;
-              artist.classList.add("col-sm-6", "col-lg-4");
-              artist.onclick = function () {
-                openArtist(a);
-              };
-              artists.appendChild(artist);
-              let hover = document.getElementById(`card-overlay-${a.id}`).querySelector("span");
-              hover.className = "ti ti-settings text-indigo";
-              hover.style.textShadow = "none";
-            });
+            res
+              .sort((a, b) => {
+                return filterName(a.name.toLowerCase().replace(/the /i, "")) >
+                  filterName(b.name.toLowerCase().replace(/the /i, ""))
+                  ? 1
+                  : -1;
+              })
+              .forEach((a) => {
+                let artist = document.createElement("div");
+                artist.innerHTML = `{{artist-card}}`;
+                artist.id = `artist-card-${a.id}`;
+                artist.classList.add("col-sm-6", "col-lg-4");
+                artist.onclick = function () {
+                  openArtist(a);
+                };
+                artists.appendChild(artist);
+                let hover = document.getElementById(`card-overlay-${a.id}`).querySelector("span");
+                hover.className = "ti ti-settings text-indigo";
+                hover.style.textShadow = "none";
+              });
 
-          let asearch = document.getElementById("artist-search");
-          asearch.onkeyup = function () {
-            let searchTerm = asearch.value;
-            if (!searchTerm) return [...artists.children].map((c) => (c.style.display = ""));
-            let found = res
-              .filter((a) => a.name.toLowerCase().includes(searchTerm.toLowerCase()))
-              .map((e) => e.id);
-            [...artists.children].forEach((a) => {
-              if (found.includes(a.id.split("-").pop())) a.style.display = "";
-              else a.style.display = "none";
-            });
-          };
-        })
-        .catch((err) => {
-          console.log("Server is down? Error: " + err);
-        });
+            let asearch = document.getElementById("artist-search");
+            asearch.onkeyup = function () {
+              let searchTerm = asearch.value;
+              if (!searchTerm) return [...artists.children].map((c) => (c.style.display = ""));
+              let found = res
+                .filter((a) => a.name.toLowerCase().includes(searchTerm.toLowerCase()))
+                .map((e) => e.id);
+              [...artists.children].forEach((a) => {
+                if (found.includes(a.id.split("-").pop())) a.style.display = "";
+                else a.style.display = "none";
+              });
+            };
+          })
+          .catch((err) => {
+            console.log("Server is down? Error: " + err);
+          });
+      }
+      doArtists();
     </script>
   </body>
 </html>
