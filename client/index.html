@@ -160,9 +160,11 @@
                       .then((r) => r.json())
                       .then((r) => {
                         if (r.err) return;
-                        res[res.indexOf(artist)].albums[artist.albums.indexOf(a)].songs[
-                          a.songs.indexOf(song)
-                        ].exists = true;
+                        try {
+                          res[res.indexOf(artist)].albums[artist.albums.indexOf(a)].songs[
+                            a.songs.indexOf(song)
+                          ].exists = true;
+                        } catch (e) {}
                         document.getElementById("yt-modal").querySelector(".btn-close").click();
                         document.getElementById("artist-modal").querySelector(".btn-close").click();
                         openArtist(artist);
