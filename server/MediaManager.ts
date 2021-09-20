@@ -30,6 +30,7 @@ class MediaManager {
     this.mb = mb;
     this.MediaPaths = {
       artists: `${this.location}/artists.json`,
+      oldArtists: `${this.location}/artists.old.json`,
       songs: `/songs.json`,
     };
     this.ffmpeg.setFfmpegPath(ffmpeg);
@@ -40,17 +41,59 @@ class MediaManager {
       fs.mkdirSync(this.location);
     }
 
-    try {
-      fs.accessSync(this.MediaPaths.artists);
-    } catch (err) {
-      fs.writeFileSync(this.MediaPaths.artists, "[]");
-    }
-    this.artists = JSON.parse(String(fs.readFileSync(this.MediaPaths.artists))) as ModifiedArtist[];
+    this.readData();
     this.scanArtistFolders();
   }
 
+  readData() {
+    let migrated = this.migrateData();
+    if (migrated > 0) {
+      console.log("Migrated data from old artists.json.");
+      setTimeout(function () {
+        console.log("Quitting after migrating. Please restart.");
+        process.exit(0);
+      }, 1000);
+      return;
+    }
+
+    fs.readdirSync(this.location).forEach((a) => {
+      let apath = path.join(this.location, a);
+      try {
+        fs.readdirSync(apath);
+      } catch (e) {
+        return;
+      }
+      let jsonPath = path.join(apath, "artist.json");
+      if (!fs.existsSync(jsonPath)) {
+        let migrated = this.migrateData();
+        if (migrated < 1) {
+          console.log(`error with directory '${apath}'\nProgram will fail. Please readd artist.`);
+          fs.writeFileSync(jsonPath, "{}");
+        }
+      }
+      this.artists.push(JSON.parse(String(fs.readFileSync(jsonPath))) as ModifiedArtist);
+    });
+  }
+
+  migrateData() {
+    let migrated = 0;
+    try {
+      if (fs.existsSync(this.MediaPaths.artists)) {
+        migrated++;
+        let artistJSON = JSON.parse(String(fs.readFileSync(this.MediaPaths.artists)));
+        if (artistJSON) this.artists = artistJSON;
+        this.writeData();
+        fs.renameSync(this.MediaPaths.artists, this.MediaPaths.oldArtists);
+      }
+    } catch (e) {}
+    return migrated;
+  }
+
   writeData() {
-    fs.writeFileSync(this.MediaPaths.artists, JSON.stringify(this.artists));
+    this.artists.forEach((a) => {
+      let apath = path.join(this.location, filterName(a.name), "artist.json");
+      fs.writeFileSync(apath, JSON.stringify(a));
+    });
   }
 
   addArtist(data: ModifiedArtist) {

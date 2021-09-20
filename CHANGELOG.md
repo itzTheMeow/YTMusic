@@ -19,6 +19,7 @@
 ## 9/20/2021
 
 - optimized front page artist loading
+- separated artist meta
 
 # TODO (make a pr!)
 
@@ -35,7 +36,6 @@
 - make album search return songs in an album
 - make album/song search a radio button
 - add fallback for blur effect
-- optimize artist json storing (probably data in each folder) (would need to have a way to migrate an existing artists.json)
 - filter songs by country
 - loading icon for artist loader
 - add proper logging
