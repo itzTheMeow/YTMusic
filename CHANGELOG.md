@@ -10,10 +10,19 @@
 - search songs in table
 - fix less than 5 page bug
 
-# TODO
+## 9/19/2021
+
+- added video downloading
+- fixed random bugs
+- added artist deletion
+
+## 9/20/2021
+
+- optimized front page artist loading
+
+# TODO (make a pr!)
 
 - add loading icon to add artist card
-- delete artist
 - refresh artist metadata
 - fix favicon stretching
 - fix empty scrollbar on artist list
@@ -26,6 +35,16 @@
 - make album search return songs in an album
 - make album/song search a radio button
 - add fallback for blur effect
+- optimize artist json storing (probably data in each folder) (would need to have a way to migrate an existing artists.json)
+- filter songs by country
+- loading icon for artist loader
+- add proper logging
+- add loading icon for downloading song
+- add ability to edit artist metadata
+- add ability to import/tag existing mp3s
+- ability to remove songs
+- confirmation for artist delete
+- artist delete meta only or songs as well
 
 # STEPS
 
@@ -35,7 +54,7 @@
 - [x] artist song list
 - [ ] settings page
 - [x] youtube modal and searching
-- [ ] youtube downloading (WORKING)
-- [ ] mp3 tagging
+- [x] youtube downloading (WORKING)
+- [x] mp3 tagging
 - [ ] login
 - [ ] install and use instructions
