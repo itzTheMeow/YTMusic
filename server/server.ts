@@ -135,7 +135,8 @@ const spapi = new SpotifyApi({
             res.status(200).json({});
           })
           .catch((a) => {
-            res.status(502).json({ err: true });
+            console.error("Error with download:", a);
+            res.status(502).json({ err: true, data: String(a) });
           });
         break;
       default:
