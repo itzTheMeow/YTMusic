@@ -20,6 +20,7 @@
 
 - optimized front page artist loading
 - separated artist meta
+- added auto refresh existing songs
 
 # TODO (make a pr!)
 
@@ -45,7 +46,6 @@
 - ability to remove songs
 - confirmation for artist delete
 - artist delete meta only or songs as well
-- auto refresh existing songs after adding one
 
 # STEPS
 

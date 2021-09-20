@@ -29,6 +29,8 @@
         return newName;
       }
 
+      let res = [];
+
       function openArtist(artist) {
         let old = document.getElementById("artist-modal");
         if (old) old.remove();
@@ -158,6 +160,9 @@
                       .then((r) => r.json())
                       .then((r) => {
                         if (r.err) return;
+                        res[res.indexOf(artist)].albums[artist.albums.indexOf(a)].songs[
+                          a.songs.indexOf(song)
+                        ].exists = true;
                         document.getElementById("yt-modal").querySelector(".btn-close").click();
                         document.getElementById("artist-modal").querySelector(".btn-close").click();
                         openArtist(artist);
@@ -277,7 +282,7 @@
       }
 
       function doArtists() {
-        let res = [];
+        res = [];
         let artistNum = 0;
         fetch(`/api/artists/list`)
           .then((r) => r.json())
