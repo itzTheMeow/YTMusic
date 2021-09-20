@@ -57,13 +57,12 @@
         document.body.appendChild(modal);
 
         let limit = 15;
-        let albs = artist.albums;
 
         let currentPage = 0;
         let pages = [];
         let current = 0;
 
-        function buildPages() {
+        function buildPages(albs) {
           pages = [];
           currentPage = 0;
           current = 0;
@@ -95,7 +94,7 @@
               });
             });
         }
-        buildPages();
+        buildPages([...artist.albums]);
 
         let loadedPage = 1;
         function loadPage(num) {
@@ -159,6 +158,8 @@
                       .then((r) => {
                         if (r.err) return;
                         document.getElementById("yt-modal").querySelector(".btn-close").click();
+                        document.getElementById("artist-modal").querySelector(".btn-close").click();
+                        openArtist(artist);
                       });
                   };
                   document.getElementById("yt-search").appendChild(searchItem);
@@ -242,18 +243,15 @@
         };
 
         aSongSearch.onkeyup = function () {
+          let albs = artist.albums.map((a) => ({ ...a }));
           let searchTerm = aSongSearch.value;
           if (!searchTerm) {
-            albs = artist.albums;
-            buildPages();
+            buildPages(albs);
             loadedPage = 1;
             loadPage(loadedPage);
           } else {
             if (searchParams.albums)
-              albs = artist.albums.filter((alb) =>
-                alb.name.toLowerCase().includes(searchTerm.toLowerCase())
-              );
-            else albs = artist.albums;
+              albs.filter((alb) => alb.name.toLowerCase().includes(searchTerm.toLowerCase()));
             if (searchParams.songs) {
               albs.forEach((alb, i) => {
                 let foundSongs = [];
@@ -263,7 +261,7 @@
                 albs[i].songs = foundSongs;
               });
             }
-            buildPages();
+            buildPages(albs);
             loadedPage = 1;
             loadPage(loadedPage);
           }
