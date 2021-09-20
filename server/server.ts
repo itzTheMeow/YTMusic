@@ -26,6 +26,8 @@ const spapi = new SpotifyApi({
 // https://console.cloud.google.com/apis/credentials
 // enable youtube at https://console.cloud.google.com/apis/api/youtube.googleapis.com/overview
 
+console.log("starting");
+
 (async function () {
   const authman = new SpotifyAuthManager(sauth.clientID, sauth.clientSecret, spapi);
   spapi.setAccessToken(await authman.generateToken());
@@ -118,7 +120,19 @@ const spapi = new SpotifyApi({
         );
         break;
       case "get":
-        res.json(mediaman.artists.find((ar) => ar.id == req.query.id) || { err: true });
+        let ar = mediaman.artists.find((ar) => ar.id == req.query.id);
+        if (!ar) return res.status(502).json({ err: true });
+        let a: any = ar;
+        ar.albums?.forEach((al, albI) => {
+          let newAlb: any = al;
+          al.songs?.forEach((so, songI) => {
+            let newSong: any = so;
+            newSong.exists = mediaman.songExists[a.id].includes(so.id);
+            newAlb.songs[songI] = newSong;
+          });
+          a.albums[albI] = newAlb;
+        });
+        res.json(a);
         break;
       case "remove":
         mediaman.remArtist(String(req.query.id));

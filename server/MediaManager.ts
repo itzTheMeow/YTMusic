@@ -147,6 +147,7 @@ class MediaManager {
   }
 
   scanArtistFolders() {
+    console.log("scanning artist folders");
     this.artists.forEach((artist) => {
       let apath = `${this.location}/${filterName(artist.name)}`;
       try {
@@ -154,7 +155,7 @@ class MediaManager {
       } catch (err) {
         fs.mkdirSync(apath);
       }
-      this.songExists[artist.id] = this.songExists[artist.id] || [];
+      this.songExists[artist.id] = [];
       artist.albums?.forEach((album) => {
         let albumPath = `${apath}/${filterName(album.name)}`;
         try {
