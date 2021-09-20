@@ -30,7 +30,10 @@
         inputSelected = false;
       };
 
+      let lastSearched = "";
       let search = function () {
+        if (lastSearched == input.value) return;
+        lastSearched = input.value;
         fetch(`/api/artist?name=${encodeURIComponent(input.value)}`)
           .then((res) => res.json())
           .then(async (res) => {
@@ -83,7 +86,7 @@
       input.onkeyup = function (e) {
         wantSearch = true;
         clearTimeout(int);
-        int = setTimeout(search, 500);
+        int = setTimeout(search, 700);
       };
     </script>
   </body>

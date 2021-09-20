@@ -76,22 +76,26 @@ const spapi = new SpotifyApi({
     res.sendFile(path.resolve("client/logo.png"));
   });
   app.get("/api/artist", async (req, res) => {
-    let artistRes;
-    try {
-      artistRes = await spapi.searchArtists(String(req.query.name), { limit: 35 });
-    } catch (e) {
-      return res.status(502).json({ err: true });
-    }
-    if (req.query.name) res.json(artistRes.body);
-    else res.status(501).json({ err: true });
+    spapi
+      .searchArtists(String(req.query.name), { limit: 35 })
+      .then((artistRes) => {
+        if (req.query.name) res.json(artistRes.body);
+        else res.status(501).json({ err: true });
+      })
+      .catch((err) => {
+        return res.status(502).json({ err: true });
+      });
   });
   app.get("/api/artists/:action", async (req, res) => {
     switch (req.params.action) {
       case "add":
         if (!req.query.id) return res.status(501).json({ err: true });
-        let newArtist = await GetArtist(String(req.query.id));
-        mediaman.addArtist(newArtist);
-        res.json(newArtist);
+        GetArtist(String(req.query.id))
+          .then((newArtist) => {
+            mediaman.addArtist(newArtist);
+            res.json(newArtist);
+          })
+          .catch(console.error);
         break;
       case "list":
         res.json(mediaman.artists.map((a) => a.id));

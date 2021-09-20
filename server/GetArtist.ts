@@ -32,18 +32,23 @@ async function GetArtist(id: string): Promise<ModifiedArtist> {
             let trackOffset = 0;
             let songs: SpotifyApi.TrackObjectSimplified[] = [];
             async function newTrackSet() {
-              let albumSongs = (
-                await spapi.getAlbumTracks(a.id, { limit: 50, offset: trackOffset })
-              ).body.items;
-              albumSongs.map((s) => {
-                songs.push(s);
-              });
-              if (albumSongs.length == 50) {
-                trackOffset += 50;
-                newTrackSet();
-              } else {
-                res3(songs);
-              }
+              spapi
+                .getAlbumTracks(a.id, { limit: 50, offset: trackOffset })
+                .then((r) => {
+                  let albumSongs = r.body.items;
+                  albumSongs.map((s) => {
+                    songs.push(s);
+                  });
+                  if (albumSongs.length == 50) {
+                    trackOffset += 50;
+                    setTimeout(newTrackSet, 500);
+                  } else {
+                    res3(songs);
+                  }
+                })
+                .catch((err) => {
+                  setTimeout(newTrackSet, 1000);
+                });
             }
             newTrackSet();
           }).then((albumSongs) => {
