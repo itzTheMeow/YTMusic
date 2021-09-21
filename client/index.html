@@ -276,10 +276,12 @@
         };
 
         document.getElementById("header-btn-remove").onclick = function () {
-          fetch(`/api/artists/remove?id=${artist.id}`).then(() => {
-            document.getElementById("artist-modal").querySelector(".btn-close").click();
-            doArtists();
-          });
+          if (confirm("Are you sure?")) {
+            fetch(`/api/artists/remove?id=${artist.id}`).then(() => {
+              document.getElementById("artist-modal").querySelector(".btn-close").click();
+              doArtists();
+            });
+          }
         };
       }
 
