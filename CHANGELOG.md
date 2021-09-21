@@ -22,6 +22,11 @@
 - separated artist meta
 - added auto refresh existing songs
 
+## 9/21/2021
+
+- added confirmation for deleting an artist
+- made scanning faster by deleting empty album folders
+
 # TODO (make a pr!)
 
 - add loading icon to add artist card
@@ -44,7 +49,6 @@
 - add ability to edit artist metadata
 - add ability to import/tag existing mp3s
 - ability to remove songs
-- confirmation for artist delete
 - artist delete meta only or songs as well
 
 # STEPS

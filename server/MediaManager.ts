@@ -130,6 +130,13 @@ class MediaManager {
       let mp3 = this.songPath(artist, album, song);
       let scan = this.scanArtistFolders.bind(this);
 
+      let albumPath = path.join(this.location, artist.name, album.name);
+      try {
+        fs.accessSync(albumPath);
+      } catch (err) {
+        fs.mkdirSync(albumPath);
+      }
+
       try {
         let downloadStream = ytdl(`https://youtube.com/watch?v=${id}`, {
           filter: "audioonly",
@@ -203,14 +210,16 @@ class MediaManager {
         let albumPath = `${apath}/${filterName(album.name)}`;
         try {
           fs.accessSync(albumPath);
-        } catch (err) {
-          fs.mkdirSync(albumPath);
-        }
-        album.songs?.forEach((s) => {
-          if (fs.existsSync(this.songPath(artist, album, s))) {
-            this.songExists[artist.id].push(s.id);
+          let inside = fs.readdirSync(albumPath);
+          if (inside.length == 0) fs.rmdirSync(albumPath);
+          else {
+            album.songs?.forEach((s) => {
+              if (fs.existsSync(this.songPath(artist, album, s))) {
+                this.songExists[artist.id].push(s.id);
+              }
+            });
           }
-        });
+        } catch (err) {}
       });
     });
   }
