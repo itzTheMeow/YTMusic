@@ -32,7 +32,12 @@ console.log("starting");
   const authman = new SpotifyAuthManager(sauth.clientID, sauth.clientSecret, spapi);
   spapi.setAccessToken(await authman.generateToken());
 
-  const mediaman = new MediaManager(path.join(__dirname, "..", config.library), spapi);
+  let mediaDir = path.join(__dirname, "..", config.library);
+  try {
+    let overridedir = String(fs.readFileSync(path.join(__dirname, "..", ".overridedir")));
+    if (overridedir) mediaDir = overridedir;
+  } catch (e) {}
+  const mediaman = new MediaManager(mediaDir, spapi);
 
   let allStyle = "";
   fs.readdirSync("client/css").forEach((css) => {

@@ -27,6 +27,10 @@
 - added confirmation for deleting an artist
 - made scanning faster by deleting empty album folders
 
+## 10/3/2021
+
+- added music directory override (.overridedir)
+
 # TODO (make a pr!)
 
 - add loading icon to add artist card

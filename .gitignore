@@ -4,4 +4,5 @@ package-lock.json
 client/style.css
 client/compiled.js
 auth.json
+.overridedir
 Music
