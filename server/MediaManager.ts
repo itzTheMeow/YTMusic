@@ -91,7 +91,9 @@ class MediaManager {
 
   writeData() {
     this.artists.forEach((a) => {
-      let apath = path.join(this.location, filterName(a.name), "artist.json");
+      let apath = path.join(this.location, filterName(a.name));
+      if (!fs.existsSync(apath)) fs.mkdirSync(apath);
+      apath = path.join(apath, "artist.json");
       fs.writeFileSync(apath, JSON.stringify(a));
     });
   }
