@@ -6,3 +6,4 @@ client/compiled.js
 auth.json
 .overridedir
 Music
+mv.*
