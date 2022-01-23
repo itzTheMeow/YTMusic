@@ -8,9 +8,10 @@ import path from "path";
 import fffmpeg from "fluent-ffmpeg";
 
 function filterName(name: string) {
-  let allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_()!@#%& .,";
+  let allowed =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_()!@#%& .,";
   let newName = "";
-  name.split("").forEach((n) => {
+  name?.split("").forEach((n) => {
     if (allowed.includes(n)) newName += n;
   });
   return newName;
@@ -67,11 +68,15 @@ class MediaManager {
       if (!fs.existsSync(jsonPath)) {
         let migrated = this.migrateData();
         if (migrated < 1) {
-          console.log(`error with directory '${apath}'\nProgram will fail. Please readd artist.`);
+          console.log(
+            `error with directory '${apath}'\nProgram will fail. Please readd artist.`
+          );
           fs.writeFileSync(jsonPath, "{}");
         }
       }
-      this.artists.push(JSON.parse(String(fs.readFileSync(jsonPath))) as ModifiedArtist);
+      this.artists.push(
+        JSON.parse(String(fs.readFileSync(jsonPath))) as ModifiedArtist
+      );
     });
   }
 
@@ -80,7 +85,9 @@ class MediaManager {
     try {
       if (fs.existsSync(this.MediaPaths.artists)) {
         migrated++;
-        let artistJSON = JSON.parse(String(fs.readFileSync(this.MediaPaths.artists)));
+        let artistJSON = JSON.parse(
+          String(fs.readFileSync(this.MediaPaths.artists))
+        );
         if (artistJSON) this.artists = artistJSON;
         this.writeData();
         fs.renameSync(this.MediaPaths.artists, this.MediaPaths.oldArtists);
@@ -107,18 +114,27 @@ class MediaManager {
   remArtist(id: string) {
     let artist = this.artists.find((a) => a.id == id);
     if (!artist) return;
-    fs.rmSync(`${this.location}/${filterName(artist.name)}`, { recursive: true });
+    fs.rmSync(`${this.location}/${filterName(artist.name)}`, {
+      recursive: true,
+    });
     this.artists = this.artists.filter((a) => a.id !== id);
     this.writeData();
     this.scanArtistFolders();
   }
 
-  songPath(artist: ModifiedArtist, album: ModifiedAlbum, song: SpotifyApi.TrackObjectSimplified) {
+  songPath(
+    artist: ModifiedArtist,
+    album: ModifiedAlbum,
+    song: SpotifyApi.TrackObjectSimplified
+  ) {
     return path.join(
       this.location,
       filterName(artist.name),
       filterName(album.name),
-      ("0" + song.track_number).slice(-2) + " - " + filterName(song.name) + ".mp3"
+      ("0" + song.track_number).slice(-2) +
+        " - " +
+        filterName(song.name) +
+        ".mp3"
     );
   }
 
