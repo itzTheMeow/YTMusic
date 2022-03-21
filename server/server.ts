@@ -35,7 +35,7 @@ console.log("starting");
   let mediaDir = path.join(__dirname, "..", config.library);
   try {
     let overridedir = String(fs.readFileSync(path.join(__dirname, "..", ".overridedir")));
-    if (overridedir) mediaDir = overridedir;
+    if (overridedir) mediaDir = overridedir.trim();
   } catch (e) {}
   const mediaman = new MediaManager(mediaDir, spapi);
 
