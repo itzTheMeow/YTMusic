@@ -148,7 +148,11 @@ class MediaManager {
       let mp3 = this.songPath(artist, album, song);
       let scan = this.scanArtistFolders.bind(this);
 
-      let albumPath = path.join(this.location, artist.name, album.name);
+      let albumPath = path.join(
+        this.location,
+        filterName(artist.name),
+        filterName(album.name)
+      );
       try {
         fs.accessSync(albumPath);
       } catch (err) {
