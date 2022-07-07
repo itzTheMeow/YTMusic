@@ -29,12 +29,18 @@ const spapi = new SpotifyApi({
 console.log("starting");
 
 (async function () {
-  const authman = new SpotifyAuthManager(sauth.clientID, sauth.clientSecret, spapi);
+  const authman = new SpotifyAuthManager(
+    sauth.clientID,
+    sauth.clientSecret,
+    spapi
+  );
   spapi.setAccessToken(await authman.generateToken());
 
   let mediaDir = path.join(__dirname, "..", config.library);
   try {
-    let overridedir = String(fs.readFileSync(path.join(__dirname, "..", ".overridedir")));
+    let overridedir = String(
+      fs.readFileSync(path.join(__dirname, "..", ".overridedir"))
+    );
     if (overridedir) mediaDir = overridedir.trim();
   } catch (e) {}
   const mediaman = new MediaManager(mediaDir, spapi);
@@ -68,7 +74,8 @@ console.log("starting");
   app.use((req, res, next) => {
     // might not be needed
     res.setHeader("Access-Control-Allow-Origin", "*");
-    if (req.protocol == "https") return res.redirect("http://" + req.get("host") + req.url);
+    if (req.protocol == "https")
+      return res.redirect("http://" + req.get("host") + req.url);
 
     next();
   });
@@ -152,11 +159,14 @@ console.log("starting");
     switch (req.params.action) {
       case "search":
         if (!req.query.q) return res.status(501).json({ err: true });
-        let searchResults = await search(decodeURIComponent(String(req.query.q)), {
-          key: sauth.youtube,
-          order: "relevance",
-          part: "id,snippet",
-        });
+        let searchResults = await search(
+          decodeURIComponent(String(req.query.q)),
+          {
+            key: sauth.youtube,
+            order: "relevance",
+            part: "id,snippet",
+          }
+        );
         res.json(searchResults.results.slice(0, 10));
         break;
       case "download":
@@ -172,7 +182,8 @@ console.log("starting");
             }
           });
         });
-        if (!artist || !song || !album) return res.status(502).json({ err: true });
+        if (!artist || !song || !album)
+          return res.status(502).json({ err: true });
         mediaman
           .downloadSong(String(req.query.id), artist, album, song)
           .then(() => {
@@ -191,9 +202,15 @@ console.log("starting");
   app.get("/:w", (req, res) => {
     res.send(getHTML(`${req.params.w}.html`));
   });
+  app.get("/q", (req, res) => {
+    res.redirect("/");
+    process.exit();
+  });
 
   app.listen(config.port, () => {
-    console.log(`Server is online and listening at http://localhost:${config.port}`);
+    console.log(
+      `Server is online and listening at http://localhost:${config.port}`
+    );
   });
 })();
 
