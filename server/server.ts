@@ -199,12 +199,12 @@ console.log("starting");
         break;
     }
   });
-  app.get("/:w", (req, res) => {
-    res.send(getHTML(`${req.params.w}.html`));
-  });
   app.get("/q", (req, res) => {
     res.redirect("/");
     process.exit();
+  });
+  app.get("/:w", (req, res) => {
+    res.send(getHTML(`${req.params.w}.html`));
   });
 
   app.listen(config.port, () => {
