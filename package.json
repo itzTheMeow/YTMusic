@@ -22,6 +22,7 @@
     "esbuild": "^0.14.51",
     "esbuild-svelte": "^0.7.1",
     "express": "^4.18.1",
+    "sass": "^1.54.0",
     "svelte": "^3.49.0",
     "svelte-preprocess": "^4.10.7",
     "typescript": "^4.7.4"

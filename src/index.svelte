@@ -3,10 +3,14 @@
   setInterval(() => (time = new Date().toLocaleTimeString()), 900);
 </script>
 
-<p>Whats up, Svelte. Current time: {time || "Loading..."}</p>
+<p>Whats up, Svelte. Current time: <span>{time || "Loading..."}</span></p>
 
-<style>
+<style lang="scss">
   p {
     font-size: 1.5rem;
+
+    span {
+      font-weight: bold;
+    }
   }
 </style>
