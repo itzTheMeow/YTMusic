@@ -6,30 +6,28 @@
     HeaderUtilities,
     Theme,
   } from "carbon-components-svelte";
-  import { LogoYoutube } from "carbon-icons-svelte";
-  import SettingsAdjust from "carbon-icons-svelte/lib/SettingsAdjust.svelte";
+  import { SettingsAdjust } from "carbon-icons-svelte";
+  import { Router, Route, navigate, link } from "svelte-routing";
+  import Home from "Home.svelte";
   let theme: "white" | "g10" | "g80" | "g90" | "g100" = "g90";
 
-  let time = "";
-  setInterval(() => (time = new Date().toLocaleTimeString()), 900);
+  export let url = "";
+  let head: HTMLAnchorElement;
 </script>
 
 <Theme bind:theme persist persistKey="theme" />
-<Header>
-  <svelte:fragment slot="platform">{LogoYoutube} YTMusic</svelte:fragment>
+<Header ref={head}>
+  <a slot="platform" href="/" use:link>YTMusic</a>
   <HeaderUtilities>
-    <HeaderGlobalAction aria-label="Settings" icon={SettingsAdjust} />
+    <HeaderGlobalAction
+      aria-label="Settings"
+      icon={SettingsAdjust}
+      on:click={() => navigate('/settings')} />
   </HeaderUtilities>
 </Header>
 
-<Content><p>Whats up, Svelte. Current time: <span>{time || "Loading..."}</span></p></Content>
-
-<style lang="scss">
-  p {
-    font-size: 1.5rem;
-
-    span {
-      font-weight: bold;
-    }
-  }
-</style>
+<Content>
+  <Router {url}>
+    <Route path="/" component={Home} />
+  </Router>
+</Content>

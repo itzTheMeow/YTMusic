@@ -5,7 +5,7 @@ import sveltePreprocess from "svelte-preprocess";
 import express from "express";
 
 const config = {
-  port: 80,
+  port: 8777,
 };
 
 const app = express();
@@ -31,11 +31,15 @@ esbuild
       }),
     ],
     logLevel: "info",
+    target: "es6",
   })
   .then(() => {
     fs.copyFileSync("src/index.html", "dist/index.html");
     console.log("Built successfully!");
     app.use(express.static(process.cwd() + "/dist"));
+    app.get("*", (req, res) => {
+      res.sendFile(process.cwd() + "/dist/index.html");
+    });
     app.listen(config.port, () => {
       console.log(`Listening on port ${config.port}.`);
     });
