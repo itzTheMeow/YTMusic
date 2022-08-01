@@ -30,6 +30,7 @@ esbuild
         preprocess: sveltePreprocess(),
       }),
     ],
+    logLevel: "info",
   })
   .then(() => {
     fs.copyFileSync("src/index.html", "dist/index.html");
