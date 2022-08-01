@@ -2,13 +2,20 @@ import fs from "fs";
 import esbuild from "esbuild";
 import esbuildSvelte from "esbuild-svelte";
 import sveltePreprocess from "svelte-preprocess";
+import express from "express";
 
+const config = {
+  port: 80,
+};
+
+const app = express();
 /*if (!fs.existsSync("./dist/")) {
   fs.mkdirSync("./dist/");
 }*/
+console.log("Building...");
 esbuild
   .build({
-    entryPoints: [`./src/entry.ts`],
+    entryPoints: [`./src/index.ts`],
     bundle: true,
     outdir: `./dist`,
     mainFields: ["svelte", "browser", "module", "main"],
@@ -24,9 +31,15 @@ esbuild
       }),
     ],
   })
+  .then(() => {
+    fs.copyFileSync("src/index.html", "dist/index.html");
+    console.log("Built successfully!");
+    app.use(express.static(process.cwd() + "/dist"));
+    app.listen(config.port, () => {
+      console.log(`Listening on port ${config.port}.`);
+    });
+  })
   .catch((error, location) => {
     console.warn(`Errors: `, error, location);
     process.exit(1);
   });
-
-fs.copyFileSync("./index.html", "./dist/index.html");
