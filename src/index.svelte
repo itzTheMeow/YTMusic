@@ -17,7 +17,11 @@
 
 <Theme bind:theme persist persistKey="theme" />
 <Header ref={head}>
-  <a slot="platform" href="/" use:link>YTMusic</a>
+  <a
+    slot="platform"
+    href="/"
+    use:link
+    style="text-decoration:none;color:inherit;">YTMusic</a>
   <HeaderUtilities>
     <HeaderGlobalAction
       aria-label="Settings"
