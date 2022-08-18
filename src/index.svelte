@@ -1,37 +1,40 @@
 <script lang="ts">
-  import {
-    Content,
-    Header,
-    HeaderGlobalAction,
-    HeaderUtilities,
-    Theme,
-  } from "carbon-components-svelte";
-  import { SettingsAdjust } from "carbon-icons-svelte";
-  import { Router, Route, navigate, link } from "svelte-routing";
-  import Home from "Home.svelte";
-  let theme: "white" | "g10" | "g80" | "g90" | "g100" = "g90";
+  import { ListSearch, Logout, Settings } from "tabler-icons-svelte";
+  import { link, Route, Router } from "svelte-routing";
+  import Home from "./Home.svelte";
+  import { Auth } from "index";
+
+  if (!Auth.isAuthorized) window.location.href = "/login";
 
   export let url = "";
-  let head: HTMLAnchorElement;
 </script>
 
-<Theme bind:theme persist persistKey="theme" />
-<Header ref={head}>
-  <a
-    slot="platform"
-    href="/"
-    use:link
-    style="text-decoration:none;color:inherit;">YTMusic</a>
-  <HeaderUtilities>
-    <HeaderGlobalAction
-      aria-label="Settings"
-      icon={SettingsAdjust}
-      on:click={() => navigate('/settings')} />
-  </HeaderUtilities>
-</Header>
+<div class="navbar bg-base-100">
+  <div class="navbar-start">
+    <a href="/" class="btn btn-ghost normal-case text-xl" use:link>YTMusic</a>
+    <ul class="menu menu-horizontal p-0">
+      <li><a href="/artists" use:link>Artists</a></li>
+    </ul>
+  </div>
+  <div class="navbar-end">
+    <ul class="menu menu-horizontal p-0">
+      <a class="btn btn-ghost btn-circle" href="/" use:link>
+        <ListSearch />
+      </a>
+      <a class="btn btn-ghost btn-circle" href="/settings" use:link>
+        <Settings />
+      </a>
+      <button
+        class="btn btn-ghost btn-circle"
+        on:click={() => {
+          window.location.href = '/';
+        }}>
+        <Logout />
+      </button>
+    </ul>
+  </div>
+</div>
 
-<Content>
-  <Router {url}>
-    <Route path="/" component={Home} />
-  </Router>
-</Content>
+<Router {url}>
+  <Route path="/" component={Home} />
+</Router>

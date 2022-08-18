@@ -1,18 +1,12 @@
-import fs from "fs";
 import esbuild from "esbuild";
 import esbuildSvelte from "esbuild-svelte";
 import sveltePreprocess from "svelte-preprocess";
-import express from "express";
+import postCssPlugin from "esbuild-style-plugin";
+import useTailwind from "tailwindcss";
+import useAutoprefixer from "autoprefixer";
+import { init } from "./server";
 
-const config = {
-  port: 8777,
-};
-
-const app = express();
-/*if (!fs.existsSync("./dist/")) {
-  fs.mkdirSync("./dist/");
-}*/
-console.log("Building...");
+console.log("Building client...");
 esbuild
   .build({
     entryPoints: [`./src/index.ts`],
@@ -29,21 +23,20 @@ esbuild
       esbuildSvelte({
         preprocess: sveltePreprocess(),
       }),
+      postCssPlugin({
+        postcss: {
+          plugins: [useTailwind, useAutoprefixer],
+        },
+      }),
     ],
     logLevel: "info",
     target: "es6",
+    loader: { ".png": "file" },
   })
   .then(() => {
-    fs.copyFileSync("src/index.html", "dist/index.html");
-    console.log("Built successfully!");
-    app.use(express.static(process.cwd() + "/dist"));
-    app.get("*", (req, res) => {
-      res.sendFile(process.cwd() + "/dist/index.html");
-    });
-    app.listen(config.port, () => {
-      console.log(`Listening on port ${config.port}.`);
-    });
+    init();
   })
+  //@ts-ignore
   .catch((error, location) => {
     console.warn(`Errors: `, error, location);
     process.exit(1);
