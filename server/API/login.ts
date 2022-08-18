@@ -1,7 +1,6 @@
 import { APIRouter } from "../server";
-import db from "enhanced.db";
-import { sanitizeUsername } from "../utils";
-import { Account } from "../struct";
+import bcrypt from "bcrypt";
+import { getAccount } from "../utils";
 
 APIRouter.create("login", "POST", async (req) => {
   const username = req.body?.username;
@@ -9,8 +8,11 @@ APIRouter.create("login", "POST", async (req) => {
   if (!username || !password)
     return { err: true, message: "Invalid details provided." };
 
-  const account = db.get(`account_${sanitizeUsername(username)}`) as Account;
-  if (!account) return { err: true, message: "Invalid username." };
+  const account = getAccount(username);
+  if (!account) return { err: true, message: "Account does not exist." };
 
-  return { err: false, token: "" };
+  const isValid = bcrypt.compare(String(password), account.password);
+  if (!isValid) return { err: true, message: "Incorrect password." };
+
+  return { err: false, token: account.authToken };
 });
