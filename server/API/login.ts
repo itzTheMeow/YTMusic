@@ -11,7 +11,7 @@ APIRouter.create("login", "POST", async (req) => {
   const account = getAccount(username);
   if (!account) return { err: true, message: "Account does not exist." };
 
-  const isValid = bcrypt.compare(String(password), account.password);
+  const isValid = await bcrypt.compare(String(password), account.password);
   if (!isValid) return { err: true, message: "Incorrect password." };
 
   return { err: false, token: account.authToken };

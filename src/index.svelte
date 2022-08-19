@@ -24,11 +24,7 @@
       <a class="btn btn-ghost btn-circle" href="/settings" use:link>
         <Settings />
       </a>
-      <button
-        class="btn btn-ghost btn-circle"
-        on:click={() => {
-          window.location.href = '/';
-        }}>
+      <button class="btn btn-ghost btn-circle" on:click={() => Auth.logout()}>
         <Logout />
       </button>
     </ul>

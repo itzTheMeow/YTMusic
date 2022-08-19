@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Auth, config } from "./index";
+  import { API, Auth, config } from "./index";
   import Logo from "./logo.png";
 
   if (Auth.isAuthorized) window.location.href = "/";
@@ -9,7 +9,7 @@
   let Submit: HTMLButtonElement;
   let ERROR = "";
 
-  function login() {
+  async function login() {
     ERROR = "";
     if (!Username.value) {
       ERROR = "Please enter a username!";
@@ -23,6 +23,10 @@
     Password.classList.remove("input-error");
 
     Submit.classList.add("loading");
+    const res = await API.login(Username.value, Password.value);
+    Submit.classList.remove("loading");
+    if (res.err) return (ERROR = res.message);
+    Auth.getAuthorized(res.token);
   }
 </script>
 

@@ -3,6 +3,8 @@ import express from "express";
 import config from "./config";
 import APIRouteManager from "./APIRoute";
 import db from "enhanced.db";
+import { createAccount, getAllAccounts } from "./utils";
+import { randomUUID } from "crypto";
 
 export let APIRouter: APIRouteManager;
 
@@ -20,4 +22,12 @@ export function init() {
   app.listen(config.port, () => {
     console.log(`Listening on port ${config.port}.`);
   });
+
+  if (!getAllAccounts().find((a) => a.permissions.owner)) {
+    const pass = randomUUID().split("-")[0];
+    createAccount("admin", pass);
+    console.log(
+      `Creating admin account with username "admin" and password "${pass}".`
+    );
+  }
 }

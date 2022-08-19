@@ -3,15 +3,29 @@ export default class {
   private sanitizePath(path: string) {
     return !path.startsWith("/") ? "/" + path : path;
   }
-  public async get(path: string): Promise<Object> {
+  public async get(path: string): Promise<any> {
     return await fetch(this.url + this.sanitizePath(path)).then((r) =>
       r.json()
     );
   }
+  public async post(path: string, data: object): Promise<any> {
+    return await fetch(this.url + this.sanitizePath(path), {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((r) => r.json());
+  }
 
-  public async login(username: string, password: string) {
+  public async login(
+    username: string,
+    password: string
+  ): Promise<{ err: true; message: string } | { err: false; token: string }> {
     try {
-      return await this.get("/login");
-    } catch {}
+      return await this.post("/login", { username, password });
+    } catch {
+      return { err: true, message: "Error making request." };
+    }
   }
 }
