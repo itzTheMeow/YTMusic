@@ -18,9 +18,17 @@
   </div>
   <div class="navbar-end">
     <ul class="menu menu-horizontal p-0">
-      <a class="btn btn-ghost btn-circle" href="/" use:link>
-        <ListSearch />
-      </a>
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" class="btn btn-ghost btn-circle">
+          <ListSearch />
+        </div>
+        <div
+          tabindex="0"
+          class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52"
+        >
+          queue view goes here
+        </div>
+      </div>
       <a class="btn btn-ghost btn-circle" href="/settings" use:link>
         <Settings />
       </a>
