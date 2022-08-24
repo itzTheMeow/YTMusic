@@ -18,4 +18,5 @@ export interface Artist {
   genres: string[];
   followers: number;
   icon: string;
+  status?: 0 | 1 | 2;
 }

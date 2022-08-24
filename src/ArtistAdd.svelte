@@ -3,7 +3,7 @@
   import Loader from "Loader.svelte";
 
   import { onDestroy, onMount } from "svelte";
-  import { ExternalLink, Plus } from "tabler-icons-svelte";
+  import { Check, Dots, ExternalLink, Plus } from "tabler-icons-svelte";
   import type { Artist } from "../server/struct";
 
   let searchInput: HTMLInputElement;
@@ -91,12 +91,28 @@
                   <div class="badge">{artist.followers.toLocaleString()}</div>
                 </div>
                 <div
-                  class="text-primary ml-auto mb-auto cursor-pointer hover:text-success"
+                  class="ml-auto mb-auto cursor-pointer"
                   on:click={() => {
-                    alert("ok");
+                    switch (artist.status) {
+                      case 2:
+                        alert("route to artist manage");
+                        break;
+                      case 1:
+                        alert("bring up queue");
+                        break;
+                      default:
+                        artist.status = 1;
+                        artists = artists;
+                    }
                   }}
                 >
-                  <Plus size={40} />
+                  {#if artist.status == 2}
+                    <div class="text-success"><Check size={40} /></div>
+                  {:else if artist.status == 1}
+                    <div class="text-primary-content"><Dots size={40} /></div>
+                  {:else}
+                    <div class="text-primary hover:text-success"><Plus size={40} /></div>
+                  {/if}
                 </div>
               </h2>
               <div class="card-actions justify-start">
