@@ -1,5 +1,5 @@
 import { constructArtist } from "../constructors";
-import { APIRouter, Spotify } from "../server";
+import { APIRouter, Media, Spotify } from "../server";
 
 APIRouter.create("spotify_search", "GET", async (req) => {
   const query = req.query.term;
@@ -11,7 +11,7 @@ APIRouter.create("spotify_search", "GET", async (req) => {
     });
     return artists.body.artists.items.map((a) => {
       const artist = constructArtist(a);
-      artist.status = 0;
+      artist.status = Media.hasArtist(artist.id) ? 2 : 0;
       return artist;
     });
   } catch (err) {

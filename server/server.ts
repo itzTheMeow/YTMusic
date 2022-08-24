@@ -6,6 +6,7 @@ import db from "enhanced.db";
 import { createAccount, getAllAccounts } from "./utils";
 import { randomUUID } from "crypto";
 import SpotifyAuthManager from "./Spotify";
+import MediaManager from "./MediaManager";
 
 const spauth = (() => {
   try {
@@ -21,6 +22,7 @@ const spauth = (() => {
 
 export let APIRouter: APIRouteManager;
 export const Spotify = new SpotifyAuthManager(spauth.id, spauth.secret);
+export const Media = new MediaManager();
 
 export function init() {
   console.log("Initiating API.");
