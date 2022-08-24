@@ -2,3 +2,4 @@ node_modules
 dist
 serverDist
 enhanced.sqlite
+auth.json

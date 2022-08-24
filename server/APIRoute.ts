@@ -6,22 +6,17 @@ type R = Request<{}, any, any, ParsedQs, Record<string, any>>;
 type RunFunction = (req: R) => object;
 
 export default class APIRouteManager {
-  public routes: { name: string; type: "GET" | "POST"; run: RunFunction }[] =
-    [];
+  public routes: { name: string; type: "GET" | "POST"; run: RunFunction }[] = [];
 
   constructor(public app: Application) {}
   public init() {
     this.app.get("/api/*", async (req, res, next) => {
-      const route = this.routes.find(
-        (a) => a.type == "GET" && a.name == path.basename(req.originalUrl)
-      );
+      const route = this.routes.find((a) => a.type == "GET" && a.name == path.basename(req.path));
       if (!route) return next();
       res.json(await route.run(req));
     });
     this.app.post("/api/*", json(), async (req, res, next) => {
-      const route = this.routes.find(
-        (a) => a.type == "POST" && a.name == path.basename(req.originalUrl)
-      );
+      const route = this.routes.find((a) => a.type == "POST" && a.name == path.basename(req.path));
       if (!route) return next();
       res.json(await route.run(req));
     });

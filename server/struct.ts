@@ -7,7 +7,15 @@ export interface Account {
   authToken: string;
   permissions: AccountPermissions;
 }
-
 export const defaultPermissions: AccountPermissions = {
   owner: false,
 };
+
+export interface Artist {
+  id: string;
+  name: string;
+  url: string;
+  genres: string[];
+  followers: number;
+  icon: string;
+}
