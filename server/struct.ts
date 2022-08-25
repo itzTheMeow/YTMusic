@@ -11,6 +11,29 @@ export const defaultPermissions: AccountPermissions = {
   owner: false,
 };
 
+export enum MetadataProviders {
+  Spotify,
+}
+export enum SoundProviders {
+  YouTube,
+}
+export type QueuedAction =
+  | {
+      type: "ArtistAdd";
+      id: string;
+      provider: MetadataProviders;
+    }
+  | {
+      type: "ArtistDelete";
+      id: string;
+    }
+  | { type: "LibraryScan" }
+  | {
+      type: "SongDownload";
+      url: string;
+      provider: SoundProviders;
+    };
+
 export interface Artist {
   id: string;
   name: string;

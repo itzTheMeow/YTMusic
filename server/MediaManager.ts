@@ -1,28 +1,68 @@
 import fs from "fs";
 import { join } from "path";
-import SpotifyWebApi from "spotify-web-api-node";
 import config from "./config";
-import { constructAlbum, constructArtist, constructTrack } from "./constructors";
+import {
+  constructAlbum,
+  constructArtist,
+  constructTrack,
+} from "./constructors";
 import { Spotify } from "./server";
-import { Album, Artist } from "./struct";
+import { Album, Artist, QueuedAction } from "./struct";
 
 export function sanitizeFileName(str: string) {
-  return [...str].map((c) => (config.disallowFilesystemCharacters.includes(c) ? "_" : c)).join("");
+  return [...str]
+    .map((c) => (config.disallowFilesystemCharacters.includes(c) ? "_" : c))
+    .join("");
 }
 
-interface ArtistMeta extends Artist {
+export interface ArtistMeta extends Artist {
   version: 1;
   albums: Album[];
 }
 
 export default class MediaManager {
+  private events: {
+    id: QueuedAction["type"];
+    run: (action: QueuedAction)=>any;
+  }[] = [];
   public dir: string;
   public artists: ArtistMeta[] = [];
+  public queue: QueuedAction[] = [];
 
   constructor() {
     this.dir = fs.readFileSync(join(process.cwd(), "dir")).toString().trim();
     if (!fs.existsSync(this.dir)) fs.mkdirSync(this.dir);
-    this.scan();
+    this.init();
+    this.queueAction({ type: "LibraryScan" });
+  }
+  public init() {
+    fs.readdirSync(process.cwd() + "/serverDist/queue").forEach((r) => {
+      require("./queur/" + r);
+    });
+  }
+  public addEvent<Q extends QueuedAction["type"]>(
+    name: Q,
+    cb: (action: Extract<QueuedAction, { type: Q }>) => any
+  ) {
+    this.events.push({ id: name, run: cb });
+  }
+  public queueAction(action: QueuedAction) {
+    this.queue.push(action);
+    this.nextQueue();
+  }
+  private runningQueue = false;
+  private async nextQueue() {
+    if (this.runningQueue) return;
+    const nextEvent = this.queue.shift();
+    if (!nextEvent) return;
+    this.runningQueue = true;
+    try {
+      await this.events.find((e) => e.id == nextEvent.type)?.run(nextEvent);
+    } catch (err) {
+      console.error(err);
+    }
+    this.runningQueue = false;
+    this.nextQueue();
   }
 
   public hasArtist(id: string) {
@@ -47,7 +87,10 @@ export default class MediaManager {
               })
             ).body.items;
             artistAlbums.map((a) => {
-              if (a.album_type == "compilation" || !a.artists.map((a) => a.id).includes(artist.id))
+              if (
+                a.album_type == "compilation" ||
+                !a.artists.map((a) => a.id).includes(artist.id)
+              )
                 return;
               newArtist.albums.push(constructAlbum(a));
             });
@@ -79,7 +122,8 @@ export default class MediaManager {
                     } else {
                       albumsDone++;
                       a.tracks = songs.map(constructTrack);
-                      if (albumsDone >= newArtist.albums.length) doneSongs(void 0);
+                      if (albumsDone >= newArtist.albums.length)
+                        doneSongs(void 0);
                     }
                   })
                   .catch(() => {
@@ -91,7 +135,10 @@ export default class MediaManager {
           }).then(() => {
             const path = join(this.dir, sanitizeFileName(newArtist.name));
             if (!fs.existsSync(path)) fs.mkdirSync(path);
-            fs.writeFileSync(join(path, "artist.json"), JSON.stringify(newArtist));
+            fs.writeFileSync(
+              join(path, "artist.json"),
+              JSON.stringify(newArtist)
+            );
             this.artists.push(newArtist);
             res(newArtist);
           });
@@ -100,28 +147,5 @@ export default class MediaManager {
         res(null);
       }
     });
-  }
-
-  public scan() {
-    console.log("Scanning artist folders...");
-    const artists = fs.readdirSync(this.dir);
-    const newData = [];
-    artists.forEach((a) => {
-      try {
-        const path = join(this.dir, a);
-        const files = fs.readdirSync(path);
-        if (!files.includes("artist.json")) return;
-        const meta = JSON.parse(
-          fs.readFileSync(join(path, "artist.json")).toString()
-        ) as ArtistMeta;
-        if (meta.version !== 1)
-          return console.log(`Old Artist Format in '${a}' (${meta.version || 0}). Please update.`);
-        newData.push(meta);
-      } catch {
-        console.log(`Unrecognized Artist Folder: ${a}`);
-      }
-    });
-    this.artists = newData;
-    console.log("Scan complete!");
   }
 }
