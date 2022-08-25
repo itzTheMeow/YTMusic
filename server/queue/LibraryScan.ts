@@ -1,7 +1,7 @@
 import fs from "fs";
 import { join } from "path";
-import { ArtistMeta } from "../MediaManager";
 import { Media } from "../server";
+import { ArtistMeta } from "../struct";
 
 Media.addEvent("LibraryScan", async (a) => {
   console.log("Scanning artist folders...");

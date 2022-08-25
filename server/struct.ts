@@ -59,3 +59,9 @@ export interface Track {
   duration: number;
   explicit: boolean;
 }
+export interface ExtendedArtist extends Artist {
+  albums: Album[];
+}
+export interface ArtistMeta extends ExtendedArtist {
+  version: 1;
+}
