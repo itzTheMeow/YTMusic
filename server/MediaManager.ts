@@ -16,7 +16,15 @@ export default class MediaManager {
     run: (action: QueuedAction) => any;
   }[] = [];
   public dir: string;
-  public artists: ArtistMeta[] = [];
+  private _artists: ArtistMeta[] = [];
+  public get artists() {
+    return this._artists.sort((a1, a2) =>
+      a1.name.toLowerCase() > a2.name.toLowerCase() ? 1 : -1
+    );
+  }
+  public set artists(val: ArtistMeta[]) {
+    this._artists = val;
+  }
   public queue: QueuedAction[] = [];
   public artistdir(a: Artist) {
     const path = join(this.dir, sanitizeFileName(a.name));

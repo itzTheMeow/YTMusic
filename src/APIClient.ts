@@ -35,6 +35,7 @@ export default class {
       return { err: true, message: `Error making request: ${err}` };
     }
   }
+
   public async login(
     username: string,
     password: string
@@ -45,5 +46,8 @@ export default class {
     return await this.post("/spotify_search", {
       term,
     });
+  }
+  public async listArtists(): Res<{ list: Artist[] }> {
+    return await this.post("/artist_list", {});
   }
 }
