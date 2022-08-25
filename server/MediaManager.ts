@@ -31,7 +31,7 @@ export default class MediaManager {
   }
   public init() {
     fs.readdirSync(process.cwd() + "/serverDist/queue").forEach((r) => {
-      require("./queur/" + r);
+      require("./queue/" + r);
     });
   }
   public addEvent<Q extends QueuedAction["type"]>(
