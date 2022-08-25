@@ -1,6 +1,7 @@
 <script lang="ts">
   import { API } from "index";
   import Loader from "Loader.svelte";
+  import { Queue } from "queue";
 
   import { onDestroy, onMount } from "svelte";
   import { Check, Dots, ExternalLink, Plus } from "tabler-icons-svelte";
@@ -17,6 +18,21 @@
     lastSearched = searchInput.value;
     searchResults = API.searchSpotify(searchInput.value);
   }
+
+  let beingAdded = new Set<string>();
+  let wasAdded: string[] = [];
+  Queue.subscribe((val) => {
+    val.forEach((v) => {
+      if (v.type == "ArtistAdd") beingAdded.add(v.id);
+    });
+    [...beingAdded].forEach((b) => {
+      if (!val.find((v) => v.type == "ArtistAdd" && v.id == b)) {
+        wasAdded = [...wasAdded, b];
+        beingAdded.delete(b);
+      }
+    });
+    console.log(beingAdded, wasAdded);
+  });
 
   const searchCheck = setInterval(function () {
     if (wantSearch) {
@@ -103,6 +119,7 @@
                   <div
                     class="ml-auto mb-auto cursor-pointer"
                     on:click={async () => {
+                      if (wasAdded.includes(artist.id)) artist.status = 2;
                       switch (artist.status) {
                         case 2:
                           alert('route to artist manage');
@@ -119,7 +136,7 @@
                           artists = artists;
                       }
                     }}>
-                    {#if artist.status == 2}
+                    {#if artist.status == 2 || wasAdded.includes(artist.id)}
                       <div class="text-success">
                         <Check size={40} />
                       </div>

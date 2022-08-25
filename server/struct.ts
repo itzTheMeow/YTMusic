@@ -21,7 +21,7 @@ export enum MetadataProviders {
 export enum SoundProviders {
   YouTube = 1,
 }
-export type QueuedAction =
+export type QueuedAction = (
   | {
       type: "ArtistAdd";
       id: string;
@@ -36,7 +36,8 @@ export type QueuedAction =
       type: "SongDownload";
       url: string;
       provider: SoundProviders;
-    };
+    }
+) & { time?: number };
 
 export interface Artist {
   id: string;

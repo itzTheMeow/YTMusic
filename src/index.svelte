@@ -1,11 +1,14 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { ListSearch, Logout, Settings } from "tabler-icons-svelte";
   import { link, Route, Router } from "svelte-routing";
   import Home from "./Home.svelte";
   import { Auth } from "index";
   import Artists from "Artists.svelte";
   import ArtistAdd from "ArtistAdd.svelte";
+  import { Queue } from "./queue";
+  import type { QueuedAction } from "../server/struct";
+  import { DateTime } from "luxon";
 
   if (!Auth.isAuthorized) window.location.href = "/login";
 
@@ -13,9 +16,15 @@
 
   let nav: HTMLDivElement;
   let pageContent: HTMLDivElement;
+  let q: QueuedAction[] = [];
+  Queue.subscribe((val) => (q = val));
+  const setint = setInterval(() => (q = q), 900);
 
   onMount(() => {
     pageContent.style.height = `calc(100vh - ${nav.offsetHeight}px)`;
+  });
+  onDestroy(() => {
+    clearInterval(setint);
   });
 </script>
 
@@ -29,14 +38,36 @@
   <div class="navbar-end">
     <ul class="menu menu-horizontal p-0">
       <div class="dropdown dropdown-end">
-        <div tabindex="0" class="btn btn-ghost btn-circle">
+        <div tabindex="0" class="btn btn-ghost btn-circle relative">
           <ListSearch />
+          {#if q.length}
+            <div class="badge badge-primary absolute top-0 right-0">
+              {q.length}
+            </div>
+          {/if}
         </div>
         <div
           tabindex="0"
-          class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52"
-        >
-          queue view goes here
+          class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200
+            rounded-box overflow-x-hidden w-max"
+          style="max-width:30rem;">
+          {#each q as qi}
+            <div>
+              <div class="badge badge-secondary badge-outline">{qi.type}</div>
+              <div class="text-sm">
+                Added {DateTime.fromMillis(qi.time || Date.now()).toRelative()}
+              </div>
+              <!-- TODO: add more details
+              {#if qi.type == 'ArtistAdd'}
+                <div>{qi.id}</div>
+              {:else if qi.type == 'ArtistDelete'}
+                <div>{qi.id}</div>
+              {:else if qi.type == 'SongDownload'}
+                <div>{qi.url}</div>
+              {/if}
+              -->
+            </div>
+          {/each}
         </div>
       </div>
       <a class="btn btn-ghost btn-circle" href="/settings" use:link>

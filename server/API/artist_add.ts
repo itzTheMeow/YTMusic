@@ -8,9 +8,7 @@ APIRouter.create(
     const { id, source }: { id: string; source: MetadataProviders } = req.body;
     if (!id || !source || !(source in MetadataProviders))
       return { err: true, message: "Invalid ID or source." };
-
     Media.queueAction({ type: "ArtistAdd", id, provider: source });
-
     return { err: false };
   },
   true

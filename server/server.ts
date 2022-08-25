@@ -7,6 +7,8 @@ import { createAccount, getAllAccounts } from "./utils";
 import { randomUUID } from "crypto";
 import SpotifyAuthManager from "./Spotify";
 import MediaManager from "./MediaManager";
+import { Server } from "socket.io";
+import { Account } from "./struct";
 
 const spauth = (() => {
   try {
@@ -40,8 +42,23 @@ export function init() {
   app.get("*", (req, res) => {
     res.sendFile(process.cwd() + "/dist/index.html");
   });
-  app.listen(config.port, () => {
+  const serv = app.listen(config.port, () => {
     console.log(`Listening on port ${config.port}.`);
+  });
+  const io = new Server(serv);
+  io.on("connection", (socket) => {
+    let authorized: Account | null = null;
+    const listener = Media.onQueueUpdate(() => {
+      if (authorized) socket.emit("update", Media.queue);
+    });
+    socket.once("auth", (token) => {
+      const account = getAllAccounts().find((a) => a.authToken == token);
+      if (!account) return socket.disconnect(true);
+      authorized = account;
+    });
+    socket.on("disconnect", () => {
+      Media.offQueueUpdate(listener);
+    });
   });
 
   if (!getAllAccounts().find((a) => a.permissions.owner)) {

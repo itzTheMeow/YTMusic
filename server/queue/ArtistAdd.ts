@@ -1,6 +1,5 @@
 import fs from "fs";
 import { join } from "path";
-import { sanitizeFileName } from "../MediaManager";
 import getSpotifyArtist from "../metadata/Spotify";
 import { Media } from "../server";
 import { ArtistMeta, MetadataProviders } from "../struct";

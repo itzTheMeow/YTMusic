@@ -9,6 +9,7 @@ export function sanitizeFileName(str: string) {
     .join("");
 }
 
+type QueueListener = () => any;
 export default class MediaManager {
   private events: {
     id: QueuedAction["type"];
@@ -33,6 +34,9 @@ export default class MediaManager {
     });
     this.queueAction({ type: "LibraryScan" });
   }
+  public fireQueueUpdate() {
+    this.listeners.forEach((l) => l.cb());
+  }
   public addEvent<Q extends QueuedAction["type"]>(
     name: Q,
     cb: (action: Extract<QueuedAction, { type: Q }>) => any
@@ -40,7 +44,9 @@ export default class MediaManager {
     this.events.push({ id: name, run: cb });
   }
   public queueAction(action: QueuedAction) {
+    action.time = Date.now();
     this.queue.push(action);
+    this.fireQueueUpdate();
     this.nextQueue();
   }
   private runningQueue = false;
@@ -55,7 +61,19 @@ export default class MediaManager {
       console.error(err);
     }
     this.runningQueue = false;
+    this.fireQueueUpdate();
     this.nextQueue();
+  }
+
+  private listeners: { id: number; cb: QueueListener }[] = [];
+  public onQueueUpdate(cb: QueueListener) {
+    const id = Date.now();
+    this.listeners.push({ id, cb });
+    return id;
+  }
+  public offQueueUpdate(id: number) {
+    const i = this.listeners.findIndex((q) => q.id == id);
+    if (i >= 0) this.listeners.splice(i, 1);
   }
 
   public hasArtist(id: string) {
