@@ -19,7 +19,7 @@ export default class MediaManager {
   public queue: QueuedAction[] = [];
   public artistdir(a: Artist) {
     const path = join(this.dir, sanitizeFileName(a.name));
-    if (fs.existsSync(path)) fs.mkdirSync(path);
+    if (!fs.existsSync(path)) fs.mkdirSync(path);
     return path;
   }
 
@@ -28,10 +28,10 @@ export default class MediaManager {
     if (!fs.existsSync(this.dir)) fs.mkdirSync(this.dir);
   }
   public init() {
-    this.queueAction({ type: "LibraryScan" });
     fs.readdirSync(process.cwd() + "/serverDist/queue").forEach((r) => {
       require("./queue/" + r);
     });
+    this.queueAction({ type: "LibraryScan" });
   }
   public addEvent<Q extends QueuedAction["type"]>(
     name: Q,

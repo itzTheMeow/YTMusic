@@ -1,6 +1,15 @@
+import { API } from "index";
+import type { APIResponse } from "../server/struct";
+
 export default class {
-  private authKey = localStorage.getItem("authToken") || "";
+  public authKey = localStorage.getItem("authToken") || "";
   constructor() {}
+  public init() {
+    if (this.isAuthorized)
+      API.post("has_auth", {}).then((r: APIResponse) => {
+        if (r.err) this.logout();
+      });
+  }
 
   public get isAuthorized() {
     return !!this.authKey;

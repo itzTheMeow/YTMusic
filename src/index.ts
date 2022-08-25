@@ -8,6 +8,7 @@ import "./style.css";
 
 export const Auth = new auth();
 export const API = new APIClient(window.location.origin + "/api");
+Auth.init();
 export const config = {
   brandName: "YTMusic",
 };

@@ -1,4 +1,10 @@
-import type { Artist } from "../server/struct";
+import { Auth } from "index";
+import type { APIResponse, Artist } from "../server/struct";
+
+type Res<T extends object> = Promise<
+  | Extract<APIResponse, { err: true }>
+  | (Extract<APIResponse, { err: false }> & T)
+>;
 
 export default class {
   constructor(public readonly url: string) {}
@@ -6,39 +12,38 @@ export default class {
     return !path.startsWith("/") ? "/" + path : path;
   }
   public async get(path: string, query?: Record<string, string>): Promise<any> {
-    return await fetch(
-      this.url +
-        this.sanitizePath(path) +
-        (query ? `?${new URLSearchParams(query).toString()}` : "")
-    ).then((r) => r.json());
+    try {
+      return await fetch(
+        this.url +
+          this.sanitizePath(path) +
+          `?${new URLSearchParams(query).toString()}`
+      ).then((r) => r.json());
+    } catch (err) {
+      return { err: true, message: `Error making request: ${err}` };
+    }
   }
   public async post(path: string, data: object): Promise<any> {
-    return await fetch(this.url + this.sanitizePath(path), {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((r) => r.json());
+    try {
+      return await fetch(this.url + this.sanitizePath(path), {
+        method: "POST",
+        body: JSON.stringify({ auth: Auth.authKey, ...data }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then((r) => r.json());
+    } catch (err) {
+      return { err: true, message: `Error making request: ${err}` };
+    }
   }
-
   public async login(
     username: string,
     password: string
-  ): Promise<{ err: true; message: string } | { err: false; token: string }> {
-    try {
-      return await this.post("/login", { username, password });
-    } catch {
-      return { err: true, message: "Error making request." };
-    }
+  ): Res<{ token: string }> {
+    return await this.post("/login", { username, password });
   }
-  public async searchSpotify(term: string): Promise<Artist[]> {
-    try {
-      return await this.get("/spotify_search", {
-        term,
-      });
-    } catch {
-      return [];
-    }
+  public async searchSpotify(term: string): Res<{ list: Artist[] }> {
+    return await this.post("/spotify_search", {
+      term,
+    });
   }
 }

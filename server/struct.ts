@@ -11,11 +11,15 @@ export const defaultPermissions: AccountPermissions = {
   owner: false,
 };
 
+export type APIResponse =
+  | { err: true; message: string }
+  | { err: false; [key: string]: any };
+
 export enum MetadataProviders {
-  Spotify,
+  Spotify = 1,
 }
 export enum SoundProviders {
-  YouTube,
+  YouTube = 1,
 }
 export type QueuedAction =
   | {
