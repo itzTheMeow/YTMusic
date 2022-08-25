@@ -16,12 +16,15 @@ export default async function getSpotifyArtist(
   };
   let albumOffset = 0;
   await (async function newAlbumSet() {
-    const artistAlbums = (
-      await Spotify.api.getArtistAlbums(artist.id, {
-        limit: 50,
-        offset: albumOffset,
-      })
-    ).body.items;
+    const artistAlbums = await Spotify.call(
+      async () =>
+        (
+          await Spotify.api.getArtistAlbums(artist.id, {
+            limit: 50,
+            offset: albumOffset,
+          })
+        ).body.items
+    );
     artistAlbums.map((a) => {
       // tries its best to filter out unrelated
       if (
@@ -44,12 +47,15 @@ export default async function getSpotifyArtist(
       await (async function newTrackSet(time: number) {
         await new Promise((r) => setTimeout(r, time));
         try {
-          const albumSongs = (
-            await Spotify.api.getAlbumTracks(a.id, {
-              limit: 50,
-              offset: trackOffset,
-            })
-          ).body.items;
+          const albumSongs = await Spotify.call(
+            async () =>
+              (
+                await Spotify.api.getAlbumTracks(a.id, {
+                  limit: 50,
+                  offset: trackOffset,
+                })
+              ).body.items
+          );
           songs.push(...albumSongs);
           if (albumSongs.length == 50) {
             trackOffset += 50;

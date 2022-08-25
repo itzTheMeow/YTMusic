@@ -54,7 +54,7 @@
           tabindex="0"
           class="mt-3 p-3 shadow menu menu-compact dropdown-content bg-base-200
             rounded-lg overflow-x-hidden w-max"
-          style="max-width:30rem;">
+          style="max-width:30vw;max-height:50vh;">
           {#if q.length}
             {#each q as qi}
               <div>

@@ -10,9 +10,12 @@ APIRouter.create(
       return { err: true, message: "No search term provided." };
 
     try {
-      const artists = await Spotify.api.searchArtists(query, {
-        limit: 35,
-      });
+      const artists = await Spotify.call(
+        async () =>
+          await Spotify.api.searchArtists(query, {
+            limit: 35,
+          })
+      );
       return {
         err: false,
         list: artists.body.artists.items.map((a) => {
