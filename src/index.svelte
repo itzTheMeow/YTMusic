@@ -37,27 +37,32 @@
   </div>
   <div class="navbar-end">
     <ul class="menu menu-horizontal p-0">
+      <!-- svelte-ignore a11y-label-has-associated-control -->
       <div class="dropdown dropdown-end">
-        <div tabindex="0" class="btn btn-ghost btn-circle relative">
+        <label
+          tabindex="0"
+          class="btn btn-ghost btn-circle relative"
+          id="queueButton">
           <ListSearch />
           {#if q.length}
             <div class="badge badge-primary absolute top-0 right-0">
               {q.length}
             </div>
           {/if}
-        </div>
+        </label>
         <div
           tabindex="0"
-          class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200
-            rounded-box overflow-x-hidden w-max"
+          class="mt-3 p-3 shadow menu menu-compact dropdown-content bg-base-200
+            rounded-lg overflow-x-hidden w-max"
           style="max-width:30rem;">
-          {#each q as qi}
-            <div>
-              <div class="badge badge-secondary badge-outline">{qi.type}</div>
-              <div class="text-sm">
-                Added {DateTime.fromMillis(qi.time || Date.now()).toRelative()}
-              </div>
-              <!-- TODO: add more details
+          {#if q.length}
+            {#each q as qi}
+              <div>
+                <div class="badge badge-secondary badge-outline">{qi.type}</div>
+                <div class="text-sm">
+                  Added {DateTime.fromMillis(qi.time || Date.now()).toRelative()}
+                </div>
+                <!-- TODO: add more details
               {#if qi.type == 'ArtistAdd'}
                 <div>{qi.id}</div>
               {:else if qi.type == 'ArtistDelete'}
@@ -66,8 +71,11 @@
                 <div>{qi.url}</div>
               {/if}
               -->
-            </div>
-          {/each}
+              </div>
+            {/each}
+          {:else}
+            <div class="text-sm">Queue is empty!</div>
+          {/if}
         </div>
       </div>
       <a class="btn btn-ghost btn-circle" href="/settings" use:link>

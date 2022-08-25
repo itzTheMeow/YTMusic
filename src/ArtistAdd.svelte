@@ -125,7 +125,7 @@
                           alert('route to artist manage');
                           break;
                         case 1:
-                          alert('bring up queue');
+                          document.getElementById('queueButton')?.focus();
                           break;
                         default:
                           await API.post('artist_add', {
