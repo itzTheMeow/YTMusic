@@ -26,10 +26,9 @@ export default class MediaManager {
   constructor() {
     this.dir = fs.readFileSync(join(process.cwd(), "dir")).toString().trim();
     if (!fs.existsSync(this.dir)) fs.mkdirSync(this.dir);
-    this.init();
-    this.queueAction({ type: "LibraryScan" });
   }
   public init() {
+    this.queueAction({ type: "LibraryScan" });
     fs.readdirSync(process.cwd() + "/serverDist/queue").forEach((r) => {
       require("./queue/" + r);
     });

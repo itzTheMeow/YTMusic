@@ -10,12 +10,16 @@ import MediaManager from "./MediaManager";
 
 const spauth = (() => {
   try {
-    return JSON.parse(fs.readFileSync(`${process.cwd()}/auth.json`).toString()) as {
+    return JSON.parse(
+      fs.readFileSync(`${process.cwd()}/auth.json`).toString()
+    ) as {
       id: string;
       secret: string;
     };
   } catch {
-    console.error("Invalid auth.json file! Please read the documentation and fix it.");
+    console.error(
+      "Invalid auth.json file! Please read the documentation and fix it."
+    );
     process.exit();
   }
 })();
@@ -26,6 +30,7 @@ export const Media = new MediaManager();
 
 export function init() {
   console.log("Initiating API.");
+  Media.init();
   fs.copyFileSync("src/index.html", "dist/index.html");
 
   const app = express();
@@ -42,6 +47,8 @@ export function init() {
   if (!getAllAccounts().find((a) => a.permissions.owner)) {
     const pass = randomUUID().split("-")[0];
     createAccount("admin", pass);
-    console.log(`Creating admin account with username "admin" and password "${pass}".`);
+    console.log(
+      `Creating admin account with username "admin" and password "${pass}".`
+    );
   }
 }
