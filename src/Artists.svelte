@@ -3,7 +3,6 @@
   import { link } from "svelte-routing";
   import Loader from "Loader.svelte";
   import { API } from "index";
-  import type { Artist } from "../server/struct";
   import ArtistCard from "ArtistCard.svelte";
 
   let artistPromise = API.listArtists();
@@ -29,15 +28,14 @@
     <div class="flex flex-row flex-wrap gap-4 justify-center mt-3">
       {#each artists.list as artist}
         <ArtistCard {artist}>
-          <div
+          <a
             class="ml-auto mb-auto cursor-pointer"
-            on:click={async () => {
-              alert('ok');
-            }}>
+            href={`/artists/${artist.id}/manage`}
+            use:link>
             <div class="text-primary">
               <Settings size={40} />
             </div>
-          </div>
+          </a>
         </ArtistCard>
       {/each}
     </div>

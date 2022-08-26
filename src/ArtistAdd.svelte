@@ -5,8 +5,9 @@
   import { Queue } from "queue";
 
   import { onDestroy, onMount } from "svelte";
-  import { Check, Dots, ExternalLink, Plus } from "tabler-icons-svelte";
+  import { Check, Dots, Plus } from "tabler-icons-svelte";
   import { MetadataProviders } from "../server/struct";
+  import { navigate } from "svelte-routing";
 
   let searchInput: HTMLInputElement;
   let wantSearch = false;
@@ -88,7 +89,7 @@
                   if (wasAdded.includes(artist.id)) artist.status = 2;
                   switch (artist.status) {
                     case 2:
-                      alert('route to artist manage');
+                      navigate(`/artists/${artist.id}/manage`);
                       break;
                     case 1:
                       document.getElementById('queueButton')?.focus();

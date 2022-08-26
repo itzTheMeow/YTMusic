@@ -9,6 +9,7 @@
   import { Queue } from "./queue";
   import type { QueuedAction } from "../server/struct";
   import { DateTime } from "luxon";
+  import ArtistManage from "ArtistManage.svelte";
 
   if (!Auth.isAuthorized) window.location.href = "/login";
 
@@ -93,5 +94,6 @@
     <Route path="/" component={Home} />
     <Route path="/artists" component={Artists} />
     <Route path="/artists/add" component={ArtistAdd} />
+    <Route path="/artists/:id/manage" component={ArtistManage} />
   </Router>
 </div>
