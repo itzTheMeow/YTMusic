@@ -1,8 +1,8 @@
 <script lang="ts">
   import { API } from "index";
   import Loader from "Loader.svelte";
-  import { navigate } from "svelte-routing";
-  import { Album, ExternalLink } from "tabler-icons-svelte";
+  import { navigate, link } from "svelte-routing";
+  import { ExternalLink } from "tabler-icons-svelte";
 
   export let id: string;
 
@@ -100,7 +100,10 @@
               <div class="badge badge-accent">{album.year}</div>
             </div>
             <div class="card-actions items-center mt-auto">
-              <div class="btn btn-primary btn-sm">Manage</div>
+              <a
+                class="btn btn-primary btn-sm"
+                href={`/artists/${r.artist.id}/albums/${album.id}`}
+                use:link>Manage</a>
               <div
                 class={`ml-auto badge ${(() => {
                   const len = album.tracks.filter((t) => t.added).length;
