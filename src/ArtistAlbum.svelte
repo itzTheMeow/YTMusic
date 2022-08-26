@@ -59,39 +59,44 @@
           </div>
           <div class="flex flex-col gap-1 ml-1">
             <div class="flex items-center gap-1">
-              <div class="text-3xl">{res.l.name}</div>
+              <div class="text-3xl">{res.l.name} ({res.l.year})</div>
               <a
                 class="text-secondary"
                 href={res.l.url}
                 target="_blank"><ExternalLink size={32} /></a>
             </div>
-            <a
-              class="flex items-center gap-1 text-sm"
-              href={`/artists/${res.a.id}/manage`}
-              use:link>
-              {#if res.a.icon}
-                <div class="avatar">
-                  <div class="w-5 rounded-full">
-                    <img src={res.a.icon} alt={res.a.name} id={res.a.id} />
+            <div class="flex items-center gap-1">
+              <a
+                class="flex items-center gap-1 text-sm"
+                href={`/artists/${res.a.id}/manage`}
+                use:link>
+                {#if res.a.icon}
+                  <div class="avatar">
+                    <div class="w-5 rounded-full">
+                      <img src={res.a.icon} alt={res.a.name} id={res.a.id} />
+                    </div>
                   </div>
-                </div>
-              {:else}
-                <div class="avatar placeholder">
-                  <div
-                    class="w-5 rounded-full bg-neutral-focus
-                      text-neutral-content">
-                    <span class="text-xs">
-                      {res.a.name
-                        .split(/ +/g)
-                        .slice(0, 1)
-                        .map((a) => a[0].toUpperCase())
-                        .join('')}
-                    </span>
+                {:else}
+                  <div class="avatar placeholder">
+                    <div
+                      class="w-5 rounded-full bg-neutral-focus
+                        text-neutral-content">
+                      <span class="text-xs">
+                        {res.a.name
+                          .split(/ +/g)
+                          .slice(0, 1)
+                          .map((a) => a[0].toUpperCase())
+                          .join('')}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              {/if}
-              {res.a.name}
-            </a>
+                {/if}
+                {res.a.name}
+              </a>
+              <div class="badge badge-accent badge-sm">
+                {res.l.type.toUpperCase()}
+              </div>
+            </div>
           </div>
         </h2>
       </div>

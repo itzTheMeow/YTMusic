@@ -57,7 +57,11 @@ export default async function getSpotifyArtist(
                 })
               ).body.items
           );
-          songs.push(...albumSongs);
+          songs.push(
+            ...albumSongs.filter((s) =>
+              s.artists.find((sa) => sa.id == newArtist.id)
+            )
+          );
           if (albumSongs.length == 50) {
             trackOffset += 50;
             await newTrackSet(500);
