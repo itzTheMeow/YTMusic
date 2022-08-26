@@ -1,5 +1,5 @@
 import fs from "fs";
-import { join } from "path";
+import { join, basename } from "path";
 import { Media } from "../server";
 import { ArtistMeta } from "../struct";
 
@@ -20,6 +20,17 @@ Media.addEvent("LibraryScan", async (a) => {
           `Old Artist Format in '${a}' (${meta.version || 0}). Please update.`
         );
       newData.push(meta);
+
+      meta.albums.forEach((alb) => {
+        const path = Media.albumdir(meta, alb);
+        if (fs.existsSync(path)) {
+          const tracks = fs.readdirSync(path);
+          alb.tracks.forEach((t) => {
+            if (tracks.includes(basename(Media.trackdir(meta, alb, t))))
+              t.added = true;
+          });
+        }
+      });
     } catch {
       console.log(`Unrecognized Artist Folder: ${a}`);
     }

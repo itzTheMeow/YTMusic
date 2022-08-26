@@ -27,6 +27,7 @@ export function constructAlbum(album: SpotifyApi.AlbumObjectSimplified): Album {
 }
 export function constructTrack(track: SpotifyApi.TrackObjectSimplified): Track {
   return {
+    id: track.id || "",
     title: track.name || "",
     url: track.external_urls.spotify || "",
     number: track.track_number || 0,

@@ -16,7 +16,7 @@ export default async function getSpotifyArtist(
   };
   let albumOffset = 0;
   await (async function newAlbumSet() {
-    const artistAlbums = await Spotify.call(
+    const fullAlbums = await Spotify.call(
       async () =>
         (
           await Spotify.api.getArtistAlbums(artist.id, {
@@ -25,16 +25,17 @@ export default async function getSpotifyArtist(
           })
         ).body.items
     );
-    artistAlbums.map((a) => {
-      // tries its best to filter out unrelated
-      if (
-        a.album_type == "compilation" ||
-        !a.artists.map((a) => a.id).includes(artist.id)
+    fullAlbums
+      .filter(
+        (a) =>
+          a.album_type !== "compilation" &&
+          a.artists.find((a) => a.id == artist.id)
       )
-        return;
-      newArtist.albums.push(constructAlbum(a));
-    });
-    if (artistAlbums.length == 50) {
+      .forEach((a) => {
+        if (!newArtist.albums.find((l) => l.name == a.name))
+          newArtist.albums.push(constructAlbum(a));
+      });
+    if (fullAlbums.length == 50) {
       albumOffset += 50;
       await newAlbumSet();
     }
@@ -69,6 +70,23 @@ export default async function getSpotifyArtist(
       })(1);
     })
   );
+
+  newArtist.albums
+    .filter((a) => a.type == "single")
+    .forEach((a) => {
+      if (
+        newArtist.albums.find(
+          (l) =>
+            l !== a &&
+            l.tracks.find(
+              (t) => t.title == a.name && t.duration == a.tracks[0].duration
+            )
+        )
+      )
+        newArtist.albums.splice(newArtist.albums.indexOf(a), 1);
+    });
+
+  newArtist.albums = newArtist.albums.filter((a) => a.tracks.length);
 
   return newArtist;
 }

@@ -21,6 +21,7 @@ Media.addEvent("ArtistAdd", async (event) => {
       JSON.stringify(meta)
     );
     Media.artists.push(meta);
+    Media.queueAction({ type: "LibraryScan" });
   } catch (err) {
     console.error(err);
   }

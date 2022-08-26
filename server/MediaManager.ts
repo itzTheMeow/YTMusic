@@ -1,7 +1,7 @@
 import fs from "fs";
 import { join } from "path";
 import config from "./config";
-import { Artist, ArtistMeta, QueuedAction } from "./struct";
+import { Album, Artist, ArtistMeta, QueuedAction, Track } from "./struct";
 
 export function sanitizeFileName(str: string) {
   return [...str]
@@ -26,10 +26,21 @@ export default class MediaManager {
     this._artists = val;
   }
   public queue: QueuedAction[] = [];
+  public createdir(dir: string) {
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+    return dir;
+  }
   public artistdir(a: Artist) {
-    const path = join(this.dir, sanitizeFileName(a.name));
-    if (!fs.existsSync(path)) fs.mkdirSync(path);
-    return path;
+    return this.createdir(join(this.dir, sanitizeFileName(a.name)));
+  }
+  public albumdir(a: Artist, l: Album) {
+    return join(this.artistdir(a), sanitizeFileName(l.name));
+  }
+  public trackdir(a: Artist, l: Album, t: Track) {
+    return join(
+      this.albumdir(a, l),
+      `${String(t.number).padStart(2, "0")} - ${sanitizeFileName(t.title)}.mp3`
+    );
   }
 
   constructor() {

@@ -58,11 +58,13 @@ export interface Album {
   tracks: Track[];
 }
 export interface Track {
+  id: string;
   title: string;
   url: string;
   number: number;
   duration: number;
   explicit: boolean;
+  added?: boolean;
 }
 export interface ExtendedArtist extends Artist {
   albums: Album[];
