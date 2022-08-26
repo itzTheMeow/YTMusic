@@ -69,7 +69,7 @@
       on:keyup={() => {
         wantSearch = true;
         clearTimeout(searchWaiting);
-        searchWaiting = setTimeout(search, 700);
+        searchWaiting = Number(setTimeout(search, 700));
       }} />
   </div>
 
