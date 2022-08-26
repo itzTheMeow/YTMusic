@@ -1,0 +1,136 @@
+<script lang="ts">
+  import { onDestroy, onMount } from "svelte";
+  import { API } from "index";
+  import Loader from "Loader.svelte";
+  import { SoundProviders } from "../server/struct";
+  import {
+    ArrowBack,
+    Download,
+    ExternalLink,
+    Eye,
+    X,
+  } from "tabler-icons-svelte";
+  import type { Album, Artist, Track } from "../server/struct";
+  import { Duration } from "luxon";
+
+  export let artist: Artist;
+  export let album: Album;
+  export let track: Track;
+
+  let embedding: string = "";
+  let modal: HTMLDivElement;
+
+  let fetched = false;
+  let trackFetch: ReturnType<typeof API.searchTrack> = new Promise((r) =>
+    r({
+      err: true,
+      message: "...",
+    })
+  );
+  const check = setInterval(() => {
+    if (!modal) return;
+    if (window.getComputedStyle(modal).visibility == "visible") {
+      if (!fetched) {
+        fetched = true;
+        trackFetch = API.searchTrack(
+          SoundProviders.YouTube,
+          artist.id,
+          album.id,
+          track.id
+        );
+      }
+    }
+  }, 10);
+  onDestroy(() => clearInterval(check));
+</script>
+
+<div class="modal" id={track.id} bind:this={modal}>
+  <div class="modal-box w-11/12 max-w-5xl">
+    {#await trackFetch}
+      <Loader />
+    {:then res}
+      {#if res.err}
+        <div class="text-sm">{res.message}</div>
+      {:else if embedding}
+        <div class="flex items-center justify-center gap-2 flex-col">
+          <iframe
+            class="block m-auto max-w-2xl"
+            width="100%"
+            src={embedding}
+            title="Video Embed"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            style="aspect-ratio: 560 / 315;" />
+          <div class="btn btn-square" on:click={() => (embedding = '')}>
+            <ArrowBack />
+          </div>
+        </div>
+      {:else}
+        <h3 class="font-bold text-lg mb-1">{track.title}</h3>
+        <div class="overflow-x-auto">
+          <table class="table table-zebra w-full">
+            <tbody>
+              {#each res.list as dl}
+                <tr>
+                  <td class="font-bold">
+                    <div class="flex gap-2">
+                      <div class="avatar">
+                        <div class="h-16 w-28 rounded">
+                          <img src={dl.thumbnail} alt={dl.title} />
+                        </div>
+                      </div>
+                      <div class="flex flex-col h-full gap-2">
+                        <div>{dl.title}</div>
+                        <div class="flex gap-2">
+                          <a
+                            class="flex items-center gap-1 text-sm"
+                            href={dl.author.url}
+                            target="_blank">
+                            <div class="avatar">
+                              <div class="w-5 rounded-full">
+                                <img
+                                  src={dl.author.icon}
+                                  alt={dl.author.name} />
+                              </div>
+                            </div>
+                            {dl.author.name}
+                          </a>
+                          <div class="badge">
+                            {Duration.fromObject({
+                              minutes: 0,
+                              seconds: Math.floor(dl.duration / 1000),
+                            })
+                              .normalize()
+                              .toFormat('mm:ss')}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="btn btn-sm btn-square btn-primary">
+                      <Download />
+                    </div>
+                    <div
+                      class="btn btn-sm btn-square btn-secondary"
+                      on:click={() => (embedding = dl.embed)}>
+                      <Eye />
+                    </div>
+                    <a
+                      class="btn btn-sm btn-square btn-accent"
+                      href={dl.url}
+                      target="_blank">
+                      <ExternalLink />
+                    </a>
+                  </td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      {/if}
+    {/await}
+    <a href={'#'} class="btn btn-sm btn-circle absolute right-2 top-2"><X /></a>
+  </div>
+</div>

@@ -1,4 +1,5 @@
-import { Album, Artist, Track } from "./struct";
+import { Video } from "youtube-sr";
+import { Album, Artist, Downloadable, Track } from "./struct";
 
 function findImage(images: SpotifyApi.ImageObject[]) {
   return (images.find((i) => i.width == i.height) || images[0])?.url || "";
@@ -33,5 +34,22 @@ export function constructTrack(track: SpotifyApi.TrackObjectSimplified): Track {
     number: track.track_number || 0,
     duration: track.duration_ms || 0,
     explicit: track.explicit || false,
+  };
+}
+
+export function constructVideoFromYouTube(vid: Video): Downloadable {
+  return {
+    title: vid.title || "",
+    duration: vid.duration || 0,
+    uploadedAt: new Date(vid.uploadedAt || Date.now()).getTime(),
+    views: vid.views || 0,
+    thumbnail: vid.thumbnail?.url || "",
+    author: {
+      name: vid.channel?.name || "",
+      icon: vid.channel?.iconURL() || "",
+      url: vid.channel?.url || "",
+    },
+    url: vid.url || "",
+    embed: vid.embedURL || "",
   };
 }

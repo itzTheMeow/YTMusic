@@ -1,5 +1,11 @@
 import { Auth } from "index";
-import type { APIResponse, Artist, ArtistMeta } from "../server/struct";
+import type {
+  APIResponse,
+  Artist,
+  ArtistMeta,
+  Downloadable,
+  SoundProviders,
+} from "../server/struct";
 
 type Res<T extends object> = Promise<
   | Extract<APIResponse, { err: true }>
@@ -55,5 +61,18 @@ export default class {
   }
   public async fetchArtist(id: string): Res<{ artist: ArtistMeta }> {
     return (await this.post("/artist_get", { id })) as any;
+  }
+  public async searchTrack(
+    provider: SoundProviders,
+    artist: string,
+    album: string,
+    track: string
+  ): Res<{ list: Downloadable[] }> {
+    return (await this.post("/track_search", {
+      provider,
+      artist,
+      album,
+      track,
+    })) as any;
   }
 }

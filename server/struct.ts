@@ -18,9 +18,15 @@ export type APIResponse =
 export enum MetadataProviders {
   Spotify = 1,
 }
+export const MetadataProvidersList: { [key in MetadataProviders]: string } = {
+  [MetadataProviders.Spotify]: "spotify",
+};
 export enum SoundProviders {
   YouTube = 1,
 }
+export const SoundProvidersList: { [key in SoundProviders]: string } = {
+  [SoundProviders.YouTube]: "youtube",
+};
 export type QueuedAction = (
   | {
       type: "ArtistAdd";
@@ -71,4 +77,19 @@ export interface ExtendedArtist extends Artist {
 }
 export interface ArtistMeta extends ExtendedArtist {
   version: 1;
+}
+
+export interface Downloadable {
+  title: string;
+  duration: number;
+  uploadedAt: number;
+  views: number;
+  thumbnail: string;
+  author: {
+    name: string;
+    icon: string;
+    url: string;
+  };
+  url: string;
+  embed: string;
 }

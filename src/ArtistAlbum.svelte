@@ -5,6 +5,7 @@
   import { Download, ExternalLink, Trash } from "tabler-icons-svelte";
   import type { Album, Artist } from "../server/struct";
   import { link } from "svelte-routing";
+  import ArtistTrackAdd from "ArtistTrackAdd.svelte";
 
   export let id: string;
   export let albid: string;
@@ -19,6 +20,13 @@
         a: res.artist,
         l,
       });
+
+      setTimeout(
+        () =>
+          window.location.hash.substring(1) &&
+          (window.location.hash = window.location.hash),
+        10
+      );
     }
   );
 </script>
@@ -117,15 +125,17 @@
                   .toHuman({ unitDisplay: 'short' })
                   .replace(/,/g, '')}
               </td>
-              <td>
+              <td class="text-right">
                 {#if track.added}
                   <div class="btn btn-square btn-sm btn-error">
                     <Trash />
                   </div>
                 {:else}
-                  <div class="btn btn-square btn-sm btn-primary">
+                  <a
+                    class="btn btn-square btn-sm btn-primary"
+                    href={`#${track.id}`}>
                     <Download />
-                  </div>
+                  </a>
                 {/if}
                 <a
                   class="btn btn-square btn-sm btn-secondary"
@@ -139,5 +149,9 @@
         </tbody>
       </table>
     </div>
+
+    {#each res.l.tracks as track}
+      <ArtistTrackAdd artist={res.a} album={res.l} {track} />
+    {/each}
   {/if}
 {/await}
