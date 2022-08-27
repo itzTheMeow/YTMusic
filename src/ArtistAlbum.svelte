@@ -6,11 +6,13 @@
   import type { Album, Artist } from "../server/struct";
   import { link } from "svelte-routing";
   import ArtistTrackAdd from "ArtistTrackAdd.svelte";
+  import { offQueueChange, onQueueChange } from "queue";
+  import { onDestroy } from "svelte";
 
   export let id: string;
   export let albid: string;
 
-  const albumDetails = new Promise<{ a: Artist; l: Album } | string>(
+  let albumDetails = new Promise<{ a: Artist; l: Album } | string>(
     async (r) => {
       const res = await API.fetchArtist(id);
       if (res.err) return r(res.message);
@@ -29,6 +31,32 @@
       );
     }
   );
+
+  const i = onQueueChange(async (e) => {
+    if (e.type == "LibraryScan") {
+      const oldLib = JSON.stringify(
+        ((await new Promise((r) => albumDetails.then(r))) as any).l
+      );
+      const res = await API.fetchArtist(id);
+      if (res.err) return (albumDetails = new Promise((r) => r(res.message)));
+      const l = res.artist.albums.find((a) => a.id == albid);
+      if (!l) return (albumDetails = new Promise((r) => r("Album not found.")));
+      if (oldLib == JSON.stringify(l)) return;
+      albumDetails = new Promise((r) =>
+        r({
+          a: res.artist,
+          l,
+        })
+      );
+      setTimeout(
+        () =>
+          window.location.hash.substring(1) &&
+          (window.location.hash = window.location.hash),
+        10
+      );
+    }
+  });
+  onDestroy(() => offQueueChange(i));
 </script>
 
 {#await albumDetails}

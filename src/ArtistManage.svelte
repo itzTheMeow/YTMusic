@@ -1,13 +1,23 @@
 <script lang="ts">
   import { API } from "index";
   import Loader from "Loader.svelte";
+  import { offQueueChange, onQueueChange } from "queue";
+  import { onDestroy } from "svelte";
   import { navigate, link } from "svelte-routing";
   import { ExternalLink } from "tabler-icons-svelte";
 
   export let id: string;
 
-  const artistDetails = API.fetchArtist(id);
+  let artistDetails = API.fetchArtist(id);
   let delButton: HTMLDivElement;
+
+  const i = onQueueChange(async (e) => {
+    if (e.type == "LibraryScan") {
+      const d = await API.fetchArtist(id);
+        artistDetails = new Promise((r) => r(d));
+      }
+    });
+    onDestroy(() => offQueueChange(i));
 </script>
 
 {#await artistDetails}
