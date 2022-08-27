@@ -2,22 +2,32 @@
   import { API } from "index";
   import Loader from "Loader.svelte";
   import { offQueueChange, onQueueChange } from "queue";
-  import { onDestroy } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { navigate, link } from "svelte-routing";
   import { ExternalLink } from "tabler-icons-svelte";
 
   export let id: string;
 
+  let albumSearchBar: HTMLInputElement;
+  let albumSearch = "";
   let artistDetails = API.fetchArtist(id);
   let delButton: HTMLDivElement;
 
+  const bari = setInterval(() => {
+    if (!albumSearchBar) return;
+    clearInterval(bari);
+    albumSearchBar.focus();
+  });
   const i = onQueueChange(async (e) => {
     if (e.type == "LibraryScan") {
       const d = await API.fetchArtist(id);
-        artistDetails = new Promise((r) => r(d));
-      }
-    });
-    onDestroy(() => offQueueChange(i));
+      artistDetails = new Promise((r) => r(d));
+    }
+  });
+  onDestroy(() => {
+    offQueueChange(i);
+    clearInterval(bari);
+  });
 </script>
 
 {#await artistDetails}
@@ -91,8 +101,16 @@
         </h2>
       </div>
     </div>
+    <input
+      type="text"
+      placeholder="Search for an album..."
+      class="input input-bordered w-5/6 block mx-auto my-2"
+      bind:this={albumSearchBar}
+      bind:value={albumSearch} />
     <div class="flex gap-2 flex-wrap flex-row justify-center mt-3">
-      {#each r.artist.albums.sort((a1, a2) =>
+      {#each (albumSearch ? r.artist.albums.filter((a) =>
+            a.name.toLowerCase().includes(albumSearch.toLowerCase())
+          ) : r.artist.albums).sort((a1, a2) =>
         a1.name.toLowerCase() > a2.name.toLowerCase() ? 1 : -1
       ) as album}
         <div class="card w-64 bg-base-300 shadow-xl">
