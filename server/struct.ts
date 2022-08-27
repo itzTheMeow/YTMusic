@@ -102,3 +102,6 @@ export interface Downloadable {
   url: string;
   embed: string;
 }
+export interface Settings {
+  libraryFolder: string;
+}

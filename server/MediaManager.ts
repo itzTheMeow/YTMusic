@@ -1,6 +1,7 @@
 import fs from "fs";
 import { join } from "path";
 import config from "./config";
+import { getSettings } from "./settings";
 import { Album, Artist, ArtistMeta, QueuedAction, Track } from "./struct";
 
 export function sanitizeFileName(str: string) {
@@ -15,7 +16,6 @@ export default class MediaManager {
     id: QueuedAction["type"];
     run: (action: QueuedAction) => any;
   }[] = [];
-  public dir: string;
   private _artists: ArtistMeta[] = [];
   public get artists() {
     return this._artists.sort((a1, a2) =>
@@ -24,6 +24,11 @@ export default class MediaManager {
   }
   public set artists(val: ArtistMeta[]) {
     this._artists = val;
+  }
+  get dir() {
+    const dir = getSettings().libraryFolder.trim();
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+    return dir;
   }
   public queue: QueuedAction[] = [];
   public createdir(dir: string) {
@@ -56,10 +61,7 @@ export default class MediaManager {
     return { artist, album, track };
   }
 
-  constructor() {
-    this.dir = fs.readFileSync(join(process.cwd(), "dir")).toString().trim();
-    if (!fs.existsSync(this.dir)) fs.mkdirSync(this.dir);
-  }
+  constructor() {}
   public init() {
     fs.readdirSync(process.cwd() + "/serverDist/queue").forEach((r) => {
       require("./queue/" + r);

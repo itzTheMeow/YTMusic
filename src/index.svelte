@@ -11,6 +11,7 @@
   import { DateTime } from "luxon";
   import ArtistManage from "ArtistManage.svelte";
   import ArtistAlbum from "ArtistAlbum.svelte";
+  import SettingsPage from "Settings.svelte";
 
   if (!Auth.isAuthorized) window.location.href = "/login";
 
@@ -97,5 +98,6 @@
     <Route path="/artists/add" component={ArtistAdd} />
     <Route path="/artists/:id/manage" component={ArtistManage} />
     <Route path="/artists/:id/albums/:albid" component={ArtistAlbum} />
+    <Route path="/settings" component={SettingsPage} />
   </Router>
 </div>

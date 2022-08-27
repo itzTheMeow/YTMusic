@@ -4,6 +4,7 @@ import type {
   Artist,
   ArtistMeta,
   Downloadable,
+  Settings,
   SoundProviders,
 } from "../server/struct";
 
@@ -74,5 +75,14 @@ export default class {
       album,
       track,
     })) as any;
+  }
+  public async getSettings(): Res<{ settings: Settings }> {
+    return (await this.post("/settings_get", {})) as any;
+  }
+  public async setSetting<K extends keyof Settings>(
+    k: K,
+    v: Settings[K]
+  ): Res<{}> {
+    return (await this.post("/settings_set", { k, v })) as any;
   }
 }
