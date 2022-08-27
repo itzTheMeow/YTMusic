@@ -75,8 +75,14 @@ export default async function getSpotifyArtist(
     })
   );
 
+  // attempts to sort out singles that are separate from their albums
   newArtist.albums
-    .filter((a) => a.type == "single")
+    .filter(
+      (a) =>
+        a.type == "single" &&
+        a.tracks.length == 1 &&
+        a.tracks[0].title == a.name
+    )
     .forEach((a) => {
       if (
         newArtist.albums.find(
