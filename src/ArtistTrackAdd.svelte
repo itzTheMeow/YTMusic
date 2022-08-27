@@ -42,6 +42,28 @@
     }
   }, 10);
   onDestroy(() => clearInterval(check));
+
+  async function handleDL(e: MouseEvent, url: string) {
+    const btn = e.target as HTMLElement;
+    btn.classList.add("loading");
+    const res = await API.post("/track_add", {
+      artist: artist.id,
+      album: album.id,
+      track: track.id,
+      provider: SoundProviders.YouTube,
+      url,
+    });
+    if (res.err) {
+      alert(`Error submitting download request:\n${res.message}`);
+      btn.classList.remove("loading");
+    } else {
+      //@ts-ignore
+      document
+        .querySelector(`[href="#${track.id}"]`)
+        .classList.add("btn-success");
+      window.location.hash = "";
+    }
+  }
 </script>
 
 <div class="modal" id={track.id} bind:this={modal}>
@@ -81,7 +103,11 @@
                         </div>
                       </div>
                       <div class="flex flex-col h-full gap-2">
-                        <div>{dl.title}</div>
+                        <div>
+                          {dl.title.length > 64 ? dl.title
+                                .slice(0, 64)
+                                .trim() + '...' : dl.title}
+                        </div>
                         <div class="flex gap-2">
                           <a
                             class="flex items-center gap-1 text-sm"
@@ -109,7 +135,9 @@
                     </div>
                   </td>
                   <td>
-                    <div class="btn btn-sm btn-square btn-primary">
+                    <div
+                      class="btn btn-sm btn-square btn-primary"
+                      on:click={(e) => handleDL(e, dl.url)}>
                       <Download />
                     </div>
                     <div

@@ -73,7 +73,7 @@
                 {#if res.a.icon}
                   <div class="avatar">
                     <div class="w-5 rounded-full">
-                      <img src={res.a.icon} alt={res.a.name} id={res.a.id} />
+                      <img src={res.a.icon} alt={res.a.name} />
                     </div>
                   </div>
                 {:else}
@@ -127,12 +127,22 @@
                   seconds: Math.floor(track.duration / 1000),
                 })
                   .normalize()
-                  .toHuman({ unitDisplay: 'short' })
+                  .toFormat('mm:ss')
                   .replace(/,/g, '')}
               </td>
               <td class="text-right">
                 {#if track.added}
-                  <div class="btn btn-square btn-sm btn-error">
+                  <div
+                    class="btn btn-square btn-sm btn-error"
+                    on:click={async (e) => {
+                      //@ts-ignore
+                      e.target.classList.add('btn-outline');
+                      await API.post('/track_remove', {
+                        artist: res.a.id,
+                        album: res.l.id,
+                        track: track.id,
+                      });
+                    }}>
                     <Trash />
                   </div>
                 {:else}

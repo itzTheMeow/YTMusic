@@ -40,8 +40,17 @@ export type QueuedAction = (
   | { type: "LibraryScan" }
   | {
       type: "SongDownload";
-      url: string;
+      artist: Artist;
+      album: Album;
+      track: Track;
       provider: SoundProviders;
+      url: string;
+    }
+  | {
+      type: "SongDelete";
+      artist: Artist;
+      album: Album;
+      track: Track;
     }
 ) & { time?: number };
 

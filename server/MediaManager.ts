@@ -42,6 +42,19 @@ export default class MediaManager {
       `${String(t.number).padStart(2, "0")} - ${sanitizeFileName(t.title)}.mp3`
     );
   }
+  public tempdir() {
+    return this.createdir(join(process.cwd(), ".tmp_dl"));
+  }
+
+  public getTrack(artistID: string, albumID: string, trackID: string) {
+    const artist = this.artists.find((a) => a.id == artistID);
+    if (!artist) return {};
+    const album = artist.albums.find((l) => l.id == albumID);
+    if (!album) return {};
+    const track = album.tracks.find((t) => t.id == trackID);
+    if (!track) return {};
+    return { artist, album, track };
+  }
 
   constructor() {
     this.dir = fs.readFileSync(join(process.cwd(), "dir")).toString().trim();

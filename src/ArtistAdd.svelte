@@ -91,8 +91,8 @@
                     case 2:
                       navigate(`/artists/${artist.id}/manage`);
                       break;
-                    case 1:
-                      document.getElementById('queueButton')?.focus();
+                    case 1: //@ts-ignore
+                      document.getElementById('queueButton').focus();
                       break;
                     default:
                       await API.post('artist_add', {
