@@ -122,7 +122,8 @@
                             </div>
                             {dl.author.name}
                           </a>
-                          <div class="badge">
+                          <div
+                            class="badge {dl.duration + 1500 >= track.duration && track.duration >= dl.duration - 1500 ? 'badge-success' : ''}">
                             {Duration.fromObject({
                               minutes: 0,
                               seconds: Math.floor(dl.duration / 1000),
