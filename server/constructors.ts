@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { Video } from "youtube-sr";
 import { Album, Artist, Downloadable, Track } from "./struct";
 
@@ -41,7 +42,12 @@ export function constructVideoFromYouTube(vid: Video): Downloadable {
   return {
     title: vid.title || "",
     duration: vid.duration || 0,
-    uploadedAt: new Date(vid.uploadedAt || Date.now()).getTime(),
+    uploadedAt: DateTime.now()
+      .minus({
+        [vid.uploadedAt.split(" ")[1]]: Number(vid.uploadedAt.split(" ")[0]),
+      })
+      .minus({ minute: 1 }) // fixes the time
+      .toMillis(),
     views: vid.views || 0,
     thumbnail: vid.thumbnail?.url || "",
     author: {

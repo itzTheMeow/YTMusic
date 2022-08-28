@@ -11,7 +11,7 @@
     X,
   } from "tabler-icons-svelte";
   import type { Album, Artist, Track } from "../server/struct";
-  import { Duration } from "luxon";
+  import { DateTime, Duration } from "luxon";
 
   export let artist: Artist;
   export let album: Album;
@@ -130,6 +130,9 @@
                             })
                               .normalize()
                               .toFormat('mm:ss')}
+                          </div>
+                          <div class="badge badge-accent">
+                            {DateTime.fromMillis(dl.uploadedAt).toRelative()}
                           </div>
                         </div>
                       </div>
