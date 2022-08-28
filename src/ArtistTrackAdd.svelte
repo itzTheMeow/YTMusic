@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy } from "svelte";
   import { API } from "index";
   import Loader from "Loader.svelte";
-  import { Downloadable, SoundProviders } from "../server/struct";
+  import { SoundProviders } from "../server/struct";
   import {
     ArrowBack,
     Download,
@@ -10,7 +10,7 @@
     Eye,
     X,
   } from "tabler-icons-svelte";
-  import type { Album, Artist, Track } from "../server/struct";
+  import type { Album, Artist, Track, Downloadable } from "../server/struct";
   import { DateTime, Duration } from "luxon";
 
   export let artist: Artist;
