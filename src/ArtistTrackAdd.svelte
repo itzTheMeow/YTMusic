@@ -2,7 +2,7 @@
   import { onDestroy, onMount } from "svelte";
   import { API } from "index";
   import Loader from "Loader.svelte";
-  import { SoundProviders } from "../server/struct";
+  import { Downloadable, SoundProviders } from "../server/struct";
   import {
     ArrowBack,
     Download,
@@ -17,7 +17,7 @@
   export let album: Album;
   export let track: Track;
 
-  let embedding: string = "";
+  let embedding: Downloadable | null = null;
   let modal: HTMLDivElement;
 
   let fetched = false;
@@ -78,14 +78,22 @@
           <iframe
             class="block m-auto max-w-2xl"
             width="100%"
-            src={embedding}
+            src={embedding.embed}
             title="Video Embed"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen
             style="aspect-ratio: 560 / 315;" />
-          <div class="btn btn-square" on:click={() => (embedding = '')}>
+          <div class="btn btn-square" on:click={() => (embedding = null)}>
             <ArrowBack />
+          </div>
+          <div
+            class="btn btn-sm btn-square btn-primary"
+            on:click={(e) => {
+              //@ts-ignore
+              handleDL(e, embedding.url);
+            }}>
+            <Download />
           </div>
         </div>
       {:else}
@@ -146,7 +154,7 @@
                     </div>
                     <div
                       class="btn btn-sm btn-square btn-secondary"
-                      on:click={() => (embedding = dl.embed)}>
+                      on:click={() => (embedding = dl)}>
                       <Eye />
                     </div>
                     <a
