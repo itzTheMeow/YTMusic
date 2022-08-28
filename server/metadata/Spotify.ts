@@ -76,7 +76,7 @@ export default async function getSpotifyArtist(
   );
 
   // attempts to sort out singles that are separate from their albums
-  newArtist.albums
+  /*newArtist.albums
     .filter(
       (a) =>
         a.type == "single" &&
@@ -94,7 +94,7 @@ export default async function getSpotifyArtist(
         )
       )
         newArtist.albums.splice(newArtist.albums.indexOf(a), 1);
-    });
+    });*/
 
   newArtist.albums = newArtist.albums.filter((a) => a.tracks.length);
 
