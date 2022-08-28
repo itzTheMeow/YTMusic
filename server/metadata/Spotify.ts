@@ -26,11 +26,7 @@ export default async function getSpotifyArtist(
         ).body.items
     );
     fullAlbums
-      .filter(
-        (a) =>
-          a.album_type !== "compilation" &&
-          a.artists.find((a) => a.id == artist.id)
-      )
+      .filter((a) => a.album_type !== "compilation")
       .forEach((a) => {
         if (!newArtist.albums.find((l) => l.name == a.name))
           newArtist.albums.push(constructAlbum(a));
