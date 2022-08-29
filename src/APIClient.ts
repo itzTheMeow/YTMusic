@@ -85,4 +85,10 @@ export default class {
   ): Res<{}> {
     return (await this.post("/settings_set", { k, v })) as any;
   }
+  public async changePassword(oldPass: string, newPass: string): Res<{}> {
+    return (await this.post("/pass_change", {
+      old: oldPass,
+      new: newPass,
+    })) as any;
+  }
 }

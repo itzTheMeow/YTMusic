@@ -5,10 +5,12 @@ import { randomUUID } from "crypto";
 import { hashSync } from "bcrypt";
 
 export function sanitizeUsername(username: string) {
-  return [...String(username)].filter((c) => config.allowUsername.includes(c)).join("");
+  return [...String(username)]
+    .filter((c) => config.allowUsername.includes(c))
+    .join("");
 }
 const accountCache: Account[] = [];
-function grabAccount(data: Account) {
+export function grabAccount(data: Account) {
   data.authToken = data.authToken || randomUUID().replace(/-/g, "");
   data.permissions = { ...defaultPermissions, ...data.permissions };
   const i = accountCache.findIndex((a) => a.username == data.username);
@@ -33,7 +35,11 @@ export function getAccount(username: string): Account | null {
 export function saveAccount(acc: Account) {
   db.set(`account_${acc.username}`, acc);
 }
-export function createAccount(username: string, pwd: string, data: Partial<Account> = {}) {
+export function createAccount(
+  username: string,
+  pwd: string,
+  data: Partial<Account> = {}
+) {
   const password = hashSync(pwd, 15);
   const acc: Account = {
     username,

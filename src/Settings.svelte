@@ -1,11 +1,28 @@
 <script lang="ts">
-  import { API } from "index";
+  import { API, Auth } from "index";
   import Loader from "Loader.svelte";
 
   let scanButton: HTMLDivElement;
   let libraryFolder: HTMLInputElement;
 
   const settingsP = API.getSettings();
+
+  let curPass = "";
+  let newPass = "";
+  let newPassConfirm = "";
+  let changeError = "";
+  let passSubmit: HTMLDivElement;
+  async function handlePassChange() {
+    changeError = "";
+    if (!curPass || !newPass) return (changeError = "Please enter a password.");
+    if (newPass !== newPassConfirm)
+      return (changeError = "Your passwords do not match!");
+    passSubmit.classList.add("loading");
+    const changed = await API.changePassword(curPass, newPass);
+    passSubmit.classList.remove("loading");
+    if (changed.err) return (changeError = changed.message);
+    Auth.logout();
+  }
 </script>
 
 {#await settingsP}
@@ -47,6 +64,31 @@
       <div class="hidden w-max h-max">
         <Loader />
       </div>
+    </div>
+    <div class="text-md font-semibold mb-1 mt-2">Change Password</div>
+    <div class="flex items-center gap-2">
+      <input
+        type="password"
+        placeholder="Current Password"
+        class="input input-bordered w-44"
+        bind:value={curPass} />
+      <input
+        type="password"
+        placeholder="New Password"
+        class="input input-bordered w-44"
+        bind:value={newPass} />
+      <input
+        type="password"
+        placeholder="Confirm Password"
+        class="input input-bordered w-44"
+        bind:value={newPassConfirm} />
+      <div
+        class="btn btn-secondary"
+        bind:this={passSubmit}
+        on:click={handlePassChange}>
+        Change
+      </div>
+      <div class="text-sm text-error">{changeError}</div>
     </div>
   {/if}
 {/await}

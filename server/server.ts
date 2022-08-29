@@ -62,7 +62,7 @@ export function init() {
   });
 
   if (!getAllAccounts().find((a) => a.permissions.owner)) {
-    const pass = "test"; // temporary randomUUID().split("-")[0];
+    const pass = randomUUID().split("-")[0];
     createAccount("admin", pass);
     console.log(
       `Creating admin account with username "admin" and password "${pass}".`
