@@ -105,11 +105,11 @@
             {' '}Tracks
           </div>
           <progress
-            class="progress progress-warning flex-1 {(() => {
+            class="progress flex-1 {(() => {
                 const len = r.artist.albums.reduce((a, b) => a + b.tracks.filter((t) => t.added).length, 0);
-                if (len == r.artist.albums.reduce((a, b) => a + b.tracks.length, 0)) return 'text-success';
-                else if (len == 0) return 'text-error';
-                else return 'text-warning';
+                if (len == r.artist.albums.reduce((a, b) => a + b.tracks.length, 0)) return 'progress-success';
+                else if (len == 0) return 'progress-error';
+                else return 'progress-warning';
               })()}"
             value={r.artist.albums.reduce((a, b) => a + b.tracks.filter((t) => t.added).length, 0)}
             max={r.artist.albums.reduce((a, b) => a + b.tracks.length, 0)} />
