@@ -12,7 +12,8 @@ Media.addEvent("LibraryScan", async (a) => {
       try {
         const path = join(Media.dir, a);
         const files = await fs.readdir(path);
-        if (!files.includes("artist.json")) return;
+        if (!files.includes("artist.json"))
+          return console.log(`No valid artist in '${a}'.`);
         const meta = JSON.parse(
           (await fs.readFile(join(path, "artist.json"))).toString()
         ) as ArtistMeta;
