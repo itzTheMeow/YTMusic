@@ -50,10 +50,12 @@ Media.addEvent("LibraryScan", async (a) => {
               })()
             ) {
               const tracks = await fs.readdir(path);
-              alb.tracks.forEach((t) => {
-                if (tracks.includes(basename(Media.trackdir(meta, alb, t))))
-                  t.added = true;
-              });
+              alb.tracks.forEach(
+                (t) =>
+                  (t.added = tracks.includes(
+                    basename(Media.trackdir(meta, alb, t))
+                  ))
+              );
             }
           })
         );
