@@ -5,14 +5,7 @@
   import { offQueueChange, onQueueChange } from "queue";
   import { onDestroy } from "svelte";
   import { navigate, link } from "svelte-routing";
-  import {
-    BrandSoundcloud,
-    BrandSpotify,
-    ExternalLink,
-    Music,
-  } from "tabler-icons-svelte";
-  import { getProviders, Providers } from "utils";
-  import { MetadataProviders, MetadataProvidersList } from "../server/struct";
+  import { ExternalLink } from "tabler-icons-svelte";
 
   export let id: string;
 
@@ -157,9 +150,7 @@
             <div class="card-actions">
               <div class="badge badge-info">{album.type.toUpperCase()}</div>
               <div class="badge badge-accent">{album.year}</div>
-              <ArtistProviders
-                providers={[MetadataProvidersList[album.provider]]}
-                size={20} />
+              <ArtistProviders providers={[album.provider]} size={20} />
             </div>
             <div class="card-actions items-center mt-auto">
               <a

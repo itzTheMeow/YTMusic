@@ -30,7 +30,10 @@ Media.addEvent("LibraryScan", async (a) => {
           MetadataProvidersList[MetadataProviders.Spotify],
         ];
         meta.albums.forEach(
-          (l) => !l.provider && l.provider == MetadataProviders.Spotify
+          //@ts-ignore
+          (l) =>
+            typeof l.provider !== "string" &&
+            (l.provider = MetadataProvidersList[MetadataProviders.Spotify])
         );
         newData.push(meta);
 

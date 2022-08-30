@@ -74,7 +74,7 @@ export interface Album {
   year: number;
   image: string;
   tracks: Track[];
-  provider: MetadataProviders;
+  provider: string;
 }
 export interface Track {
   id: string;
