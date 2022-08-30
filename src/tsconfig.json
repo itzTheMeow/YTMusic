@@ -7,7 +7,10 @@
 
     /* Language and Environment */
     "target": "es2016" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-    // "lib": [],                                        /* Specify a set of bundled library declaration files that describe the target runtime environment. */
+    "lib": [
+      "ES2017",
+      "DOM"
+    ] /* Specify a set of bundled library declaration files that describe the target runtime environment. */,
 
     /* Modules */
     "module": "esnext" /* Specify what module code is generated. */,

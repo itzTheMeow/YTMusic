@@ -17,9 +17,11 @@ export type APIResponse =
 
 export enum MetadataProviders {
   Spotify = 1,
+  SoundCloud,
 }
 export const MetadataProvidersList: { [key in MetadataProviders]: string } = {
   [MetadataProviders.Spotify]: "spotify",
+  [MetadataProviders.SoundCloud]: "soundcloud",
 };
 export enum SoundProviders {
   YouTube = 1,
@@ -61,6 +63,7 @@ export interface Artist {
   genres: string[];
   followers: number;
   icon: string;
+  providers: string[];
   status?: 0 | 1 | 2;
 }
 export interface Album {
@@ -71,6 +74,7 @@ export interface Album {
   year: number;
   image: string;
   tracks: Track[];
+  provider: MetadataProviders;
 }
 export interface Track {
   id: string;

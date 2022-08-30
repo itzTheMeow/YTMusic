@@ -1,7 +1,7 @@
 import {
-  constructAlbum,
-  constructArtist,
-  constructTrack,
+  constructAlbumFromSpotify,
+  constructArtistFromSpotify,
+  constructTrackFromSpotify,
 } from "../constructors";
 import { Spotify } from "../server";
 import { ExtendedArtist } from "../struct";
@@ -11,7 +11,7 @@ export default async function getSpotifyArtist(
 ): Promise<ExtendedArtist> {
   const artist = (await Spotify.api.getArtist(id)).body;
   const newArtist: ExtendedArtist = {
-    ...constructArtist(artist),
+    ...constructArtistFromSpotify(artist),
     albums: [],
   };
   let albumOffset = 0;
@@ -29,7 +29,7 @@ export default async function getSpotifyArtist(
       .filter((a) => a.album_type !== "compilation")
       .forEach((a) => {
         if (!newArtist.albums.find((l) => l.name == a.name))
-          newArtist.albums.push(constructAlbum(a));
+          newArtist.albums.push(constructAlbumFromSpotify(a));
       });
     if (fullAlbums.length == 50) {
       albumOffset += 50;
@@ -62,7 +62,7 @@ export default async function getSpotifyArtist(
             trackOffset += 50;
             await newTrackSet(500);
           } else {
-            a.tracks = songs.map(constructTrack);
+            a.tracks = songs.map(constructTrackFromSpotify);
           }
         } catch {
           await newTrackSet(1000);
@@ -93,6 +93,5 @@ export default async function getSpotifyArtist(
     });*/
 
   newArtist.albums = newArtist.albums.filter((a) => a.tracks.length);
-
   return newArtist;
 }

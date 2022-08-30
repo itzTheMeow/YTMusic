@@ -9,6 +9,7 @@ import SpotifyAuthManager from "./Spotify";
 import MediaManager from "./MediaManager";
 import { Server } from "socket.io";
 import { Account } from "./struct";
+import SoundCloudAuthManager from "./SoundCloud";
 
 const spauth = (() => {
   try {
@@ -28,6 +29,7 @@ const spauth = (() => {
 
 export let APIRouter: APIRouteManager;
 export const Spotify = new SpotifyAuthManager(spauth.id, spauth.secret);
+export const SoundCloud = new SoundCloudAuthManager();
 export const Media = new MediaManager();
 
 export function init() {

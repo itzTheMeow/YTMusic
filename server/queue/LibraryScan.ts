@@ -1,7 +1,11 @@
 import { promises as fs } from "fs";
 import { join, basename } from "path";
 import { Media } from "../server";
-import { ArtistMeta } from "../struct";
+import {
+  ArtistMeta,
+  MetadataProviders,
+  MetadataProvidersList,
+} from "../struct";
 
 Media.addEvent("LibraryScan", async (a) => {
   console.log("Scanning artist folders...");
@@ -21,6 +25,13 @@ Media.addEvent("LibraryScan", async (a) => {
           return console.log(
             `Old Artist Format in '${a}' (${meta.version || 0}). Please update.`
           );
+        // stuff to migrate old data to new
+        meta.providers = meta.providers || [
+          MetadataProvidersList[MetadataProviders.Spotify],
+        ];
+        meta.albums.forEach(
+          (l) => !l.provider && l.provider == MetadataProviders.Spotify
+        );
         newData.push(meta);
 
         await Promise.all(

@@ -110,7 +110,12 @@ export default class MediaManager {
     if (i >= 0) this.listeners.splice(i, 1);
   }
 
-  public hasArtist(id: string) {
-    return !!this.artists.find((a) => a.id == id);
+  public hasArtist(artist: Artist) {
+    return !!this.artists.find(
+      (a) =>
+        a.id == artist.id ||
+        (a.name == artist.name &&
+          a.providers.find((p) => artist.providers.includes(p)))
+    );
   }
 }

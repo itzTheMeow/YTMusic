@@ -52,8 +52,8 @@ export default class {
   ): Res<{ token: string }> {
     return (await this.post("/login", { username, password })) as any;
   }
-  public async searchSpotify(term: string): Res<{ list: Artist[] }> {
-    return (await this.post("/spotify_search", {
+  public async searchArtist(term: string): Res<{ list: ArtistMeta[] }> {
+    return (await this.post("/artist_search", {
       term,
     })) as any;
   }

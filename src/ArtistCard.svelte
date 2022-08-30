@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ArtistProviders from "ArtistProviders.svelte";
   import { ExternalLink } from "tabler-icons-svelte";
   import type { Artist } from "../server/struct";
 
@@ -8,14 +9,12 @@
 <div class="card w-96 bg-base-200 shadow-xl">
   <div class="card-body">
     <h2 class="card-title">
-      {#if artist.icon}
-        <div class="avatar">
+      <div class="avatar {!artist.icon ? 'placeholder' : ''}">
+        {#if artist.icon}
           <div class="w-20 rounded">
             <img src={artist.icon} alt={artist.name} id={artist.id} />
           </div>
-        </div>
-      {:else}
-        <div class="avatar placeholder">
+        {:else}
           <div class="w-20 rounded bg-neutral-focus text-neutral-content">
             <span class="text-md">
               {artist.name
@@ -24,8 +23,13 @@
                 .join('')}
             </span>
           </div>
+        {/if}
+        <div
+          class="absolute -top-1.5 -right-1.5 bg-base-200 rounded-full p-0.5
+            !flex !aspect-auto gap-0.5">
+          <ArtistProviders providers={artist.providers} />
         </div>
-      {/if}
+      </div>
       <div class="flex flex-col gap-1">
         <div class="flex items-center gap-1">
           <div>{artist.name}</div>

@@ -3,11 +3,13 @@
   import Loader from "Loader.svelte";
   import { Duration } from "luxon";
   import { Download, ExternalLink, Trash } from "tabler-icons-svelte";
+  import { MetadataProvidersList } from "../server/struct";
   import type { Album, Artist } from "../server/struct";
   import { link } from "svelte-routing";
   import ArtistTrackAdd from "ArtistTrackAdd.svelte";
   import { offQueueChange, onQueueChange } from "queue";
   import { onDestroy } from "svelte";
+  import ArtistProviders from "ArtistProviders.svelte";
 
   export let id: string;
   export let albid: string;
@@ -124,6 +126,8 @@
               <div class="badge badge-accent badge-sm">
                 {res.l.type.toUpperCase()}
               </div>
+              <ArtistProviders
+                providers={[MetadataProvidersList[res.l.provider]]} />
             </div>
           </div>
         </h2>

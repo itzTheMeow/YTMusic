@@ -6,19 +6,19 @@
 
   import { onDestroy, onMount } from "svelte";
   import { Check, Dots, Plus } from "tabler-icons-svelte";
-  import { MetadataProviders } from "../server/struct";
+  import { MetadataProviders, MetadataProvidersList } from "../server/struct";
   import { navigate } from "svelte-routing";
 
   let searchInput: HTMLInputElement;
   let wantSearch = false;
   let inputSelected = true;
 
-  let searchResults: ReturnType<typeof API.searchSpotify>;
+  let searchResults: ReturnType<typeof API.searchArtist>;
   let lastSearched = "";
   function search() {
     if (lastSearched == searchInput.value) return;
     lastSearched = searchInput.value;
-    searchResults = API.searchSpotify(searchInput.value);
+    searchResults = API.searchArtist(searchInput.value);
   }
 
   let beingAdded = new Set<string>();
@@ -33,7 +33,6 @@
         beingAdded.delete(b);
       }
     });
-    console.log(beingAdded, wasAdded);
   });
 
   const searchCheck = setInterval(function () {
@@ -97,7 +96,11 @@
                     default:
                       await API.post('artist_add', {
                         id: artist.id,
-                        source: MetadataProviders.Spotify,
+                        source: Number(
+                          Object.entries(MetadataProvidersList).find(
+                            (e) => e[1] == artist.providers[0]
+                          )?.[0]
+                        ),
                       });
                       artist.status = 1;
                       artists = artists;

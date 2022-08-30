@@ -1,10 +1,18 @@
 <script lang="ts">
+  import ArtistProviders from "ArtistProviders.svelte";
   import { API } from "index";
   import Loader from "Loader.svelte";
   import { offQueueChange, onQueueChange } from "queue";
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy } from "svelte";
   import { navigate, link } from "svelte-routing";
-  import { ExternalLink } from "tabler-icons-svelte";
+  import {
+    BrandSoundcloud,
+    BrandSpotify,
+    ExternalLink,
+    Music,
+  } from "tabler-icons-svelte";
+  import { getProviders, Providers } from "utils";
+  import { MetadataProviders, MetadataProvidersList } from "../server/struct";
 
   export let id: string;
 
@@ -65,8 +73,11 @@
                 href={r.artist.url}
                 target="_blank"><ExternalLink size={32} /></a>
             </div>
-            <div class="badge">
-              Followers: {r.artist.followers.toLocaleString()}
+            <div class="flex gap-1">
+              <div class="badge">
+                Followers: {r.artist.followers.toLocaleString()}
+              </div>
+              <ArtistProviders providers={r.artist.providers} size={20} />
             </div>
             <div class="flex gap-2 flex-wrap">
               {#each r.artist.genres as genre}
@@ -129,7 +140,12 @@
         a1.name.toLowerCase() > a2.name.toLowerCase() ? 1 : -1
       ) as album}
         <div class="card w-64 bg-base-300 shadow-xl">
-          <figure><img src={album.image} alt={album.name} /></figure>
+          <figure>
+            <img
+              src={album.image}
+              alt={album.name}
+              class="w-full aspect-square" />
+          </figure>
           <div class="card-body p-5">
             <h2 class="card-title">
               {album.name}
@@ -141,6 +157,9 @@
             <div class="card-actions">
               <div class="badge badge-info">{album.type.toUpperCase()}</div>
               <div class="badge badge-accent">{album.year}</div>
+              <ArtistProviders
+                providers={[MetadataProvidersList[album.provider]]}
+                size={20} />
             </div>
             <div class="card-actions items-center mt-auto">
               <a
