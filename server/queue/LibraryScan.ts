@@ -56,7 +56,7 @@ Media.addEvent("LibraryScan", async (a) => {
                     basename(Media.trackdir(meta, alb, t))
                   ))
               );
-            }
+            } else alb.tracks.forEach((t) => (t.added = false));
           })
         );
       } catch (err) {
