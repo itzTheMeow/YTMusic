@@ -52,7 +52,7 @@ export function constructAlbumFromSpotify(
     year: Number(album.release_date.split("-")[0]) || 0,
     image: findImage(album.images),
     tracks: [],
-    provider: MetadataProviders.Spotify,
+    provider: MetadataProvidersList[MetadataProviders.Spotify],
   };
 }
 export function constructTrackFromSpotify(
@@ -87,7 +87,7 @@ export function constructTrackAlbumFromSoundCloud(
         explicit: false,
       },
     ],
-    provider: MetadataProviders.SoundCloud,
+    provider: MetadataProvidersList[MetadataProviders.SoundCloud],
   };
 }
 
