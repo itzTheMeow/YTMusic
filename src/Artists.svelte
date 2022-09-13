@@ -2,18 +2,17 @@
   import { Plus, Settings } from "tabler-icons-svelte";
   import { link } from "svelte-routing";
   import Loader from "Loader.svelte";
-  import { API } from "index";
+  import { API, config } from "index";
   import ArtistCard from "ArtistCard.svelte";
   import { onDestroy } from "svelte";
   import type { Artist } from "../server/struct";
 
   let filteredLetter = "";
-  const nonSymbol = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   function getLetters(artists: Artist[]) {
     const allLetters = [
       ...new Set(artists.map((l) => l.name[0].toUpperCase())),
     ].sort();
-    const filtered = allLetters.filter((l) => nonSymbol.includes(l));
+    const filtered = allLetters.filter((l) => config.nonSymbol.includes(l));
     const ret =
       filtered.length !== allLetters.length ? ["#", ...filtered] : allLetters;
     if (!filteredLetter) filteredLetter = ret[0];
@@ -56,25 +55,25 @@
   {#if artists.err}
     <div class="text-sm">{artists.message}</div>
   {:else}
+    {#if !artistSearch}
+      <div class="btn-group w-full justify-center mt-4">
+        {#each getLetters(artists.list) as letter}
+          <button
+            class="btn {filteredLetter == letter ? 'btn-active' : ''}"
+            on:click={() => (filteredLetter = letter)}>{letter}</button>
+        {/each}
+      </div>
+    {/if}
     <div class="flex flex-row flex-wrap gap-4 justify-center mt-3">
-      {#if !artistSearch}
-        <div class="btn-group w-full justify-center">
-          {#each getLetters(artists.list) as letter}
-            <button
-              class="btn {filteredLetter == letter ? 'btn-active' : ''}"
-              on:click={() => (filteredLetter = letter)}>{letter}</button>
-          {/each}
-        </div>
-      {/if}
       {#each artistSearch ? artists.list
             .filter((a) =>
               a.name.toLowerCase().includes(artistSearch.toLowerCase())
             )
             .slice(0, 15) : artists.list.filter((a) => {
-            if (nonSymbol.includes(filteredLetter)) return a.name
+            if (config.nonSymbol.includes(filteredLetter)) return a.name
                 .toUpperCase()
                 .startsWith(filteredLetter);
-            else return !nonSymbol.includes(a.name.toUpperCase()[0]);
+            else return !config.nonSymbol.includes(a.name.toUpperCase()[0]);
           }) as artist}
         <ArtistCard {artist}>
           <a

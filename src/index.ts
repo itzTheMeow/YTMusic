@@ -13,6 +13,7 @@ Auth.init();
 queueSock;
 export const config = {
   brandName: "YTMusic",
+  nonSymbol: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 };
 
 if (window.location.pathname == "/login")

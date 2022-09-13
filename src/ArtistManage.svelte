@@ -1,13 +1,26 @@
 <script lang="ts">
   import ArtistProviders from "ArtistProviders.svelte";
-  import { API } from "index";
+  import { API, config } from "index";
   import Loader from "Loader.svelte";
   import { offQueueChange, onQueueChange } from "queue";
   import { onDestroy } from "svelte";
   import { navigate, link } from "svelte-routing";
   import { ExternalLink } from "tabler-icons-svelte";
+  import type { Album } from "../server/struct";
 
   export let id: string;
+
+  let filteredLetter = "";
+  function getLetters(artists: Album[]) {
+    const allLetters = [
+      ...new Set(artists.map((l) => l.name[0].toUpperCase())),
+    ].sort();
+    const filtered = allLetters.filter((l) => config.nonSymbol.includes(l));
+    const ret =
+      filtered.length !== allLetters.length ? ["#", ...filtered] : allLetters;
+    if (!filteredLetter) filteredLetter = ret[0];
+    return ret;
+  }
 
   let albumSearchBar: HTMLInputElement;
   let albumSearch = "";
@@ -126,10 +139,26 @@
       class="input input-bordered w-5/6 block mx-auto my-2"
       bind:this={albumSearchBar}
       bind:value={albumSearch} />
+    {#if !albumSearch}
+      <div class="btn-group w-full justify-center mt-3">
+        {#each getLetters(r.artist.albums) as letter}
+          <button
+            class="btn {filteredLetter == letter ? 'btn-active' : ''}"
+            on:click={() => (filteredLetter = letter)}>{letter}</button>
+        {/each}
+      </div>
+    {/if}
     <div class="flex gap-2 flex-wrap flex-row justify-center mt-3">
-      {#each (albumSearch ? r.artist.albums.filter((a) =>
-            a.name.toLowerCase().includes(albumSearch.toLowerCase())
-          ) : r.artist.albums).sort((a1, a2) =>
+      {#each (albumSearch ? r.artist.albums
+            .filter((a) =>
+              a.name.toLowerCase().includes(albumSearch.toLowerCase())
+            )
+            .slice(0, 15) : r.artist.albums.filter((a) => {
+            if (config.nonSymbol.includes(filteredLetter)) return a.name
+                .toUpperCase()
+                .startsWith(filteredLetter);
+            else return !config.nonSymbol.includes(a.name.toUpperCase()[0]);
+          })).sort((a1, a2) =>
         a1.name.toLowerCase() > a2.name.toLowerCase() ? 1 : -1
       ) as album}
         <div class="card w-64 bg-base-300 shadow-xl">
