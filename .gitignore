@@ -1,9 +1,7 @@
-libr
 node_modules
-package-lock.json
-client/style.css
-client/compiled.js
+dist
+serverDist
+enhanced.sqlite
 auth.json
-.overridedir
 Music
-mv.*
+.tmp_dl

@@ -1,217 +1,73 @@
-import express from "express";
-import sass from "sass";
 import fs from "fs";
-import path from "path";
-import SpotifyApi from "spotify-web-api-node";
+import express from "express";
 import config from "./config";
+import APIRouteManager from "./APIRoute";
+import db from "enhanced.db";
+import { createAccount, getAllAccounts } from "./utils";
+import { randomUUID } from "crypto";
+import SpotifyAuthManager from "./Spotify";
 import MediaManager from "./MediaManager";
-import SpotifyAuthManager from "./SpotifyAuthManager";
-import GetArtist from "./GetArtist";
-import search from "youtube-search";
+import { Server } from "socket.io";
+import { Account } from "./struct";
+import SoundCloudAuthManager from "./SoundCloud";
 
-// Required music file meta:
-// title, artist, album, year, track/total, genre
-// cover if applicable
-// singles album=Single track/total=track/1
-
-// register app and input credentials into auth.json
-// https://developer.spotify.com/documentation/general/guides/app-settings/#register-your-app
-const sauth = require("../auth.json");
-const spapi = new SpotifyApi({
-  clientId: sauth.clientID,
-  clientSecret: sauth.clientSecret,
-});
-
-// make a project and generate an api key and input into auth.json
-// https://console.cloud.google.com/apis/credentials
-// enable youtube at https://console.cloud.google.com/apis/api/youtube.googleapis.com/overview
-
-console.log("starting");
-
-(async function () {
-  const authman = new SpotifyAuthManager(
-    sauth.clientID,
-    sauth.clientSecret,
-    spapi
-  );
-  spapi.setAccessToken(await authman.generateToken());
-
-  let mediaDir = path.join(__dirname, "..", config.library);
+const spauth = (() => {
   try {
-    let overridedir = String(
-      fs.readFileSync(path.join(__dirname, "..", ".overridedir"))
+    return JSON.parse(
+      fs.readFileSync(`${process.cwd()}/auth.json`).toString()
+    ) as {
+      id: string;
+      secret: string;
+    };
+  } catch {
+    console.error(
+      "Invalid auth.json file! Please read the documentation and fix it."
     );
-    if (overridedir) mediaDir = overridedir.trim();
-  } catch (e) {}
-  const mediaman = new MediaManager(mediaDir, spapi);
-
-  let allStyle = "";
-  fs.readdirSync("client/css").forEach((css) => {
-    let compiled = sass.renderSync({ file: `client/css/${css}` });
-    allStyle += String(`${compiled.css}\n`);
-  });
-  if (allStyle) fs.writeFileSync("client/style.css", allStyle);
-  else console.error("No css.");
-
-  function getHTML(file: string) {
-    let HTML = "Error.";
-    try {
-      HTML = String(fs.readFileSync(`client/pages/${file}`));
-    } catch (er) {
-      HTML = String(fs.readFileSync(`client/pages/404.html`));
-    }
-    fs.readdirSync("client/modules").forEach((m) => {
-      let content = String(fs.readFileSync(`client/modules/${m}`));
-      HTML = HTML.replace(new RegExp(`{{${m.split(".")[0]}}}`, "g"), content);
-    });
-    return HTML;
-  }
-
-  const app = express();
-
-  app.enable("trust proxy");
-  app.use(express.json());
-  app.use((req, res, next) => {
-    // might not be needed
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    if (req.protocol == "https")
-      return res.redirect("http://" + req.get("host") + req.url);
-
-    next();
-  });
-
-  app.get("/", (req, res) => {
-    res.send(getHTML("../index.html"));
-  });
-  app.get("/style.css", (req, res) => {
-    res.sendFile(path.resolve("client/style.css"));
-  });
-  app.get("/logo.png", (req, res) => {
-    res.sendFile(path.resolve("client/logo.png"));
-  });
-  app.get("/api/artist", async (req, res) => {
-    spapi
-      .searchArtists(String(req.query.name), { limit: 35 })
-      .then((artistRes) => {
-        if (req.query.name) res.json(artistRes.body);
-        else res.status(501).json({ err: true });
-      })
-      .catch((err) => {
-        return res.status(502).json({ err: true });
-      });
-  });
-  app.get("/api/artists/:action", async (req, res) => {
-    switch (req.params.action) {
-      case "add":
-        if (!req.query.id) return res.status(501).json({ err: true });
-        GetArtist(String(req.query.id))
-          .then((newArtist) => {
-            mediaman.addArtist(newArtist);
-            res.json(newArtist);
-          })
-          .catch(console.error);
-        break;
-      case "list":
-        res.json(mediaman.artists.map((a) => a.id));
-        break;
-      case "all":
-        res.json(
-          mediaman.artists.map((ar) => {
-            let a: any = ar;
-            ar.albums?.forEach((al, albI) => {
-              let newAlb: any = al;
-              al.songs?.forEach((so, songI) => {
-                let newSong: any = so;
-                newSong.exists = mediaman.songExists[a.id].includes(so.id);
-                newAlb.songs[songI] = newSong;
-              });
-              a.albums[albI] = newAlb;
-            });
-            return a;
-          })
-        );
-        break;
-      case "get":
-        let ar = mediaman.artists.find((ar) => ar.id == req.query.id);
-        if (!ar) return res.status(502).json({ err: true });
-        let a: any = ar;
-        ar.albums?.forEach((al, albI) => {
-          let newAlb: any = al;
-          al.songs?.forEach((so, songI) => {
-            let newSong: any = so;
-            newSong.exists = mediaman.songExists[a.id].includes(so.id);
-            newAlb.songs[songI] = newSong;
-          });
-          a.albums[albI] = newAlb;
-        });
-        res.json(a);
-        break;
-      case "remove":
-        mediaman.remArtist(String(req.query.id));
-        res.json({});
-        break;
-      default:
-        res.status(501).json({ err: true });
-        break;
-    }
-  });
-  app.get("/api/youtube/:action", async (req, res) => {
-    switch (req.params.action) {
-      case "search":
-        if (!req.query.q) return res.status(501).json({ err: true });
-        let searchResults = await search(
-          decodeURIComponent(String(req.query.q)),
-          {
-            key: sauth.youtube,
-            order: "relevance",
-            part: "id,snippet",
-          }
-        );
-        res.json(searchResults.results.slice(0, 10));
-        break;
-      case "download":
-        if (!req.query.artist || !req.query.song || !req.query.id)
-          return res.status(501).json({ err: true });
-        let artist = mediaman.artists.find((a) => a.id == req.query.artist);
-        let song, album;
-        artist?.albums?.forEach((a) => {
-          a.songs?.forEach((so) => {
-            if (so.id == req.query.song) {
-              album = a;
-              song = so;
-            }
-          });
-        });
-        if (!artist || !song || !album)
-          return res.status(502).json({ err: true });
-        mediaman
-          .downloadSong(String(req.query.id), artist, album, song)
-          .then(() => {
-            res.status(200).json({});
-          })
-          .catch((a) => {
-            console.error("Error with download:", a);
-            res.status(502).json({ err: true, data: String(a) });
-          });
-        break;
-      default:
-        res.status(501).json({ err: true });
-        break;
-    }
-  });
-  app.get("/q", (req, res) => {
-    res.redirect("/");
     process.exit();
-  });
-  app.get("/:w", (req, res) => {
-    res.send(getHTML(`${req.params.w}.html`));
-  });
-
-  app.listen(config.port, () => {
-    console.log(
-      `Server is online and listening at http://localhost:${config.port}`
-    );
-  });
+  }
 })();
 
-export { spapi };
+export let APIRouter: APIRouteManager;
+export const Spotify = new SpotifyAuthManager(spauth.id, spauth.secret);
+export const SoundCloud = new SoundCloudAuthManager();
+export const Media = new MediaManager();
+
+export function init() {
+  console.log("Initiating API.");
+  Media.init();
+  fs.copyFileSync("src/index.html", "dist/index.html");
+
+  const app = express();
+  APIRouter = new APIRouteManager(app);
+  APIRouter.init();
+  app.use(express.static(process.cwd() + "/dist"));
+  app.get("*", (req, res) => {
+    res.sendFile(process.cwd() + "/dist/index.html");
+  });
+  const serv = app.listen(config.port, () => {
+    console.log(`Listening on port ${config.port}.`);
+  });
+  const io = new Server(serv);
+  io.on("connection", (socket) => {
+    let authorized: Account | null = null;
+    const listener = Media.onQueueUpdate(() => {
+      if (authorized) socket.emit("update", Media.queue);
+    });
+    socket.once("auth", (token) => {
+      const account = getAllAccounts().find((a) => a.authToken == token);
+      if (!account) return socket.disconnect(true);
+      authorized = account;
+    });
+    socket.on("disconnect", () => {
+      Media.offQueueUpdate(listener);
+    });
+  });
+
+  if (!getAllAccounts().find((a) => a.permissions.owner)) {
+    const pass = randomUUID().split("-")[0];
+    createAccount("admin", pass);
+    console.log(
+      `Creating admin account with username "admin" and password "${pass}".`
+    );
+  }
+}

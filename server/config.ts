@@ -1,7 +1,5 @@
-const config = {
+export default {
   port: 8777,
-  brandName: "YTMusic",
-  version: "0.0.1",
-  library: "/Music",
+  allowUsername: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-1234567890",
+  disallowFilesystemCharacters: `<>:"/\\|?*`,
 };
-export default config;
