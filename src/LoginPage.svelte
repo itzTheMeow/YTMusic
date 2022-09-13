@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+
   import { API, Auth, config } from "./index";
   import Logo from "./logo.png";
 
@@ -28,6 +30,8 @@
     if (res.err) return (ERROR = res.message);
     Auth.getAuthorized(res.token);
   }
+
+  onMount(() => Username.select());
 </script>
 
 <div class="flex flex-col items-center justify-center h-screen">
