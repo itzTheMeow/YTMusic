@@ -1,5 +1,9 @@
 export interface AccountPermissions {
   owner: boolean;
+  artistAdd: boolean;
+  artistRemove: boolean;
+  songDownload: boolean;
+  songRemove: boolean;
 }
 export interface Account {
   username: string;
@@ -9,6 +13,10 @@ export interface Account {
 }
 export const defaultPermissions: AccountPermissions = {
   owner: false,
+  artistAdd: true,
+  artistRemove: false,
+  songDownload: true,
+  songRemove: false,
 };
 
 export type APIResponse =

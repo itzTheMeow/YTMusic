@@ -13,6 +13,9 @@ const accountCache: Account[] = [];
 export function grabAccount(data: Account) {
   data.authToken = data.authToken || randomUUID().replace(/-/g, "");
   data.permissions = { ...defaultPermissions, ...data.permissions };
+  // give all permissions to owners automatically
+  if (data.permissions.owner)
+    Object.keys(data.permissions).forEach((k) => (data.permissions[k] = true));
   const i = accountCache.findIndex((a) => a.username == data.username);
   if (i >= 0) accountCache.splice(i, 1);
   accountCache.push(data);
