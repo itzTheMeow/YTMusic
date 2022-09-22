@@ -26,10 +26,12 @@ export type APIResponse =
 export enum MetadataProviders {
   Spotify = 1,
   SoundCloud,
+  Konami,
 }
 export const MetadataProvidersList: { [key in MetadataProviders]: string } = {
   [MetadataProviders.Spotify]: "spotify",
   [MetadataProviders.SoundCloud]: "soundcloud",
+  [MetadataProviders.Konami]: "konami",
 };
 export enum SoundProviders {
   YouTube = 1,

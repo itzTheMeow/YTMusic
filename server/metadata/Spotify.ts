@@ -3,8 +3,8 @@ import {
   constructArtistFromSpotify,
   constructTrackFromSpotify,
 } from "../constructors";
-import { Spotify } from "../server";
-import { ExtendedArtist } from "../struct";
+import { Media, Spotify } from "../server";
+import { Artist, ExtendedArtist } from "../struct";
 
 export default async function getSpotifyArtist(
   id: string
@@ -94,4 +94,18 @@ export default async function getSpotifyArtist(
 
   newArtist.albums = newArtist.albums.filter((a) => a.tracks.length);
   return newArtist;
+}
+
+export async function searchSpotifyArtists(query: string): Promise<Artist[]> {
+  return (
+    await Spotify.call(
+      async () =>
+        await Spotify.api.searchArtists(query, {
+          limit: 15,
+        })
+    )
+  ).body.artists.items.map((a) => {
+    const artist = constructArtistFromSpotify(a);
+    return { ...artist, status: Media.hasArtist(artist) ? 2 : 0 };
+  });
 }

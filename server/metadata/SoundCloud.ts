@@ -2,8 +2,8 @@ import {
   constructArtistFromSoundCloud,
   constructTrackAlbumFromSoundCloud,
 } from "../constructors";
-import { SoundCloud } from "../server";
-import { ExtendedArtist } from "../struct";
+import { Media, SoundCloud } from "../server";
+import { Artist, ExtendedArtist } from "../struct";
 
 export default async function getSoundCloudArtist(
   id: string
@@ -15,4 +15,17 @@ export default async function getSoundCloudArtist(
     ...constructArtistFromSoundCloud(user),
     albums: tracks.map(constructTrackAlbumFromSoundCloud),
   };
+}
+
+export async function searchSoundCloudArtists(
+  query: string
+): Promise<Artist[]> {
+  return (
+    await SoundCloud.api.users.searchV2({ q: query, limit: 12 })
+  ).collection
+    .filter((a) => a)
+    .map((a) => {
+      const artist = constructArtistFromSoundCloud(a);
+      return { ...artist, status: Media.hasArtist(artist) ? 2 : 0 };
+    });
 }

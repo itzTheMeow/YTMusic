@@ -8,17 +8,20 @@
   import { Check, Dots, Plus } from "tabler-icons-svelte";
   import { MetadataProviders, MetadataProvidersList } from "../server/struct";
   import { navigate } from "svelte-routing";
+  import { hex2hsl, Providers } from "utils";
+  import ProviderIcon from "ProviderIcon.svelte";
 
   let searchInput: HTMLInputElement;
   let wantSearch = false;
   let inputSelected = true;
+  let selectedProvider: MetadataProviders = MetadataProviders.Spotify;
 
   let searchResults: ReturnType<typeof API.searchArtist>;
   let lastSearched = "";
-  function search() {
-    if (lastSearched == searchInput.value) return;
+  function search(bypass = false) {
+    if (!bypass && lastSearched == searchInput.value) return;
     lastSearched = searchInput.value;
-    searchResults = API.searchArtist(searchInput.value);
+    searchResults = API.searchArtist(searchInput.value, selectedProvider);
   }
 
   let beingAdded = new Set<string>();
@@ -55,7 +58,7 @@
     <div class="text-lg w-full max-w-3xl m-auto pl-2">Add an Artist</div>
     <input
       type="text"
-      placeholder="Search for a spotify artist..."
+      placeholder="Search for a an artist..."
       class="input input-bordered block w-full max-w-3xl m-auto"
       bind:this={searchInput}
       on:click={() => {
@@ -70,6 +73,18 @@
         clearTimeout(searchWaiting);
         searchWaiting = Number(setTimeout(search, 700));
       }} />
+  </div>
+  <div class="btn-group w-full justify-center mt-4 mb-2">
+    {#each Object.values(MetadataProviders)
+      .map(Number)
+      .filter((a) => a) as prov}
+      <button
+        class="btn {selectedProvider == prov ? 'btn-active' : ''}"
+        style={selectedProvider == prov ? `--p:${hex2hsl(Providers[prov])};` : ''}
+        on:click={() => ((selectedProvider = prov), search(true))}><ProviderIcon
+          size={26}
+          provider={prov} /></button>
+    {/each}
   </div>
 
   {#if searchResults}

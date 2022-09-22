@@ -1,9 +1,10 @@
 import { Auth } from "index";
-import type {
+import {
   APIResponse,
   Artist,
   ArtistMeta,
   Downloadable,
+  MetadataProviders,
   Settings,
   SoundProviders,
 } from "../server/struct";
@@ -52,9 +53,13 @@ export default class {
   ): Res<{ token: string }> {
     return (await this.post("/login", { username, password })) as any;
   }
-  public async searchArtist(term: string): Res<{ list: ArtistMeta[] }> {
+  public async searchArtist(
+    term: string,
+    provider = MetadataProviders.Spotify
+  ): Res<{ list: ArtistMeta[] }> {
     return (await this.post("/artist_search", {
       term,
+      provider,
     })) as any;
   }
   public async listArtists(): Res<{ list: Artist[] }> {

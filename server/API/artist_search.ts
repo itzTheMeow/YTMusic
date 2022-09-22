@@ -2,7 +2,11 @@ import {
   constructArtistFromSoundCloud,
   constructArtistFromSpotify,
 } from "../constructors";
+import { searchKonamiArtists } from "../metadata/Konami";
+import { searchSoundCloudArtists } from "../metadata/SoundCloud";
+import { searchSpotifyArtists } from "../metadata/Spotify";
 import { APIRouter, Media, SoundCloud, Spotify } from "../server";
+import { MetadataProviders } from "../struct";
 
 APIRouter.create(
   "artist_search",
@@ -11,36 +15,22 @@ APIRouter.create(
     const query = req.body.term;
     if (!query || typeof query !== "string")
       return { err: true, message: "No search term provided." };
-    const artists = [];
 
     try {
-      (
-        await Spotify.call(
-          async () =>
-            await Spotify.api.searchArtists(query, {
-              limit: 15,
-            })
-        )
-      ).body.artists.items.forEach((a) => {
-        const artist = constructArtistFromSpotify(a);
-        artists.push({ ...artist, status: Media.hasArtist(artist) ? 2 : 0 });
-      });
-      (
-        await SoundCloud.api.users.searchV2({ q: query, limit: 5 })
-      ).collection.forEach((a) => {
-        if (!a) return;
-        const artist = constructArtistFromSoundCloud(a);
-        artists.push({ ...artist, status: Media.hasArtist(artist) ? 2 : 0 });
-      });
+      switch (req.body.provider as MetadataProviders) {
+        case MetadataProviders.Spotify:
+          return { err: false, list: await searchSpotifyArtists(query) };
+        case MetadataProviders.SoundCloud:
+          return { err: false, list: await searchSoundCloudArtists(query) };
+        case MetadataProviders.Konami:
+          return { err: false, list: await searchKonamiArtists(query) };
+        default:
+          return { err: true, message: "Invalid provider specified." };
+      }
     } catch (err) {
       console.error(err);
       return { err: true, message: "Failed to fetch artists." };
     }
-
-    return {
-      err: false,
-      list: artists,
-    };
   },
   true
 );
