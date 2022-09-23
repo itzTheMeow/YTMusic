@@ -39,7 +39,7 @@ export default async function getKonamiArtist(
             )
           ).data?.parse;
           if (!d) return null;
-          await constructTrackAlbumFromKonami(d);
+          return await constructTrackAlbumFromKonami(d);
         })
       )
     ).filter((s) => s),
