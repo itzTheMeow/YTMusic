@@ -26,25 +26,23 @@ export default async function getKonamiArtist(
   const $ = load(page.text["*"]);
   const songs = $("table tbody tr td:first-child a[href]:first-child")
     .get()
-    .map((a) => $(a).attr("href").substring(1));
+    .map((a) => $(a).attr("href").replace(/^\//, ""));
 
   return {
     ...artist,
-    albums: await Promise.all(
-      songs
-        .map(async (s) => {
+    albums: (
+      await Promise.all(
+        songs.map(async (s) => {
           const d = (
             await axios.get(
-              `https://remywiki.com/api.php?action=parse&page=${encodeURIComponent(
-                s
-              )}&format=json`
+              `https://remywiki.com/api.php?action=parse&page=${s}&format=json`
             )
-          ).data.parse;
+          ).data?.parse;
           if (!d) return null;
           await constructTrackAlbumFromKonami(d);
         })
-        .filter((s) => s)
-    ),
+      )
+    ).filter((s) => s),
   };
 }
 
