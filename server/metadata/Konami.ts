@@ -94,14 +94,17 @@ export async function searchKonamiArtists(query: string) {
   );
 }
 
-async function findImage(name: string) {
-  return Object.values<any>(
+async function findImage(name: string, retry = false) {
+  const i = Object.values<any>(
     (
       await axios.get(
         `https://remywiki.com/api.php?action=query&titles=File:${name}&format=json&prop=imageinfo&iiprop=url`
       )
     ).data.query.pages
-  )[0].imageinfo[0].url;
+  )?.[0]?.imageinfo?.[0]?.url;
+  return (
+    i || (retry ? null : await findImage("Dance_Dance_Revolution.png", true))
+  );
 }
 
 export async function constructArtistFromKonami(data: any): Promise<Artist> {
