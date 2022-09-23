@@ -31,18 +31,19 @@ export default async function getKonamiArtist(
   return {
     ...artist,
     albums: await Promise.all(
-      songs.map(
-        async (s) =>
-          await constructTrackAlbumFromKonami(
-            (
-              await axios.get(
-                `https://remywiki.com/api.php?action=parse&page=${encodeURIComponent(
-                  s
-                )}&format=json`
-              )
-            ).data.parse
-          )
-      )
+      songs
+        .map(async (s) => {
+          const d = (
+            await axios.get(
+              `https://remywiki.com/api.php?action=parse&page=${encodeURIComponent(
+                s
+              )}&format=json`
+            )
+          ).data.parse;
+          if (!d) return null;
+          await constructTrackAlbumFromKonami(d);
+        })
+        .filter((s) => s)
     ),
   };
 }
