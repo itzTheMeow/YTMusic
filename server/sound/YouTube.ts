@@ -1,11 +1,11 @@
-import sr from "youtube-sr";
-import { constructVideoFromYouTube } from "../constructors";
+import sr, { Video } from "youtube-sr";
 import { Downloadable } from "../struct";
 import { join } from "path";
 import fs from "fs";
 import { exec } from "youtube-dl-exec";
 import { Media } from "../server";
 import { sanitizeFileName } from "../MediaManager";
+import { DateTime } from "luxon";
 
 export async function searchYoutube(query: string): Promise<Downloadable[]> {
   try {
@@ -40,4 +40,30 @@ export async function downloadYoutube(
       res({ err });
     }
   });
+}
+
+export function constructVideoFromYouTube(vid: Video): Downloadable {
+  return {
+    title: vid.title || "",
+    duration: vid.duration || 0,
+    uploadedAt: vid.uploadedAt
+      ? DateTime.now()
+          .minus({
+            [vid.uploadedAt.split(" ")[1]]: Number(
+              vid.uploadedAt.split(" ")[0]
+            ),
+          })
+          .minus({ minute: 1 }) // fixes the time
+          .toMillis()
+      : Date.now(),
+    views: vid.views || 0,
+    thumbnail: vid.thumbnail?.url || "",
+    author: {
+      name: vid.channel?.name || "",
+      icon: vid.channel?.iconURL() || "",
+      url: vid.channel?.url || "",
+    },
+    url: vid.url || "",
+    embed: vid.embedURL || "",
+  };
 }

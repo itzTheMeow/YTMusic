@@ -1,11 +1,7 @@
-import {
-  constructArtistFromSoundCloud,
-  constructArtistFromSpotify,
-} from "../constructors";
 import { searchKonamiArtists } from "../metadata/Konami";
 import { searchSoundCloudArtists } from "../metadata/SoundCloud";
 import { searchSpotifyArtists } from "../metadata/Spotify";
-import { APIRouter, Media, SoundCloud, Spotify } from "../server";
+import { APIRouter } from "../server";
 import { MetadataProviders } from "../struct";
 
 APIRouter.create(

@@ -1,9 +1,12 @@
-import {
-  constructArtistFromSoundCloud,
-  constructTrackAlbumFromSoundCloud,
-} from "../constructors";
+import { SoundcloudTrackV2, SoundcloudUserV2 } from "soundcloud.ts";
 import { Media, SoundCloud } from "../server";
-import { Artist, ExtendedArtist } from "../struct";
+import {
+  Album,
+  Artist,
+  ExtendedArtist,
+  MetadataProviders,
+  MetadataProvidersList,
+} from "../struct";
 
 export default async function getSoundCloudArtist(
   id: string
@@ -28,4 +31,42 @@ export async function searchSoundCloudArtists(
       const artist = constructArtistFromSoundCloud(a);
       return { ...artist, status: Media.hasArtist(artist) ? 2 : 0 };
     });
+}
+
+export function constructArtistFromSoundCloud(
+  artist: SoundcloudUserV2
+): Artist {
+  return {
+    id: String(artist.id) || "",
+    name: artist.username || "",
+    url: artist.permalink_url || "",
+    genres: [],
+    followers: artist.followers_count || 0,
+    icon: artist.avatar_url || "",
+    providers: [MetadataProvidersList[MetadataProviders.SoundCloud]],
+  };
+}
+
+export function constructTrackAlbumFromSoundCloud(
+  track: SoundcloudTrackV2
+): Album {
+  return {
+    type: "single",
+    url: track.permalink_url || "",
+    id: "alb" + track.id || "",
+    name: track.title || "",
+    year: new Date(track.created_at).getFullYear(),
+    image: track.artwork_url?.replace("-large", "-t500x500") || "",
+    tracks: [
+      {
+        id: String(track.id) || "",
+        title: track.title || "",
+        url: track.permalink_url || "",
+        number: 1,
+        duration: track.full_duration || track.duration || 0,
+        explicit: false,
+      },
+    ],
+    provider: MetadataProvidersList[MetadataProviders.SoundCloud],
+  };
 }
