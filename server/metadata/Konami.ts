@@ -26,7 +26,7 @@ export default async function getKonamiArtist(
   const $ = load(page.text["*"]);
   const songs = $("table tbody tr td:first-child a[href]:first-child")
     .get()
-    .map((a) => $(a).text());
+    .map((a) => $(a).attr("href").substring(1));
 
   return {
     ...artist,
