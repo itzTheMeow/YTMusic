@@ -9,12 +9,15 @@ import { DateTime } from "luxon";
 
 export async function searchYoutube(query: string): Promise<Downloadable[]> {
   try {
-    const results = await sr.search(query, {
-      type: "video",
-    });
+    const results =
+      (await sr.search(query, {
+        type: "video",
+      })) || [];
     return results.map(constructVideoFromYouTube);
   } catch (err) {
-    console.error(`Error searching youtube: ${err}\n${err.stack}`);
+    console.error(
+      `Error searching youtube: ${err}\nQuery: '${query}'\n${err.stack}`
+    );
     return [];
   }
 }
