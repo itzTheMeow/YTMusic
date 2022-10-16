@@ -14,7 +14,7 @@ export async function searchYoutube(query: string): Promise<Downloadable[]> {
     });
     return results.map(constructVideoFromYouTube);
   } catch (err) {
-    console.error(`Error searching youtube: ${err}`);
+    console.error(`Error searching youtube: ${err}\n${err.stack}`);
     return [];
   }
 }
