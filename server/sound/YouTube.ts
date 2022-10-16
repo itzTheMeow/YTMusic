@@ -47,7 +47,7 @@ export async function downloadYoutube(
 }
 
 export function constructVideoFromYouTube(vid: Video): Downloadable {
-  if (!Number(vid.uploadedAt[0]))
+  if (vid.uploadedAt && !Number(vid.uploadedAt[0]))
     vid.uploadedAt = vid.uploadedAt.split(" ").slice(1).join(" ");
   return {
     title: vid.title || "",
