@@ -13,7 +13,8 @@ export async function searchYoutube(query: string): Promise<Downloadable[]> {
       type: "video",
     });
     return results.map(constructVideoFromYouTube);
-  } catch {
+  } catch (err) {
+    console.error(`Error searching youtube: ${err}`);
     return [];
   }
 }
