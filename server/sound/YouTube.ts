@@ -9,11 +9,15 @@ import { DateTime } from "luxon";
 
 export async function searchYoutube(query: string): Promise<Downloadable[]> {
   try {
-    const results = await sr.search(query, {
-      type: "video",
-    });
+    const results =
+      (await sr.search(query, {
+        type: "video",
+      })) || [];
     return results.map(constructVideoFromYouTube);
-  } catch {
+  } catch (err) {
+    console.error(
+      `Error searching youtube: ${err}\nQuery: '${query}'\n${err.stack}`
+    );
     return [];
   }
 }
@@ -43,6 +47,8 @@ export async function downloadYoutube(
 }
 
 export function constructVideoFromYouTube(vid: Video): Downloadable {
+  if (vid.uploadedAt && !Number(vid.uploadedAt[0]))
+    vid.uploadedAt = vid.uploadedAt.split(" ").slice(1).join(" ");
   return {
     title: vid.title || "",
     duration: vid.duration || 0,
