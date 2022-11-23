@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input[type="text"],
+input[type="number"],
+textarea,
+.input {
+  font-size: 16px;
+}
