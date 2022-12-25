@@ -30,7 +30,7 @@ Media.addEvent("LibraryScan", async (a) => {
         if (meta.version <= 1) {
           // migrate from old providers array to new
           meta.providers = {
-            [meta.providers[0]]: meta.id,
+            [meta.providers?.[0] || MetadataProviders.Spotify]: meta.id,
           };
           // use new ID system
           meta.id = ulid();
@@ -47,6 +47,8 @@ Media.addEvent("LibraryScan", async (a) => {
                   return MetadataProviders.SoundCloud;
                 case 3:
                   return MetadataProviders.Konami;
+                default:
+                  return alb.provider || MetadataProviders.Spotify;
               }
             })();
             alb.tracks.forEach((trk) => {
