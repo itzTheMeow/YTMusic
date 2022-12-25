@@ -93,7 +93,7 @@ export interface ExtendedArtist extends Artist {
   albums: Album[];
 }
 export interface ArtistMeta extends ExtendedArtist {
-  version: 1 | 2;
+  version: 2;
 }
 
 export interface Downloadable {

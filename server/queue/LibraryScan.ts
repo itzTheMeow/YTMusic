@@ -18,12 +18,14 @@ Media.addEvent("LibraryScan", async (a) => {
         const meta = JSON.parse(
           (await fs.readFile(join(path, "artist.json"))).toString()
         ) as ArtistMeta;
-        if (meta.version < 1)
-          return console.log(
-            `Old Artist Format in '${a}' (${meta.version || 0}). Please update.`
+        if (meta.version !== 2)
+          console.log(
+            `Old Artist Format in '${a}' (v${
+              meta.version || 0
+            }). Attempting to migrate.`
           );
         // stuff to migrate old data to new
-        if (meta.version === 1) {
+        if (meta.version <= 1) {
           // migrate from old providers array to new
           meta.providers = {
             [meta.providers[0]]: meta.id,

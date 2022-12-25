@@ -20,15 +20,15 @@ Media.addEvent("ArtistAdd", async (event) => {
     })()(event.id);
     const existingArtist = Media.artists.find((a) => a.name == artist.name);
     const meta: ArtistMeta = {
-      version: 1,
+      version: 2,
       ...(existingArtist
         ? {
             ...existingArtist,
             albums: [
-              ...existingArtist.albums,
-              ...artist.albums.filter(
-                (l) => !existingArtist.albums.find((al) => al.name == l.name)
+              ...existingArtist.albums.filter(
+                (l) => l.provider !== event.provider
               ),
+              ...artist.albums,
             ],
             providers: {
               ...existingArtist.providers,
