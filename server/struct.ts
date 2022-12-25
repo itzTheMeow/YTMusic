@@ -27,6 +27,7 @@ export enum MetadataProviders {
   Spotify = "spotify",
   SoundCloud = "soundcloud",
   Konami = "konami",
+  BandLab = "bandlab",
 }
 export enum SoundProviders {
   YouTube = "youtube",

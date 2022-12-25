@@ -6,6 +6,7 @@ export const Providers: {
   [MetadataProviders.Spotify]: "#1DB954",
   [MetadataProviders.SoundCloud]: "#F26F23",
   [MetadataProviders.Konami]: "#B60014",
+  [MetadataProviders.BandLab]: "#f12c18",
 };
 
 // https://stackoverflow.com/questions/46432335/hex-to-hsl-convert-javascript
