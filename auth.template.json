@@ -1,4 +1,7 @@
 {
-  "id": "",
-  "secret": ""
+  "spotify": {
+    "id": "",
+    "secret": ""
+  },
+  "bandlab": ""
 }
