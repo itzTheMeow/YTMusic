@@ -2,7 +2,7 @@
   import ArtistCard from "ArtistCard.svelte";
   import { API } from "index";
   import Loader from "Loader.svelte";
-  import { Queue } from "queue";
+  import { offQueueChange, onQueueChange, Queue } from "queue";
 
   import { onDestroy, onMount } from "svelte";
   import { Check, Dots, Plus } from "tabler-icons-svelte";
@@ -24,18 +24,11 @@
     searchResults = API.searchArtist(searchInput.value, selectedProvider);
   }
 
-  let beingAdded = new Set<string>();
   let wasAdded: string[] = [];
-  Queue.subscribe((val) => {
-    val.forEach((v) => {
-      if (v.type == "ArtistAdd") beingAdded.add(v.id);
-    });
-    [...beingAdded].forEach((b) => {
-      if (!val.find((v) => v.type == "ArtistAdd" && v.id == b)) {
-        wasAdded = [...wasAdded, b];
-        beingAdded.delete(b);
-      }
-    });
+  const i = onQueueChange((v) => {
+    if (v.type == "ArtistAdd") {
+      wasAdded = [...wasAdded, v.id];
+    }
   });
 
   const searchCheck = setInterval(function () {
@@ -49,6 +42,7 @@
     searchInput.select();
   });
   onDestroy(() => {
+    offQueueChange(i);
     clearInterval(searchCheck);
   });
 </script>
@@ -98,7 +92,9 @@
               <div
                 class="ml-auto mb-auto cursor-pointer"
                 on:click={async () => {
-                  if (wasAdded.includes(artist.id)) artist.status = 2;
+                  if (wasAdded.find((w) =>
+                      Object.values(artist.providers).includes(w)
+                    )) artist.status = 2;
                   switch (artist.status) {
                     case 2:
                       const d = await API.listArtists();
@@ -117,7 +113,9 @@
                       artists = artists;
                   }
                 }}>
-                {#if artist.status == 2 || wasAdded.includes(artist.id)}
+                {#if artist.status == 2 || wasAdded.find((w) =>
+                    Object.values(artist.providers).includes(w)
+                  )}
                   <div class="text-success">
                     <Check size={40} />
                   </div>

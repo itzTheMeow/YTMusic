@@ -42,6 +42,8 @@
     offQueueChange(i);
     clearInterval(bari);
   });
+
+  let refreshMetaBtn: HTMLDivElement;
 </script>
 
 {#await artistDetails}
@@ -99,10 +101,13 @@
             <div class="flex gap-1 mt-2 flex-wrap">
               <div
                 class="btn btn-sm btn-accent w-max"
+                bind:this={refreshMetaBtn}
                 on:click={async () => {
+                  refreshMetaBtn.classList.add('btn-loading');
                   for (const [source, id] of Object.entries(r.artist.providers)) {
                     await API.post('artist_add', { id, source });
                   }
+                  refreshMetaBtn.classList.remove('btn-loading');
                 }}>
                 Refresh Metadata
               </div>
