@@ -2,6 +2,7 @@ import axios from "axios";
 import { load } from "cheerio";
 import { Duration } from "luxon";
 import { ulid } from "ulid";
+import { Media } from "../server";
 import { Album, Artist, ExtendedArtist, MetadataProviders } from "../struct";
 
 let artistCache: {
@@ -75,18 +76,20 @@ export async function searchKonamiArtists(query: string) {
         .map((l) => l.page)
     ),
   ].slice(0, 3);
-  return await Promise.all(
-    found.map(
-      async (f) =>
-        await constructArtistFromKonami(
-          (
-            await axios.get(
-              `https://remywiki.com/api.php?action=parse&pageid=${f}&format=json`
-            )
-          ).data.parse
-        )
+  return (
+    await Promise.all(
+      found.map(
+        async (f) =>
+          await constructArtistFromKonami(
+            (
+              await axios.get(
+                `https://remywiki.com/api.php?action=parse&pageid=${f}&format=json`
+              )
+            ).data.parse
+          )
+      )
     )
-  );
+  ).map((a) => ({ ...a, status: Media.hasArtist(a) ? 2 : 0 }));
 }
 
 async function findImage(name: string, retry = false) {

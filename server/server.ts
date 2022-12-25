@@ -11,7 +11,7 @@ import { Server } from "socket.io";
 import { Account } from "./struct";
 import SoundCloudAuthManager from "./SoundCloud";
 
-const spauth = (() => {
+export const AuthTokens = (() => {
   try {
     return JSON.parse(
       fs.readFileSync(`${process.cwd()}/auth.json`).toString()
@@ -32,8 +32,8 @@ const spauth = (() => {
 
 export let APIRouter: APIRouteManager;
 export const Spotify = new SpotifyAuthManager(
-  spauth.spotify.id,
-  spauth.spotify.secret
+  AuthTokens.spotify.id,
+  AuthTokens.spotify.secret
 );
 export const SoundCloud = new SoundCloudAuthManager();
 export const Media = new MediaManager();
