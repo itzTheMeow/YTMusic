@@ -115,7 +115,11 @@ export default class MediaManager {
       (a) =>
         a.id == artist.id ||
         (a.name == artist.name &&
-          a.providers.find((p) => artist.providers.includes(p)))
+          Object.entries(a.providers).find((p) =>
+            Object.entries(artist.providers).find(
+              (pr) => pr[0] == p[0] && pr[1] == p[1]
+            )
+          ))
     );
   }
 }

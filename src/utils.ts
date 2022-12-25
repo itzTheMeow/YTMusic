@@ -1,4 +1,4 @@
-import { MetadataProviders, MetadataProvidersList } from "../server/struct";
+import { MetadataProviders, type Artist } from "../server/struct";
 
 export const Providers: {
   [key in MetadataProviders | number]: string;
@@ -7,11 +7,6 @@ export const Providers: {
   [MetadataProviders.SoundCloud]: "#F26F23",
   [MetadataProviders.Konami]: "#B60014",
 };
-export function getProviders(list: string[]) {
-  return list.map((p) =>
-    Number(Object.entries(MetadataProvidersList).find((e) => e[1] == p)?.[0])
-  ) as MetadataProviders[];
-}
 
 // https://stackoverflow.com/questions/46432335/hex-to-hsl-convert-javascript
 export function hex2hsl(hex: string) {

@@ -1,11 +1,8 @@
 import { promises as fs } from "fs";
 import { join, basename } from "path";
+import { ulid } from "ulid";
 import { Media } from "../server";
-import {
-  ArtistMeta,
-  MetadataProviders,
-  MetadataProvidersList,
-} from "../struct";
+import { ArtistMeta, MetadataProviders } from "../struct";
 
 Media.addEvent("LibraryScan", async (a) => {
   console.log("Scanning artist folders...");
@@ -18,24 +15,57 @@ Media.addEvent("LibraryScan", async (a) => {
         const files = await fs.readdir(path);
         if (!files.includes("artist.json"))
           return console.log(`No valid artist in '${a}'.`);
-        const meta = JSON.parse(
-          (await fs.readFile(join(path, "artist.json"))).toString()
-        ) as ArtistMeta;
-        if (meta.version !== 1)
-          return console.log(
-            `Old Artist Format in '${a}' (${meta.version || 0}). Please update.`
+        const artistjson = join(path, "artist.json"),
+          meta = JSON.parse(
+            (await fs.readFile(artistjson)).toString()
+          ) as ArtistMeta,
+          originalVersion = meta.version;
+        if (meta.version !== 2)
+          console.log(
+            `Old Artist Format in '${a}' (v${
+              meta.version || 0
+            }). Attempting to migrate.`
           );
         // stuff to migrate old data to new
-        meta.providers = meta.providers || [
-          MetadataProvidersList[MetadataProviders.Spotify],
-        ];
-        meta.albums.forEach(
-          //@ts-ignore
-          (l) =>
-            typeof l.provider !== "string" &&
-            (l.provider = MetadataProvidersList[MetadataProviders.Spotify])
-        );
+        if (meta.version <= 1) {
+          // migrate from old providers array to new
+          meta.providers = {
+            [meta.providers?.[0] || MetadataProviders.Spotify]: meta.id,
+          };
+          // use new ID system
+          meta.id = ulid();
+          meta.albums.forEach((alb) => {
+            // use new ID system
+            alb.uuid = alb.id;
+            alb.id = ulid();
+            // use new provider IDs
+            alb.provider = (() => {
+              switch (<1 | 2 | 3>(<any>alb.provider)) {
+                case 1:
+                  return MetadataProviders.Spotify;
+                case 2:
+                  return MetadataProviders.SoundCloud;
+                case 3:
+                  return MetadataProviders.Konami;
+                default:
+                  return alb.provider || MetadataProviders.Spotify;
+              }
+            })();
+            alb.tracks.forEach((trk) => {
+              // use new ID system
+              trk.uuid = trk.id;
+              trk.id = ulid();
+            });
+          });
+          meta.version++;
+        }
         newData.push(meta);
+        if (meta.version !== originalVersion) {
+          await fs.writeFile(artistjson, JSON.stringify(meta));
+          console.log(
+            `Migrated data from v${originalVersion} => v${meta.version} for '${meta.name}'.`
+          );
+        }
 
         await Promise.all(
           meta.albums.map(async (alb) => {

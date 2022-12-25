@@ -16,7 +16,7 @@ APIRouter.create(
     const foundTrack = foundAlbum.tracks.find((t) => t.id == track);
     if (!foundTrack) return { err: true, message: "Track not found." };
 
-    if (!(provider in SoundProviders))
+    if (!Object.values(SoundProviders).includes(provider))
       return { err: true, message: "Invalid sound provider." };
 
     Media.queueAction({

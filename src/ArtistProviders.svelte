@@ -1,12 +1,16 @@
 <script lang="ts">
   import ProviderIcon from "ProviderIcon.svelte";
-  import { getProviders, Providers } from "utils";
+  import { Providers } from "utils";
+  import type { MetadataProviders } from "../server/struct";
 
   export let size = 18;
-  export let providers: string[];
+  export let providers: (MetadataProviders | string)[];
+
+  let provs: MetadataProviders[];
+  $: provs = providers as any;
 </script>
 
-{#each getProviders(providers) as p}
+{#each provs as p}
   <div style="color:{Providers[p]};">
     <ProviderIcon {size} provider={p} />
   </div>

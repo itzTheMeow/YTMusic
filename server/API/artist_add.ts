@@ -6,7 +6,7 @@ APIRouter.create(
   "POST",
   (req) => {
     const { id, source }: { id: string; source: MetadataProviders } = req.body;
-    if (!id || !source || !(source in MetadataProviders))
+    if (!id || !source || !Object.values(MetadataProviders).includes(source))
       return { err: true, message: "Invalid ID or source." };
     Media.queueAction({ type: "ArtistAdd", id, provider: source });
     return { err: false };

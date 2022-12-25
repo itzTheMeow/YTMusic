@@ -2,11 +2,11 @@
   import ArtistCard from "ArtistCard.svelte";
   import { API } from "index";
   import Loader from "Loader.svelte";
-  import { Queue } from "queue";
+  import { offQueueChange, onQueueChange, Queue } from "queue";
 
   import { onDestroy, onMount } from "svelte";
   import { Check, Dots, Plus } from "tabler-icons-svelte";
-  import { MetadataProviders, MetadataProvidersList } from "../server/struct";
+  import { MetadataProviders } from "../server/struct";
   import { navigate } from "svelte-routing";
   import { hex2hsl, Providers } from "utils";
   import ProviderIcon from "ProviderIcon.svelte";
@@ -24,18 +24,11 @@
     searchResults = API.searchArtist(searchInput.value, selectedProvider);
   }
 
-  let beingAdded = new Set<string>();
   let wasAdded: string[] = [];
-  Queue.subscribe((val) => {
-    val.forEach((v) => {
-      if (v.type == "ArtistAdd") beingAdded.add(v.id);
-    });
-    [...beingAdded].forEach((b) => {
-      if (!val.find((v) => v.type == "ArtistAdd" && v.id == b)) {
-        wasAdded = [...wasAdded, b];
-        beingAdded.delete(b);
-      }
-    });
+  const i = onQueueChange((v) => {
+    if (v.type == "ArtistAdd") {
+      wasAdded = [...wasAdded, v.id];
+    }
   });
 
   const searchCheck = setInterval(function () {
@@ -49,6 +42,7 @@
     searchInput.select();
   });
   onDestroy(() => {
+    offQueueChange(i);
     clearInterval(searchCheck);
   });
 </script>
@@ -75,9 +69,7 @@
       }} />
   </div>
   <div class="btn-group w-full justify-center mt-4 mb-2">
-    {#each Object.values(MetadataProviders)
-      .map(Number)
-      .filter((a) => a) as prov}
+    {#each Object.values(MetadataProviders) as prov}
       <button
         class="btn {selectedProvider == prov ? 'btn-active' : ''}"
         style={selectedProvider == prov ? `--p:${hex2hsl(Providers[prov])};` : ''}
@@ -100,28 +92,30 @@
               <div
                 class="ml-auto mb-auto cursor-pointer"
                 on:click={async () => {
-                  if (wasAdded.includes(artist.id)) artist.status = 2;
+                  if (wasAdded.find((w) =>
+                      Object.values(artist.providers).includes(w)
+                    )) artist.status = 2;
                   switch (artist.status) {
                     case 2:
-                      navigate(`/artists/${artist.id}/manage`);
+                      const d = await API.listArtists();
+                      if (d.err) return;
+                      navigate(`/artists/${d.list.find((a) => a.name == artist.name)?.id || artist.id}/manage`);
                       break;
                     case 1: //@ts-ignore
                       document.getElementById('queueButton').focus();
                       break;
                     default:
                       await API.post('artist_add', {
-                        id: artist.id,
-                        source: Number(
-                          Object.entries(MetadataProvidersList).find(
-                            (e) => e[1] == artist.providers[0]
-                          )?.[0]
-                        ),
+                        id: Object.entries(artist.providers)[0][1],
+                        source: Object.entries(artist.providers)[0][0],
                       });
                       artist.status = 1;
                       artists = artists;
                   }
                 }}>
-                {#if artist.status == 2 || wasAdded.includes(artist.id)}
+                {#if artist.status == 2 || wasAdded.find((w) =>
+                    Object.values(artist.providers).includes(w)
+                  )}
                   <div class="text-success">
                     <Check size={40} />
                   </div>

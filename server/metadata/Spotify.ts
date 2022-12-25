@@ -4,14 +4,17 @@ import {
   Artist,
   ExtendedArtist,
   MetadataProviders,
-  MetadataProvidersList,
   Track,
 } from "../struct";
+import { ulid } from "ulid";
 
 export default async function getSpotifyArtist(
   id: string
 ): Promise<ExtendedArtist> {
-  const artist = (await Spotify.api.getArtist(id)).body;
+  const artist = (
+    await Spotify.call(async () => await Spotify.api.getArtist(id))
+  )?.body;
+  if (!artist) return;
   const newArtist: ExtendedArtist = {
     ...constructArtistFromSpotify(artist),
     albums: [],
@@ -24,6 +27,7 @@ export default async function getSpotifyArtist(
           await Spotify.api.getArtistAlbums(artist.id, {
             limit: 50,
             offset: albumOffset,
+            include_groups: "album,single,appears_on",
           })
         ).body.items
     );
@@ -49,7 +53,7 @@ export default async function getSpotifyArtist(
           const albumSongs = await Spotify.call(
             async () =>
               (
-                await Spotify.api.getAlbumTracks(a.id, {
+                await Spotify.api.getAlbumTracks(a.uuid, {
                   limit: 50,
                   offset: trackOffset,
                 })
@@ -57,7 +61,7 @@ export default async function getSpotifyArtist(
           );
           songs.push(
             ...albumSongs.filter((s) =>
-              s.artists.find((sa) => sa.id == newArtist.id)
+              s.artists.find((sa) => sa.id == artist.id)
             )
           );
           if (albumSongs.length == 50) {
@@ -120,13 +124,15 @@ export function constructArtistFromSpotify(
   artist: SpotifyApi.ArtistObjectFull
 ): Artist {
   return {
-    id: artist.id || "",
+    id: ulid(),
     name: artist.name || "",
     url: artist.external_urls.spotify || "",
     genres: artist.genres || [],
     followers: artist.followers.total || 0,
     icon: findImage(artist.images),
-    providers: [MetadataProvidersList[MetadataProviders.Spotify]],
+    providers: {
+      [MetadataProviders.Spotify]: artist.id,
+    },
   };
 }
 
@@ -136,12 +142,13 @@ export function constructAlbumFromSpotify(
   return {
     type: (album.album_type as any) || "",
     url: album.external_urls.spotify || "",
-    id: album.id || "",
+    id: ulid(),
     name: album.name || "",
     year: Number(album.release_date.split("-")[0]) || 0,
     image: findImage(album.images),
     tracks: [],
-    provider: MetadataProvidersList[MetadataProviders.Spotify],
+    uuid: album.id || "",
+    provider: MetadataProviders.Spotify,
   };
 }
 
@@ -149,7 +156,8 @@ export function constructTrackFromSpotify(
   track: SpotifyApi.TrackObjectSimplified
 ): Track {
   return {
-    id: track.id || "",
+    id: track.id,
+    uuid: track.id,
     title: track.name || "",
     url: track.external_urls.spotify || "",
     number: track.track_number || 0,

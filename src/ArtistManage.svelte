@@ -2,7 +2,7 @@
   import ArtistProviders from "ArtistProviders.svelte";
   import { API, config } from "index";
   import Loader from "Loader.svelte";
-  import { offQueueChange, onQueueChange } from "queue";
+  import { offQueueChange, onQueueChange, Queue } from "queue";
   import { onDestroy } from "svelte";
   import { navigate, link } from "svelte-routing";
   import { ExternalLink } from "tabler-icons-svelte";
@@ -42,6 +42,8 @@
     offQueueChange(i);
     clearInterval(bari);
   });
+
+  let refreshMetaBtn: HTMLDivElement;
 </script>
 
 {#await artistDetails}
@@ -83,7 +85,9 @@
               <div class="badge">
                 Followers: {r.artist.followers.toLocaleString()}
               </div>
-              <ArtistProviders providers={r.artist.providers} size={20} />
+              <ArtistProviders
+                providers={Object.keys(r.artist.providers)}
+                size={20} />
             </div>
             <div class="flex gap-2 flex-wrap">
               {#each r.artist.genres as genre}
@@ -95,7 +99,16 @@
               {/each}
             </div>
             <div class="flex gap-1 mt-2 flex-wrap">
-              <div class="btn btn-sm btn-accent w-max btn-disabled">
+              <div
+                class="btn btn-sm btn-accent w-max"
+                bind:this={refreshMetaBtn}
+                on:click={async () => {
+                  refreshMetaBtn.classList.add('btn-loading');
+                  for (const [source, id] of Object.entries(r.artist.providers)) {
+                    await API.post('artist_add', { id, source });
+                  }
+                  refreshMetaBtn.classList.remove('btn-loading');
+                }}>
                 Refresh Metadata
               </div>
               <div
