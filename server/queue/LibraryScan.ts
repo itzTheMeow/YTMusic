@@ -15,9 +15,11 @@ Media.addEvent("LibraryScan", async (a) => {
         const files = await fs.readdir(path);
         if (!files.includes("artist.json"))
           return console.log(`No valid artist in '${a}'.`);
-        const meta = JSON.parse(
-          (await fs.readFile(join(path, "artist.json"))).toString()
-        ) as ArtistMeta;
+        const artistjson = join(path, "artist.json"),
+          meta = JSON.parse(
+            (await fs.readFile(artistjson)).toString()
+          ) as ArtistMeta,
+          originalVersion = meta.version;
         if (meta.version !== 2)
           console.log(
             `Old Artist Format in '${a}' (v${
@@ -56,6 +58,12 @@ Media.addEvent("LibraryScan", async (a) => {
           meta.version++;
         }
         newData.push(meta);
+        if (meta.version !== originalVersion) {
+          await fs.writeFile(artistjson, JSON.stringify(meta));
+          console.log(
+            `Migrated data from v${originalVersion} => v${meta.version}`
+          );
+        }
 
         await Promise.all(
           meta.albums.map(async (alb) => {

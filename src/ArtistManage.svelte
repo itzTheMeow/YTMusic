@@ -2,7 +2,7 @@
   import ArtistProviders from "ArtistProviders.svelte";
   import { API, config } from "index";
   import Loader from "Loader.svelte";
-  import { offQueueChange, onQueueChange } from "queue";
+  import { offQueueChange, onQueueChange, Queue } from "queue";
   import { onDestroy } from "svelte";
   import { navigate, link } from "svelte-routing";
   import { ExternalLink } from "tabler-icons-svelte";
@@ -97,7 +97,13 @@
               {/each}
             </div>
             <div class="flex gap-1 mt-2 flex-wrap">
-              <div class="btn btn-sm btn-accent w-max btn-disabled">
+              <div
+                class="btn btn-sm btn-accent w-max"
+                on:click={async () => {
+                  for (const [source, id] of Object.entries(r.artist.providers)) {
+                    await API.post('artist_add', { id, source });
+                  }
+                }}>
                 Refresh Metadata
               </div>
               <div
