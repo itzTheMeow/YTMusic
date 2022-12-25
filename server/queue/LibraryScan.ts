@@ -63,7 +63,7 @@ Media.addEvent("LibraryScan", async (a) => {
         if (meta.version !== originalVersion) {
           await fs.writeFile(artistjson, JSON.stringify(meta));
           console.log(
-            `Migrated data from v${originalVersion} => v${meta.version}`
+            `Migrated data from v${originalVersion} => v${meta.version} for '${meta.name}'.`
           );
         }
 
