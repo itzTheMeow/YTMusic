@@ -6,7 +6,7 @@
 
   import { onDestroy, onMount } from "svelte";
   import { Check, Dots, Plus } from "tabler-icons-svelte";
-  import { MetadataProviders, MetadataProvidersList } from "../server/struct";
+  import { MetadataProviders } from "../server/struct";
   import { navigate } from "svelte-routing";
   import { hex2hsl, Providers } from "utils";
   import ProviderIcon from "ProviderIcon.svelte";
@@ -75,9 +75,7 @@
       }} />
   </div>
   <div class="btn-group w-full justify-center mt-4 mb-2">
-    {#each Object.values(MetadataProviders)
-      .map(Number)
-      .filter((a) => a) as prov}
+    {#each Object.values(MetadataProviders) as prov}
       <button
         class="btn {selectedProvider == prov ? 'btn-active' : ''}"
         style={selectedProvider == prov ? `--p:${hex2hsl(Providers[prov])};` : ''}
@@ -110,12 +108,8 @@
                       break;
                     default:
                       await API.post('artist_add', {
-                        id: artist.id,
-                        source: Number(
-                          Object.entries(MetadataProvidersList).find(
-                            (e) => e[1] == artist.providers[0]
-                          )?.[0]
-                        ),
+                        id: Object.entries(artist.providers)[0][1],
+                        source: Object.entries(artist.providers)[0][0],
                       });
                       artist.status = 1;
                       artists = artists;

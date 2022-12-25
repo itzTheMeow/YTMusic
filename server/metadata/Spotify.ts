@@ -4,9 +4,9 @@ import {
   Artist,
   ExtendedArtist,
   MetadataProviders,
-  MetadataProvidersList,
   Track,
 } from "../struct";
+import { ulid } from "ulid";
 
 export default async function getSpotifyArtist(
   id: string
@@ -120,13 +120,15 @@ export function constructArtistFromSpotify(
   artist: SpotifyApi.ArtistObjectFull
 ): Artist {
   return {
-    id: artist.id || "",
+    id: ulid(),
     name: artist.name || "",
     url: artist.external_urls.spotify || "",
     genres: artist.genres || [],
     followers: artist.followers.total || 0,
     icon: findImage(artist.images),
-    providers: [MetadataProvidersList[MetadataProviders.Spotify]],
+    providers: {
+      [MetadataProviders.Spotify]: artist.id,
+    },
   };
 }
 
@@ -136,12 +138,13 @@ export function constructAlbumFromSpotify(
   return {
     type: (album.album_type as any) || "",
     url: album.external_urls.spotify || "",
-    id: album.id || "",
+    id: ulid(),
     name: album.name || "",
     year: Number(album.release_date.split("-")[0]) || 0,
     image: findImage(album.images),
     tracks: [],
-    provider: MetadataProvidersList[MetadataProviders.Spotify],
+    uuid: album.id || "",
+    provider: MetadataProviders.Spotify,
   };
 }
 
@@ -149,7 +152,8 @@ export function constructTrackFromSpotify(
   track: SpotifyApi.TrackObjectSimplified
 ): Track {
   return {
-    id: track.id || "",
+    id: track.id,
+    uuid: track.id,
     title: track.name || "",
     url: track.external_urls.spotify || "",
     number: track.track_number || 0,

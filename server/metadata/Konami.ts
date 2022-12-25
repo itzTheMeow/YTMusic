@@ -1,13 +1,8 @@
 import axios from "axios";
 import { load } from "cheerio";
 import { Duration } from "luxon";
-import {
-  Album,
-  Artist,
-  ExtendedArtist,
-  MetadataProviders,
-  MetadataProvidersList,
-} from "../struct";
+import { ulid } from "ulid";
+import { Album, Artist, ExtendedArtist, MetadataProviders } from "../struct";
 
 let artistCache: {
   name: string;
@@ -109,13 +104,13 @@ async function findImage(name: string, retry = false) {
 
 export async function constructArtistFromKonami(data: any): Promise<Artist> {
   return {
-    id: String(data.pageid),
+    id: ulid(),
     name: data.title,
     url: `https://remywiki.com/${encodeURIComponent(data.title)}`,
     genres: [],
     followers: 0,
     icon: await findImage(data.images[0] || "Dance_Dance_Revolution.png"),
-    providers: [MetadataProvidersList[MetadataProviders.Konami]],
+    providers: { [MetadataProviders.Konami]: String(data.pageid) },
   };
 }
 export async function constructTrackAlbumFromKonami(data: any): Promise<Album> {
@@ -125,7 +120,8 @@ export async function constructTrackAlbumFromKonami(data: any): Promise<Album> {
       ?.split(":")
       .reverse() || [];
   return {
-    id: `alb${data.pageid}`,
+    id: ulid(),
+    uuid: `alb${data.pageid}`,
     name: data.title,
     type: "single",
     url: `https://remywiki.com/${encodeURIComponent(data.title)}`,
@@ -135,7 +131,8 @@ export async function constructTrackAlbumFromKonami(data: any): Promise<Album> {
     image: await findImage(data.images[0] || "Dance_Dance_Revolution.png"),
     tracks: [
       {
-        id: String(data.pageid),
+        id: ulid(),
+        uuid: String(data.pageid),
         title: data.title,
         url: `https://remywiki.com/${encodeURIComponent(data.title)}`,
         number: 1,
@@ -147,6 +144,6 @@ export async function constructTrackAlbumFromKonami(data: any): Promise<Album> {
         explicit: false,
       },
     ],
-    provider: MetadataProvidersList[MetadataProviders.Konami],
+    provider: MetadataProviders.Konami,
   };
 }

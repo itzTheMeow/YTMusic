@@ -30,9 +30,10 @@ Media.addEvent("ArtistAdd", async (event) => {
                 (l) => !existingArtist.albums.find((al) => al.name == l.name)
               ),
             ],
-            providers: [
-              ...new Set([...existingArtist.providers, ...artist.providers]),
-            ],
+            providers: {
+              ...existingArtist.providers,
+              ...artist.providers,
+            },
           }
         : artist),
     };

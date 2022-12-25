@@ -24,21 +24,13 @@ export type APIResponse =
   | { err: false; [key: string]: any };
 
 export enum MetadataProviders {
-  Spotify = 1,
-  SoundCloud,
-  Konami,
+  Spotify = "spotify",
+  SoundCloud = "soundcloud",
+  Konami = "konami",
 }
-export const MetadataProvidersList: { [key in MetadataProviders]: string } = {
-  [MetadataProviders.Spotify]: "spotify",
-  [MetadataProviders.SoundCloud]: "soundcloud",
-  [MetadataProviders.Konami]: "konami",
-};
 export enum SoundProviders {
-  YouTube = 1,
+  YouTube = "youtube",
 }
-export const SoundProvidersList: { [key in SoundProviders]: string } = {
-  [SoundProviders.YouTube]: "youtube",
-};
 export type QueuedAction = (
   | {
       type: "ArtistAdd";
@@ -73,7 +65,7 @@ export interface Artist {
   genres: string[];
   followers: number;
   icon: string;
-  providers: string[];
+  providers: Partial<Record<MetadataProviders, string>>;
   status?: 0 | 1 | 2;
 }
 export interface Album {
@@ -84,7 +76,8 @@ export interface Album {
   year: number;
   image: string;
   tracks: Track[];
-  provider: string;
+  uuid: string;
+  provider: MetadataProviders;
 }
 export interface Track {
   id: string;
@@ -94,12 +87,13 @@ export interface Track {
   duration: number;
   explicit: boolean;
   added?: boolean;
+  uuid: string;
 }
 export interface ExtendedArtist extends Artist {
   albums: Album[];
 }
 export interface ArtistMeta extends ExtendedArtist {
-  version: 1;
+  version: 1 | 2;
 }
 
 export interface Downloadable {

@@ -27,7 +27,7 @@
         <div
           class="absolute -top-1.5 -right-1.5 bg-base-200 rounded-full p-0.5
             !flex !aspect-auto gap-0.5">
-          <ArtistProviders providers={artist.providers} />
+          <ArtistProviders providers={Object.keys(artist.providers)} />
         </div>
       </div>
       <div class="flex flex-col gap-1">

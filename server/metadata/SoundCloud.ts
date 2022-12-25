@@ -1,12 +1,7 @@
 import { SoundcloudTrackV2, SoundcloudUserV2 } from "soundcloud.ts";
+import { ulid } from "ulid";
 import { Media, SoundCloud } from "../server";
-import {
-  Album,
-  Artist,
-  ExtendedArtist,
-  MetadataProviders,
-  MetadataProvidersList,
-} from "../struct";
+import { Album, Artist, ExtendedArtist, MetadataProviders } from "../struct";
 
 export default async function getSoundCloudArtist(
   id: string
@@ -37,13 +32,15 @@ export function constructArtistFromSoundCloud(
   artist: SoundcloudUserV2
 ): Artist {
   return {
-    id: String(artist.id) || "",
+    id: ulid(),
     name: artist.username || "",
     url: artist.permalink_url || "",
     genres: [],
     followers: artist.followers_count || 0,
     icon: artist.avatar_url || "",
-    providers: [MetadataProvidersList[MetadataProviders.SoundCloud]],
+    providers: {
+      [MetadataProviders.SoundCloud]: String(artist.id || ""),
+    },
   };
 }
 
@@ -53,13 +50,15 @@ export function constructTrackAlbumFromSoundCloud(
   return {
     type: "single",
     url: track.permalink_url || "",
-    id: "alb" + track.id || "",
+    id: ulid(),
     name: track.title || "",
     year: new Date(track.created_at).getFullYear(),
     image: track.artwork_url?.replace("-large", "-t500x500") || "",
+    uuid: "alb" + track.id,
     tracks: [
       {
-        id: String(track.id) || "",
+        id: ulid(),
+        uuid: String(track.id) || "",
         title: track.title || "",
         url: track.permalink_url || "",
         number: 1,
@@ -67,6 +66,6 @@ export function constructTrackAlbumFromSoundCloud(
         explicit: false,
       },
     ],
-    provider: MetadataProvidersList[MetadataProviders.SoundCloud],
+    provider: MetadataProviders.SoundCloud,
   };
 }

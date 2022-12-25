@@ -83,7 +83,9 @@
               <div class="badge">
                 Followers: {r.artist.followers.toLocaleString()}
               </div>
-              <ArtistProviders providers={r.artist.providers} size={20} />
+              <ArtistProviders
+                providers={Object.keys(r.artist.providers)}
+                size={20} />
             </div>
             <div class="flex gap-2 flex-wrap">
               {#each r.artist.genres as genre}

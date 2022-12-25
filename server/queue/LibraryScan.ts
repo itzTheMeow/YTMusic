@@ -1,11 +1,8 @@
 import { promises as fs } from "fs";
 import { join, basename } from "path";
+import { ulid } from "ulid";
 import { Media } from "../server";
-import {
-  ArtistMeta,
-  MetadataProviders,
-  MetadataProvidersList,
-} from "../struct";
+import { ArtistMeta, MetadataProviders } from "../struct";
 
 Media.addEvent("LibraryScan", async (a) => {
   console.log("Scanning artist folders...");
@@ -21,20 +18,41 @@ Media.addEvent("LibraryScan", async (a) => {
         const meta = JSON.parse(
           (await fs.readFile(join(path, "artist.json"))).toString()
         ) as ArtistMeta;
-        if (meta.version !== 1)
+        if (meta.version < 1)
           return console.log(
             `Old Artist Format in '${a}' (${meta.version || 0}). Please update.`
           );
         // stuff to migrate old data to new
-        meta.providers = meta.providers || [
-          MetadataProvidersList[MetadataProviders.Spotify],
-        ];
-        meta.albums.forEach(
-          //@ts-ignore
-          (l) =>
-            typeof l.provider !== "string" &&
-            (l.provider = MetadataProvidersList[MetadataProviders.Spotify])
-        );
+        if (meta.version === 1) {
+          // migrate from old providers array to new
+          meta.providers = {
+            [meta.providers[0]]: meta.id,
+          };
+          // use new ID system
+          meta.id = ulid();
+          meta.albums.forEach((alb) => {
+            // use new ID system
+            alb.uuid = alb.id;
+            alb.id = ulid();
+            // use new provider IDs
+            alb.provider = (() => {
+              switch (<1 | 2 | 3>(<any>alb.provider)) {
+                case 1:
+                  return MetadataProviders.Spotify;
+                case 2:
+                  return MetadataProviders.SoundCloud;
+                case 3:
+                  return MetadataProviders.Konami;
+              }
+            })();
+            alb.tracks.forEach((trk) => {
+              // use new ID system
+              trk.uuid = trk.id;
+              trk.id = ulid();
+            });
+          });
+          meta.version++;
+        }
         newData.push(meta);
 
         await Promise.all(
