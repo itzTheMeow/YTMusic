@@ -3,7 +3,14 @@ import { ulid } from "ulid";
 import { AuthTokens, Media } from "../server";
 import { Artist, MetadataProviders } from "../struct";
 
-export interface BandLabArtist {
+interface BandlabPicture {
+  l: string;
+  m: string;
+  s: string;
+  url: string;
+  xs: string;
+}
+interface BandLabArtist {
   about: string;
   counters: {
     bands: number;
@@ -19,13 +26,7 @@ export interface BandLabArtist {
   }[];
   id: string;
   name: string;
-  picture: {
-    l: string;
-    m: string;
-    s: string;
-    url: string;
-    xs: string;
-  };
+  picture: BandlabPicture;
   skills: {
     id: string;
     name: string;
