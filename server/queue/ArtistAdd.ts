@@ -28,7 +28,12 @@ Media.addEvent("ArtistAdd", async (event) => {
               ...existingArtist.albums.filter(
                 (l) => l.provider !== event.provider
               ),
-              ...artist.albums,
+              ...artist.albums.filter(
+                (l) =>
+                  !existingArtist.albums
+                    .filter((a) => a.provider !== event.provider)
+                    .find((a) => a.name == l.name)
+              ),
             ],
             providers: {
               ...existingArtist.providers,
