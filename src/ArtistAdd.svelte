@@ -101,7 +101,9 @@
                   if (wasAdded.includes(artist.id)) artist.status = 2;
                   switch (artist.status) {
                     case 2:
-                      navigate(`/artists/${artist.id}/manage`);
+                      const d = await API.listArtists();
+                      if (d.err) return;
+                      navigate(`/artists/${d.list.find((a) => a.name == artist.name)?.id || artist.id}/manage`);
                       break;
                     case 1: //@ts-ignore
                       document.getElementById('queueButton').focus();

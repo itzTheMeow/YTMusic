@@ -21,15 +21,15 @@ export default class SpotifyAuthManager {
     try {
       return await func();
     } catch (e) {
-      if (retries <= this.MAX_RETRIES) {
-        if (e && e.statusCode === 429) {
-          const retryAfter =
-            (parseInt(e.headers["retry-after"] as string, 10) + 1) * 1000;
-          await new Promise((r) => setTimeout(r, retryAfter));
-        }
+      if (retries <= this.MAX_RETRIES && e && e.statusCode === 429) {
+        const retryAfter =
+          (parseInt(e.headers["retry-after"] as string, 10) + 1) * 1000;
+        console.log(`Spotify ratelimited for ${retryAfter}ms.`);
+        await new Promise((r) => setTimeout(r, retryAfter));
         return await this.call<T>(func, retries + 1);
       } else {
-        throw e;
+        console.error(e);
+        return null;
       }
     }
   }

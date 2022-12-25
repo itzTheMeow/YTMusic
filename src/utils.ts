@@ -1,4 +1,4 @@
-import { MetadataProviders } from "../server/struct";
+import { MetadataProviders, type Artist } from "../server/struct";
 
 export const Providers: {
   [key in MetadataProviders | number]: string;

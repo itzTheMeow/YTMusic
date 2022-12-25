@@ -11,7 +11,10 @@ import { ulid } from "ulid";
 export default async function getSpotifyArtist(
   id: string
 ): Promise<ExtendedArtist> {
-  const artist = (await Spotify.api.getArtist(id)).body;
+  const artist = (
+    await Spotify.call(async () => await Spotify.api.getArtist(id))
+  )?.body;
+  if (!artist) return;
   const newArtist: ExtendedArtist = {
     ...constructArtistFromSpotify(artist),
     albums: [],
@@ -24,6 +27,7 @@ export default async function getSpotifyArtist(
           await Spotify.api.getArtistAlbums(artist.id, {
             limit: 50,
             offset: albumOffset,
+            include_groups: "album,single,appears_on",
           })
         ).body.items
     );
@@ -49,7 +53,7 @@ export default async function getSpotifyArtist(
           const albumSongs = await Spotify.call(
             async () =>
               (
-                await Spotify.api.getAlbumTracks(a.id, {
+                await Spotify.api.getAlbumTracks(a.uuid, {
                   limit: 50,
                   offset: trackOffset,
                 })
@@ -57,7 +61,7 @@ export default async function getSpotifyArtist(
           );
           songs.push(
             ...albumSongs.filter((s) =>
-              s.artists.find((sa) => sa.id == newArtist.id)
+              s.artists.find((sa) => sa.id == artist.id)
             )
           );
           if (albumSongs.length == 50) {
