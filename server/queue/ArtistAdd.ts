@@ -1,5 +1,6 @@
 import fs from "fs";
 import { join } from "path";
+import getBandLabArtist from "../metadata/BandLab";
 import getKonamiArtist from "../metadata/Konami";
 import getSoundCloudArtist from "../metadata/SoundCloud";
 import getSpotifyArtist from "../metadata/Spotify";
@@ -16,6 +17,8 @@ Media.addEvent("ArtistAdd", async (event) => {
           return getSoundCloudArtist;
         case MetadataProviders.Konami:
           return getKonamiArtist;
+        case MetadataProviders.BandLab:
+          return getBandLabArtist;
       }
     })()(event.id);
     const existingArtist = Media.artists.find((a) => a.name == artist.name);

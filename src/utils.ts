@@ -1,11 +1,17 @@
-import { MetadataProviders, type Artist } from "../server/struct";
+import {
+  MetadataProviders,
+  SoundProviders,
+  type Artist,
+} from "../server/struct";
 
 export const Providers: {
-  [key in MetadataProviders | number]: string;
+  [key in MetadataProviders | SoundProviders]: string;
 } = {
   [MetadataProviders.Spotify]: "#1DB954",
   [MetadataProviders.SoundCloud]: "#F26F23",
   [MetadataProviders.Konami]: "#B60014",
+  [MetadataProviders.BandLab]: "#f12c18",
+  [SoundProviders.YouTube]: "#ff0000",
 };
 
 // https://stackoverflow.com/questions/46432335/hex-to-hsl-convert-javascript

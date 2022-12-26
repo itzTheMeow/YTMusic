@@ -1,3 +1,4 @@
+import { searchBandLabArtists } from "../metadata/BandLab";
 import { searchKonamiArtists } from "../metadata/Konami";
 import { searchSoundCloudArtists } from "../metadata/SoundCloud";
 import { searchSpotifyArtists } from "../metadata/Spotify";
@@ -20,6 +21,8 @@ APIRouter.create(
           return { err: false, list: await searchSoundCloudArtists(query) };
         case MetadataProviders.Konami:
           return { err: false, list: await searchKonamiArtists(query) };
+        case MetadataProviders.BandLab:
+          return { err: false, list: await searchBandLabArtists(query) };
         default:
           return { err: true, message: "Invalid provider specified." };
       }

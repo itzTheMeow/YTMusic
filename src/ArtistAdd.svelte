@@ -20,6 +20,7 @@
   let lastSearched = "";
   function search(bypass = false) {
     if (!bypass && lastSearched == searchInput.value) return;
+    if (!searchInput.value) return (searchResults = null as any);
     lastSearched = searchInput.value;
     searchResults = API.searchArtist(searchInput.value, selectedProvider);
   }
@@ -72,7 +73,7 @@
     {#each Object.values(MetadataProviders) as prov}
       <button
         class="btn {selectedProvider == prov ? 'btn-active' : ''}"
-        style={selectedProvider == prov ? `--p:${hex2hsl(Providers[prov])};` : ''}
+        style={`--${selectedProvider == prov ? 'p' : 'nc'}:${hex2hsl(Providers[prov])};`}
         on:click={() => ((selectedProvider = prov), search(true))}><ProviderIcon
           size={26}
           provider={prov} /></button>
