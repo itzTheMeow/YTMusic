@@ -5,6 +5,7 @@ export const Themes = [
   "light",
   "discord",
   "spotify",
+  "plex",
   "aqua",
   "black",
   "dracula",
