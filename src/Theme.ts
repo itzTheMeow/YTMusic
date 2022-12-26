@@ -4,6 +4,7 @@ export const Themes = [
   "dark",
   "light",
   "discord",
+  "spotify",
   "aqua",
   "black",
   "dracula",
