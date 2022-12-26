@@ -3,6 +3,7 @@ import { writable } from "svelte/store";
 export const Themes = [
   "dark",
   "light",
+  "discord",
   "aqua",
   "black",
   "dracula",
