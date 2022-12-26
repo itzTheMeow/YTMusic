@@ -1,6 +1,8 @@
 <script lang="ts">
   import { API, Auth } from "index";
   import Loader from "Loader.svelte";
+  import ThemePreview from "ThemePreview.svelte";
+  import { Themes } from "Theme";
 
   let scanButton: HTMLDivElement;
   let libraryFolder: HTMLInputElement;
@@ -89,6 +91,14 @@
         Change
       </div>
       <div class="text-sm text-error">{changeError}</div>
+    </div>
+    <div class="text-md font-semibold mb-1 mt-2">Theme</div>
+    <div
+      class="rounded-box grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4
+        lg:grid-cols-5">
+      {#each Themes as theme}
+        <ThemePreview {theme} />
+      {/each}
     </div>
   {/if}
 {/await}
