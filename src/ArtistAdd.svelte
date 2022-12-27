@@ -82,53 +82,57 @@
         <div class="text-sm">{artists.message}</div>
       {:else}
         <div class="flex flex-row flex-wrap gap-4 justify-center mt-3">
-          {#each artists.list as artist}
-            <ArtistCard {artist}>
-              <div
-                class="ml-auto mb-auto cursor-pointer"
-                on:click={async () => {
-                  if (wasAdded.find((w) => Object.values(artist.providers).includes(w)))
-                    artist.status = 2;
-                  switch (artist.status) {
-                    case 2:
-                      const d = await API.listArtists();
-                      if (d.err) return;
-                      navigate(
-                        `/artists/${
-                          d.list.find((a) => a.name == artist.name)?.id || artist.id
-                        }/manage`
-                      );
-                      break;
-                    case 1: //@ts-ignore
-                      document.getElementById("queueButton").focus();
-                      break;
-                    default:
-                      await API.post("artist_add", {
-                        id: Object.entries(artist.providers)[0][1],
-                        source: Object.entries(artist.providers)[0][0],
-                      });
-                      artist.status = 1;
-                      //@ts-ignore
-                      artists = artists;
-                  }
-                }}
-              >
-                {#if artist.status == 2 || wasAdded.find( (w) => Object.values(artist.providers).includes(w) )}
-                  <div class="text-success">
-                    <Check size={40} />
-                  </div>
-                {:else if artist.status == 1}
-                  <div class="text-primary-content">
-                    <Dots size={40} />
-                  </div>
-                {:else}
-                  <div class="text-primary hover:text-success">
-                    <Plus size={40} />
-                  </div>
-                {/if}
-              </div>
-            </ArtistCard>
-          {/each}
+          {#if artists.list.length}
+            {#each artists.list as artist}
+              <ArtistCard {artist}>
+                <div
+                  class="ml-auto mb-auto cursor-pointer"
+                  on:click={async () => {
+                    if (wasAdded.find((w) => Object.values(artist.providers).includes(w)))
+                      artist.status = 2;
+                    switch (artist.status) {
+                      case 2:
+                        const d = await API.listArtists();
+                        if (d.err) return;
+                        navigate(
+                          `/artists/${
+                            d.list.find((a) => a.name == artist.name)?.id || artist.id
+                          }/manage`
+                        );
+                        break;
+                      case 1: //@ts-ignore
+                        document.getElementById("queueButton").focus();
+                        break;
+                      default:
+                        await API.post("artist_add", {
+                          id: Object.entries(artist.providers)[0][1],
+                          source: Object.entries(artist.providers)[0][0],
+                        });
+                        artist.status = 1;
+                        //@ts-ignore
+                        artists = artists;
+                    }
+                  }}
+                >
+                  {#if artist.status == 2 || wasAdded.find( (w) => Object.values(artist.providers).includes(w) )}
+                    <div class="text-success">
+                      <Check size={40} />
+                    </div>
+                  {:else if artist.status == 1}
+                    <div class="text-primary-content">
+                      <Dots size={40} />
+                    </div>
+                  {:else}
+                    <div class="text-primary hover:text-success">
+                      <Plus size={40} />
+                    </div>
+                  {/if}
+                </div>
+              </ArtistCard>
+            {/each}
+          {:else}
+            <div>No results found. Try refining your search?</div>
+          {/if}
         </div>
       {/if}
     {/await}
