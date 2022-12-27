@@ -47,7 +47,7 @@ export function constructVideoFromSoundCloud(track: SoundcloudTrackV2): Download
     duration: track.full_duration || track.duration || 0,
     uploadedAt: new Date(track.created_at).getTime(),
     views: track.playback_count || 0,
-    thumbnail: track.artwork_url || "",
+    thumbnail: track.artwork_url || track.user.avatar_url || "",
     author: {
       name: track.user.username || "",
       icon: track.user.avatar_url || "",
