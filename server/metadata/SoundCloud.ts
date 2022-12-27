@@ -3,9 +3,7 @@ import { ulid } from "ulid";
 import { Media, SoundCloud } from "../server";
 import { Album, Artist, ExtendedArtist, MetadataProviders } from "../struct";
 
-export default async function getSoundCloudArtist(
-  id: string
-): Promise<ExtendedArtist> {
+export default async function getSoundCloudArtist(id: string): Promise<ExtendedArtist> {
   const user = await SoundCloud.api.users.getV2(id);
   const tracks = await SoundCloud.api.users.tracksV2(user.id);
 
@@ -15,12 +13,8 @@ export default async function getSoundCloudArtist(
   };
 }
 
-export async function searchSoundCloudArtists(
-  query: string
-): Promise<Artist[]> {
-  return (
-    await SoundCloud.api.users.searchV2({ q: query, limit: 12 })
-  ).collection
+export async function searchSoundCloudArtists(query: string): Promise<Artist[]> {
+  return (await SoundCloud.api.users.searchV2({ q: query, limit: 12 })).collection
     .filter((a) => a)
     .map((a) => {
       const artist = constructArtistFromSoundCloud(a);
@@ -28,9 +22,7 @@ export async function searchSoundCloudArtists(
     });
 }
 
-export function constructArtistFromSoundCloud(
-  artist: SoundcloudUserV2
-): Artist {
+export function constructArtistFromSoundCloud(artist: SoundcloudUserV2): Artist {
   return {
     id: ulid(),
     name: artist.username || "",
@@ -44,9 +36,7 @@ export function constructArtistFromSoundCloud(
   };
 }
 
-export function constructTrackAlbumFromSoundCloud(
-  track: SoundcloudTrackV2
-): Album {
+export function constructTrackAlbumFromSoundCloud(track: SoundcloudTrackV2): Album {
   return {
     type: "single",
     url: track.permalink_url || "",

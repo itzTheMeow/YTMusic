@@ -42,17 +42,16 @@
     placeholder="Username"
     class="input input-bordered input-primary w-full max-w-xs block mb-1"
     bind:this={Username}
-    on:keydown={(e) => e.key == 'Enter' && login()} />
+    on:keydown={(e) => e.key == "Enter" && login()}
+  />
   <input
     type="password"
     placeholder="Password"
     class="input input-bordered input-primary w-full max-w-xs block mb-3"
     bind:this={Password}
-    on:keydown={(e) => e.key == 'Enter' && login()} />
+    on:keydown={(e) => e.key == "Enter" && login()}
+  />
   <div class="text-error mb-2 text-sm">{ERROR}</div>
-  <button class="btn btn-primary mb-2" on:click={login} bind:this={Submit}>Log
-    In</button>
-  <div class="text-xs">
-    Don't have an account? Contact your administrator to get one.
-  </div>
+  <button class="btn btn-primary mb-2" on:click={login} bind:this={Submit}>Log In</button>
+  <div class="text-xs">Don't have an account? Contact your administrator to get one.</div>
 </div>

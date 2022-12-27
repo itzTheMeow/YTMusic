@@ -1,17 +1,11 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
   import { API } from "index";
   import Loader from "Loader.svelte";
-  import { SoundProviders } from "../server/struct";
-  import {
-    ArrowBack,
-    Download,
-    ExternalLink,
-    Eye,
-    X,
-  } from "tabler-icons-svelte";
-  import type { Album, Artist, Track, Downloadable } from "../server/struct";
   import { DateTime, Duration } from "luxon";
+  import { onDestroy } from "svelte";
+  import { ArrowBack, Download, ExternalLink, Eye, X } from "tabler-icons-svelte";
+  import type { Album, Artist, Downloadable, Track } from "../server/struct";
+  import { SoundProviders } from "../server/struct";
 
   export let artist: Artist;
   export let album: Album;
@@ -32,12 +26,7 @@
     if (window.getComputedStyle(modal).visibility == "visible") {
       if (!fetched) {
         fetched = true;
-        trackFetch = API.searchTrack(
-          SoundProviders.YouTube,
-          artist.id,
-          album.id,
-          track.id
-        );
+        trackFetch = API.searchTrack(SoundProviders.YouTube, artist.id, album.id, track.id);
       }
     }
   }, 10);
@@ -58,9 +47,7 @@
       btn.classList.remove("loading");
     } else {
       //@ts-ignore
-      document
-        .querySelector(`[href="#${track.id}"]`)
-        .classList.add("btn-success");
+      document.querySelector(`[href="#${track.id}"]`).classList.add("btn-success");
       window.location.hash = "";
     }
   }
@@ -83,7 +70,8 @@
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen
-            style="aspect-ratio: 560 / 315;" />
+            style="aspect-ratio: 560 / 315;"
+          />
           <div class="btn btn-square" on:click={() => (embedding = null)}>
             <ArrowBack />
           </div>
@@ -92,7 +80,8 @@
             on:click={(e) => {
               //@ts-ignore
               handleDL(e, embedding.url);
-            }}>
+            }}
+          >
             <Download />
           </div>
         </div>
@@ -112,32 +101,33 @@
                       </div>
                       <div class="flex flex-col h-full gap-2">
                         <div>
-                          {dl.title.length > 64 ? dl.title
-                                .slice(0, 64)
-                                .trim() + '...' : dl.title}
+                          {dl.title.length > 64 ? dl.title.slice(0, 64).trim() + "..." : dl.title}
                         </div>
                         <div class="flex gap-2">
                           <a
                             class="flex items-center gap-1 text-sm"
                             href={dl.author.url}
-                            target="_blank">
+                            target="_blank"
+                          >
                             <div class="avatar">
                               <div class="w-5 rounded-full">
-                                <img
-                                  src={dl.author.icon}
-                                  alt={dl.author.name} />
+                                <img src={dl.author.icon} alt={dl.author.name} />
                               </div>
                             </div>
                             {dl.author.name}
                           </a>
                           <div
-                            class="badge {dl.duration + 1500 >= track.duration && track.duration >= dl.duration - 1500 ? 'badge-success' : ''}">
+                            class="badge {dl.duration + 1500 >= track.duration &&
+                            track.duration >= dl.duration - 1500
+                              ? 'badge-success'
+                              : ''}"
+                          >
                             {Duration.fromObject({
                               minutes: 0,
                               seconds: Math.floor(dl.duration / 1000),
                             })
                               .normalize()
-                              .toFormat('mm:ss')}
+                              .toFormat("mm:ss")}
                           </div>
                           <div class="badge badge-accent">
                             {DateTime.fromMillis(dl.uploadedAt).toRelative()}
@@ -149,18 +139,17 @@
                   <td>
                     <div
                       class="btn btn-sm btn-square btn-primary"
-                      on:click={(e) => handleDL(e, dl.url)}>
+                      on:click={(e) => handleDL(e, dl.url)}
+                    >
                       <Download />
                     </div>
                     <div
                       class="btn btn-sm btn-square btn-secondary"
-                      on:click={() => (embedding = dl)}>
+                      on:click={() => (embedding = dl)}
+                    >
                       <Eye />
                     </div>
-                    <a
-                      class="btn btn-sm btn-square btn-accent"
-                      href={dl.url}
-                      target="_blank">
+                    <a class="btn btn-sm btn-square btn-accent" href={dl.url} target="_blank">
                       <ExternalLink />
                     </a>
                   </td>
@@ -171,6 +160,6 @@
         </div>
       {/if}
     {/await}
-    <a href={'#'} class="btn btn-sm btn-circle absolute right-2 top-2"><X /></a>
+    <a href={"#"} class="btn btn-sm btn-circle absolute right-2 top-2"><X /></a>
   </div>
 </div>

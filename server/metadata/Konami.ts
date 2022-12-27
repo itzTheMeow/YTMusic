@@ -10,13 +10,9 @@ let artistCache: {
   page: string;
 }[] = [];
 
-export default async function getKonamiArtist(
-  id: string
-): Promise<ExtendedArtist> {
+export default async function getKonamiArtist(id: string): Promise<ExtendedArtist> {
   const page = (
-    await axios.get(
-      `https://remywiki.com/api.php?action=parse&pageid=${id}&format=json`
-    )
+    await axios.get(`https://remywiki.com/api.php?action=parse&pageid=${id}&format=json`)
   ).data.parse;
   const artist = await constructArtistFromKonami(page);
   const $ = load(page.text["*"]);
@@ -30,9 +26,7 @@ export default async function getKonamiArtist(
       await Promise.all(
         songs.map(async (s) => {
           const d = (
-            await axios.get(
-              `https://remywiki.com/api.php?action=parse&page=${s}&format=json`
-            )
+            await axios.get(`https://remywiki.com/api.php?action=parse&page=${s}&format=json`)
           ).data?.parse;
           if (!d) return null;
           return await constructTrackAlbumFromKonami(d);
@@ -71,9 +65,7 @@ export async function searchKonamiArtists(query: string) {
 
   const found = [
     ...new Set(
-      linkList
-        .filter((l) => l.name.toLowerCase().includes(query.toLowerCase()))
-        .map((l) => l.page)
+      linkList.filter((l) => l.name.toLowerCase().includes(query.toLowerCase())).map((l) => l.page)
     ),
   ].slice(0, 3);
   return (
@@ -82,9 +74,7 @@ export async function searchKonamiArtists(query: string) {
         async (f) =>
           await constructArtistFromKonami(
             (
-              await axios.get(
-                `https://remywiki.com/api.php?action=parse&pageid=${f}&format=json`
-              )
+              await axios.get(`https://remywiki.com/api.php?action=parse&pageid=${f}&format=json`)
             ).data.parse
           )
       )
@@ -100,9 +90,7 @@ async function findImage(name: string, retry = false) {
       )
     ).data.query.pages
   )?.[0]?.imageinfo?.[0]?.url;
-  return (
-    i || (retry ? null : await findImage("Dance_Dance_Revolution.png", true))
-  );
+  return i || (retry ? null : await findImage("Dance_Dance_Revolution.png", true));
 }
 
 export async function constructArtistFromKonami(data: any): Promise<Artist> {
@@ -128,9 +116,7 @@ export async function constructTrackAlbumFromKonami(data: any): Promise<Album> {
     name: data.title,
     type: "single",
     url: `https://remywiki.com/${encodeURIComponent(data.title)}`,
-    year:
-      Number(data.text["*"].match(/, (\d\d\d\d)/)?.[1]) ||
-      new Date().getFullYear(),
+    year: Number(data.text["*"].match(/, (\d\d\d\d)/)?.[1]) || new Date().getFullYear(),
     image: await findImage(data.images[0] || "Dance_Dance_Revolution.png"),
     tracks: [
       {

@@ -1,5 +1,5 @@
 import { promises as fs } from "fs";
-import { join, basename } from "path";
+import { basename, join } from "path";
 import { ulid } from "ulid";
 import { Media } from "../server";
 import { ArtistMeta, MetadataProviders } from "../struct";
@@ -13,18 +13,13 @@ Media.addEvent("LibraryScan", async (a) => {
       try {
         const path = join(Media.dir, a);
         const files = await fs.readdir(path);
-        if (!files.includes("artist.json"))
-          return console.log(`No valid artist in '${a}'.`);
+        if (!files.includes("artist.json")) return console.log(`No valid artist in '${a}'.`);
         const artistjson = join(path, "artist.json"),
-          meta = JSON.parse(
-            (await fs.readFile(artistjson)).toString()
-          ) as ArtistMeta,
+          meta = JSON.parse((await fs.readFile(artistjson)).toString()) as ArtistMeta,
           originalVersion = meta.version;
         if (meta.version !== 2)
           console.log(
-            `Old Artist Format in '${a}' (v${
-              meta.version || 0
-            }). Attempting to migrate.`
+            `Old Artist Format in '${a}' (v${meta.version || 0}). Attempting to migrate.`
           );
         // stuff to migrate old data to new
         if (meta.version <= 1) {
@@ -81,10 +76,7 @@ Media.addEvent("LibraryScan", async (a) => {
             ) {
               const tracks = await fs.readdir(path);
               alb.tracks.forEach(
-                (t) =>
-                  (t.added = tracks.includes(
-                    basename(Media.trackdir(meta, alb, t))
-                  ))
+                (t) => (t.added = tracks.includes(basename(Media.trackdir(meta, alb, t))))
               );
             } else alb.tracks.forEach((t) => (t.added = false));
           })

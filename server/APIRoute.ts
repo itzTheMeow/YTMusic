@@ -1,9 +1,9 @@
-import { ParsedQs } from "qs";
-import path from "path";
 import { Application, json, Request } from "express";
 import fs from "fs";
-import { getAllAccounts } from "./utils";
+import path from "path";
+import { ParsedQs } from "qs";
 import { APIResponse } from "./struct";
+import { getAllAccounts } from "./utils";
 type R = Request<{}, any, any, ParsedQs, Record<string, any>>;
 type RunFunction = (req: R) => Promise<APIResponse> | APIResponse;
 
@@ -18,26 +18,16 @@ export default class APIRouteManager {
   constructor(public app: Application) {}
   public init() {
     this.app.get("/api/*", async (req, res, next) => {
-      const route = this.routes.find(
-        (a) => a.type == "GET" && a.name == path.basename(req.path)
-      );
+      const route = this.routes.find((a) => a.type == "GET" && a.name == path.basename(req.path));
       if (!route) return next();
-      if (
-        route.requiresAuth &&
-        !getAllAccounts().find((a) => a.authToken == req.query.auth)
-      )
+      if (route.requiresAuth && !getAllAccounts().find((a) => a.authToken == req.query.auth))
         return res.json({ err: true, message: "Unauthorized" });
       res.json(await route.run(req));
     });
     this.app.post("/api/*", json(), async (req, res, next) => {
-      const route = this.routes.find(
-        (a) => a.type == "POST" && a.name == path.basename(req.path)
-      );
+      const route = this.routes.find((a) => a.type == "POST" && a.name == path.basename(req.path));
       if (!route) return next();
-      if (
-        route.requiresAuth &&
-        !getAllAccounts().find((a) => a.authToken == req.body.auth)
-      )
+      if (route.requiresAuth && !getAllAccounts().find((a) => a.authToken == req.body.auth))
         return res.json({ err: true, message: "Unauthorized" });
       res.json(await route.run(req));
     });
@@ -46,12 +36,7 @@ export default class APIRouteManager {
     });
   }
 
-  public create(
-    name: string,
-    type: "GET" | "POST",
-    run: RunFunction,
-    requiresAuth = false
-  ) {
+  public create(name: string, type: "GET" | "POST", run: RunFunction, requiresAuth = false) {
     this.routes.push({ name, type, run, requiresAuth });
   }
 }

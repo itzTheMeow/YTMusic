@@ -1,5 +1,5 @@
-import SpotifyWebApi from "spotify-web-api-node";
 import axios from "axios";
+import SpotifyWebApi from "spotify-web-api-node";
 
 export default class SpotifyAuthManager {
   public api: SpotifyWebApi;
@@ -22,8 +22,7 @@ export default class SpotifyAuthManager {
       return await func();
     } catch (e) {
       if (retries <= this.MAX_RETRIES && e && e.statusCode === 429) {
-        const retryAfter =
-          (parseInt(e.headers["retry-after"] as string, 10) + 1) * 1000;
+        const retryAfter = (parseInt(e.headers["retry-after"] as string, 10) + 1) * 1000;
         console.log(`Spotify ratelimited for ${retryAfter}ms.`);
         await new Promise((r) => setTimeout(r, retryAfter));
         return await this.call<T>(func, retries + 1);
@@ -36,18 +35,14 @@ export default class SpotifyAuthManager {
 
   async generateToken() {
     const res = await axios
-      .post(
-        "https://accounts.spotify.com/api/token",
-        "grant_type=client_credentials",
-        {
-          headers: {
-            Authorization: `Basic ${Buffer.from(
-              `${this.clientID}:${this.secret}`
-            ).toString("base64")}`,
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        }
-      )
+      .post("https://accounts.spotify.com/api/token", "grant_type=client_credentials", {
+        headers: {
+          Authorization: `Basic ${Buffer.from(`${this.clientID}:${this.secret}`).toString(
+            "base64"
+          )}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      })
       .catch(console.error);
     if (!res) return "";
     const data = res.data;

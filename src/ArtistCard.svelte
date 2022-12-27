@@ -20,23 +20,21 @@
               {artist.name
                 .split(/ +/g)
                 .map((a) => a[0].toUpperCase())
-                .join('')}
+                .join("")}
             </span>
           </div>
         {/if}
         <div
           class="absolute -top-1.5 -right-1.5 bg-base-200 rounded-full p-[3px]
-            !flex !aspect-auto items-center justify-center gap-0.5">
+            !flex !aspect-auto items-center justify-center gap-0.5"
+        >
           <ArtistProviders providers={Object.keys(artist.providers)} />
         </div>
       </div>
       <div class="flex flex-col gap-1">
         <div class="flex items-center gap-1">
           <div>{artist.name}</div>
-          <a
-            class="text-secondary"
-            href={artist.url}
-            target="_blank"><ExternalLink /></a>
+          <a class="text-secondary" href={artist.url} target="_blank"><ExternalLink /></a>
         </div>
         <div class="badge">{artist.followers.toLocaleString()}</div>
       </div>

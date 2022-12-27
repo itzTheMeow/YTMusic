@@ -10,8 +10,7 @@ import {
 } from "../server/struct";
 
 type Res<T extends object> = Promise<
-  | Extract<APIResponse, { err: true }>
-  | (Extract<APIResponse, { err: false }> & T)
+  Extract<APIResponse, { err: true }> | (Extract<APIResponse, { err: false }> & T)
 >;
 
 export default class {
@@ -19,15 +18,10 @@ export default class {
   private sanitizePath(path: string) {
     return !path.startsWith("/") ? "/" + path : path;
   }
-  public async get(
-    path: string,
-    query?: Record<string, string>
-  ): Promise<APIResponse> {
+  public async get(path: string, query?: Record<string, string>): Promise<APIResponse> {
     try {
       return await fetch(
-        this.url +
-          this.sanitizePath(path) +
-          `?${new URLSearchParams(query).toString()}`
+        this.url + this.sanitizePath(path) + `?${new URLSearchParams(query).toString()}`
       ).then((r) => r.json());
     } catch (err) {
       return { err: true, message: `Error making request: ${err}` };
@@ -47,10 +41,7 @@ export default class {
     }
   }
 
-  public async login(
-    username: string,
-    password: string
-  ): Res<{ token: string }> {
+  public async login(username: string, password: string): Res<{ token: string }> {
     return (await this.post("/login", { username, password })) as any;
   }
   public async searchArtist(
@@ -84,10 +75,7 @@ export default class {
   public async getSettings(): Res<{ settings: Settings }> {
     return (await this.post("/settings_get", {})) as any;
   }
-  public async setSetting<K extends keyof Settings>(
-    k: K,
-    v: Settings[K]
-  ): Res<{}> {
+  public async setSetting<K extends keyof Settings>(k: K, v: Settings[K]): Res<{}> {
     return (await this.post("/settings_set", { k, v })) as any;
   }
   public async changePassword(oldPass: string, newPass: string): Res<{}> {

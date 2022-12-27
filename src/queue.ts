@@ -1,7 +1,7 @@
 import { Auth } from "index";
 import io from "socket.io-client";
-import { writable } from "svelte/store";
 import type { Writable } from "svelte/store";
+import { writable } from "svelte/store";
 import type { QueuedAction } from "../server/struct";
 
 export const Queue: Writable<QueuedAction[]> = writable([]);
@@ -15,8 +15,7 @@ queueSock.on("update", (q: QueuedAction[]) => {
   const isNew = q.filter((q) => !previous.find((p) => p.time == q.time));
   previous.forEach((p) => {
     if (isNew.find((n) => n.time == p.time)) return;
-    if (!q.find((q) => q.time == p.time))
-      queueListeners.forEach(({ cb }) => cb(p));
+    if (!q.find((q) => q.time == p.time)) queueListeners.forEach(({ cb }) => cb(p));
   });
   Queue.set(q);
   previous = [...q];

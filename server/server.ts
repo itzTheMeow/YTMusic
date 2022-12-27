@@ -1,15 +1,14 @@
-import fs from "fs";
-import express from "express";
-import config from "./config";
-import APIRouteManager from "./APIRoute";
-import db from "enhanced.db";
-import { createAccount, getAllAccounts } from "./utils";
 import { randomUUID } from "crypto";
-import SpotifyAuthManager from "./Spotify";
-import MediaManager from "./MediaManager";
+import express from "express";
+import fs from "fs";
 import { Server } from "socket.io";
-import { Account } from "./struct";
+import APIRouteManager from "./APIRoute";
+import config from "./config";
+import MediaManager from "./MediaManager";
 import SoundCloudAuthManager from "./SoundCloud";
+import SpotifyAuthManager from "./Spotify";
+import { Account } from "./struct";
+import { createAccount, getAllAccounts } from "./utils";
 
 export const AuthTokens = (() => {
   try {

@@ -1,19 +1,9 @@
-import { Media, Spotify } from "../server";
-import {
-  Album,
-  Artist,
-  ExtendedArtist,
-  MetadataProviders,
-  Track,
-} from "../struct";
 import { ulid } from "ulid";
+import { Media, Spotify } from "../server";
+import { Album, Artist, ExtendedArtist, MetadataProviders, Track } from "../struct";
 
-export default async function getSpotifyArtist(
-  id: string
-): Promise<ExtendedArtist> {
-  const artist = (
-    await Spotify.call(async () => await Spotify.api.getArtist(id))
-  )?.body;
+export default async function getSpotifyArtist(id: string): Promise<ExtendedArtist> {
+  const artist = (await Spotify.call(async () => await Spotify.api.getArtist(id)))?.body;
   if (!artist) return;
   const newArtist: ExtendedArtist = {
     ...constructArtistFromSpotify(artist),
@@ -59,11 +49,7 @@ export default async function getSpotifyArtist(
                 })
               ).body.items
           );
-          songs.push(
-            ...albumSongs.filter((s) =>
-              s.artists.find((sa) => sa.id == artist.id)
-            )
-          );
+          songs.push(...albumSongs.filter((s) => s.artists.find((sa) => sa.id == artist.id)));
           if (albumSongs.length == 50) {
             trackOffset += 50;
             await newTrackSet(500);
@@ -120,9 +106,7 @@ function findImage(images: SpotifyApi.ImageObject[]) {
   return (images.find((i) => i.width == i.height) || images[0])?.url || "";
 }
 
-export function constructArtistFromSpotify(
-  artist: SpotifyApi.ArtistObjectFull
-): Artist {
+export function constructArtistFromSpotify(artist: SpotifyApi.ArtistObjectFull): Artist {
   return {
     id: ulid(),
     name: artist.name || "",
@@ -136,9 +120,7 @@ export function constructArtistFromSpotify(
   };
 }
 
-export function constructAlbumFromSpotify(
-  album: SpotifyApi.AlbumObjectSimplified
-): Album {
+export function constructAlbumFromSpotify(album: SpotifyApi.AlbumObjectSimplified): Album {
   return {
     type: (album.album_type as any) || "",
     url: album.external_urls.spotify || "",
@@ -152,9 +134,7 @@ export function constructAlbumFromSpotify(
   };
 }
 
-export function constructTrackFromSpotify(
-  track: SpotifyApi.TrackObjectSimplified
-): Track {
+export function constructTrackFromSpotify(track: SpotifyApi.TrackObjectSimplified): Track {
   return {
     id: track.id,
     uuid: track.id,

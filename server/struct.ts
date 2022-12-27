@@ -19,9 +19,7 @@ export const defaultPermissions: AccountPermissions = {
   songRemove: false,
 };
 
-export type APIResponse =
-  | { err: true; message: string }
-  | { err: false; [key: string]: any };
+export type APIResponse = { err: true; message: string } | { err: false; [key: string]: any };
 
 export enum MetadataProviders {
   Spotify = "spotify",

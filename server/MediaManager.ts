@@ -5,9 +5,7 @@ import { getSettings } from "./settings";
 import { Album, Artist, ArtistMeta, QueuedAction, Track } from "./struct";
 
 export function sanitizeFileName(str: string) {
-  return [...str]
-    .map((c) => (config.disallowFilesystemCharacters.includes(c) ? "_" : c))
-    .join("");
+  return [...str].map((c) => (config.disallowFilesystemCharacters.includes(c) ? "_" : c)).join("");
 }
 
 type QueueListener = () => any;
@@ -18,9 +16,7 @@ export default class MediaManager {
   }[] = [];
   private _artists: ArtistMeta[] = [];
   public get artists() {
-    return this._artists.sort((a1, a2) =>
-      a1.name.toLowerCase() > a2.name.toLowerCase() ? 1 : -1
-    );
+    return this._artists.sort((a1, a2) => (a1.name.toLowerCase() > a2.name.toLowerCase() ? 1 : -1));
   }
   public set artists(val: ArtistMeta[]) {
     this._artists = val;
@@ -116,9 +112,7 @@ export default class MediaManager {
         a.id == artist.id ||
         (a.name == artist.name &&
           Object.entries(a.providers).find((p) =>
-            Object.entries(artist.providers).find(
-              (pr) => pr[0] == p[0] && pr[1] == p[1]
-            )
+            Object.entries(artist.providers).find((pr) => pr[0] == p[0] && pr[1] == p[1])
           ))
     );
   }

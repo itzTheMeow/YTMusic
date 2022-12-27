@@ -1,11 +1,11 @@
+import ffmeta from "ffmetadata";
+import ffmpegbin from "ffmpeg-static";
+import ffmpeg from "fluent-ffmpeg";
+import fs from "fs";
+import { image } from "image-downloader";
 import { Media } from "../server";
 import { downloadYoutube } from "../sound/YouTube";
 import { SoundProviders } from "../struct";
-import fs from "fs";
-import ffmpegbin from "ffmpeg-static";
-import ffmpeg from "fluent-ffmpeg";
-import ffmeta from "ffmetadata";
-import { image } from "image-downloader";
 
 Media.addEvent("SongDownload", async (event) => {
   const { artist, album, track } = event;
@@ -17,8 +17,7 @@ Media.addEvent("SongDownload", async (event) => {
     }
   })();
   if (typeof filePath !== "string") return console.error(filePath.err);
-  if (!fs.existsSync(filePath))
-    return console.error("File for conversion not found " + filePath);
+  if (!fs.existsSync(filePath)) return console.error("File for conversion not found " + filePath);
 
   Media.createdir(Media.albumdir(artist, album));
   const trackPath = Media.trackdir(artist, album, track);

@@ -1,11 +1,11 @@
-import sr, { Video } from "youtube-sr";
-import { Downloadable } from "../struct";
-import { join } from "path";
 import fs from "fs";
-import { exec } from "youtube-dl-exec";
-import { Media } from "../server";
-import { sanitizeFileName } from "../MediaManager";
 import { DateTime } from "luxon";
+import { join } from "path";
+import { exec } from "youtube-dl-exec";
+import sr, { Video } from "youtube-sr";
+import { sanitizeFileName } from "../MediaManager";
+import { Media } from "../server";
+import { Downloadable } from "../struct";
 
 export async function searchYoutube(query: string): Promise<Downloadable[]> {
   try {
@@ -15,16 +15,12 @@ export async function searchYoutube(query: string): Promise<Downloadable[]> {
       })) || [];
     return results.map(constructVideoFromYouTube);
   } catch (err) {
-    console.error(
-      `Error searching youtube: ${err}\nQuery: '${query}'\n${err.stack}`
-    );
+    console.error(`Error searching youtube: ${err}\nQuery: '${query}'\n${err.stack}`);
     return [];
   }
 }
 
-export async function downloadYoutube(
-  url: string
-): Promise<{ err: string } | string> {
+export async function downloadYoutube(url: string): Promise<{ err: string } | string> {
   return new Promise(async (res) => {
     try {
       const path = join(Media.tempdir(), `${sanitizeFileName(url)}.mp4`);
@@ -55,9 +51,7 @@ export function constructVideoFromYouTube(vid: Video): Downloadable {
     uploadedAt: vid.uploadedAt
       ? DateTime.now()
           .minus({
-            [vid.uploadedAt.split(" ")[1]]: Number(
-              vid.uploadedAt.split(" ")[0]
-            ),
+            [vid.uploadedAt.split(" ")[1]]: Number(vid.uploadedAt.split(" ")[0]),
           })
           .minus({ minute: 1 }) // fixes the time
           .toMillis()

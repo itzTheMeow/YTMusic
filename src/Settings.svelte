@@ -1,8 +1,8 @@
 <script lang="ts">
   import { API, Auth } from "index";
   import Loader from "Loader.svelte";
-  import ThemePreview from "ThemePreview.svelte";
   import { Themes } from "Theme";
+  import ThemePreview from "ThemePreview.svelte";
 
   let scanButton: HTMLDivElement;
   let libraryFolder: HTMLInputElement;
@@ -17,8 +17,7 @@
   async function handlePassChange() {
     changeError = "";
     if (!curPass || !newPass) return (changeError = "Please enter a password.");
-    if (newPass !== newPassConfirm)
-      return (changeError = "Your passwords do not match!");
+    if (newPass !== newPassConfirm) return (changeError = "Your passwords do not match!");
     passSubmit.classList.add("loading");
     const changed = await API.changePassword(curPass, newPass);
     passSubmit.classList.remove("loading");
@@ -37,10 +36,11 @@
       class="btn btn-primary btn-sm"
       bind:this={scanButton}
       on:click={async () => {
-        scanButton.classList.add('loading');
-        await API.post('scan_lib', {});
-        scanButton.classList.remove('loading');
-      }}>
+        scanButton.classList.add("loading");
+        await API.post("scan_lib", {});
+        scanButton.classList.remove("loading");
+      }}
+    >
       Scan Library
     </div>
     <div class="text-md font-semibold mb-1 mt-2">Library Folder</div>
@@ -52,17 +52,18 @@
         value={res.settings.libraryFolder}
         bind:this={libraryFolder}
         on:keyup={async () => {
-          libraryFolder.classList.remove('input-error');
+          libraryFolder.classList.remove("input-error");
           if (libraryFolder.value) {
             //@ts-ignore
-            libraryFolder.nextElementSibling.style.display = 'block';
-            await API.setSetting('libraryFolder', libraryFolder.value);
+            libraryFolder.nextElementSibling.style.display = "block";
+            await API.setSetting("libraryFolder", libraryFolder.value);
             //@ts-ignore
-            libraryFolder.nextElementSibling.style.display = '';
+            libraryFolder.nextElementSibling.style.display = "";
           } else {
-            libraryFolder.classList.add('input-error');
+            libraryFolder.classList.add("input-error");
           }
-        }} />
+        }}
+      />
       <div class="hidden w-max h-max">
         <Loader />
       </div>
@@ -73,29 +74,28 @@
         type="password"
         placeholder="Current Password"
         class="input input-bordered w-44"
-        bind:value={curPass} />
+        bind:value={curPass}
+      />
       <input
         type="password"
         placeholder="New Password"
         class="input input-bordered w-44"
-        bind:value={newPass} />
+        bind:value={newPass}
+      />
       <input
         type="password"
         placeholder="Confirm Password"
         class="input input-bordered w-44"
-        bind:value={newPassConfirm} />
-      <div
-        class="btn btn-secondary"
-        bind:this={passSubmit}
-        on:click={handlePassChange}>
-        Change
-      </div>
+        bind:value={newPassConfirm}
+      />
+      <div class="btn btn-secondary" bind:this={passSubmit} on:click={handlePassChange}>Change</div>
       <div class="text-sm text-error">{changeError}</div>
     </div>
     <div class="text-md font-semibold mb-1 mt-2">Theme</div>
     <div
       class="rounded-box grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4
-        lg:grid-cols-5">
+        lg:grid-cols-5"
+    >
       {#each Themes as theme}
         <ThemePreview {theme} />
       {/each}

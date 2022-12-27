@@ -1,6 +1,6 @@
+import bcrypt from "bcrypt";
 import { APIRouter } from "../server";
 import { getAllAccounts, grabAccount, saveAccount } from "../utils";
-import bcrypt from "bcrypt";
 
 APIRouter.create(
   "pass_change",

@@ -96,20 +96,14 @@ async function rollingRequest<T>(url: string): Promise<T[]> {
   return data;
 }
 
-export default async function getBandLabArtist(
-  id: string
-): Promise<ExtendedArtist> {
+export default async function getBandLabArtist(id: string): Promise<ExtendedArtist> {
   const bartist: BandLabArtist = (await axios.get(`${API}/users/${id}`)).data;
 
   const albumList = await rollingRequest<BandLabAlbumOverview>(
     `${API}/users/${bartist.id}/albums?limit=100&state=Released`
   );
   const albums = (<BandLabAlbum[]>(
-    await Promise.all(
-      albumList.map(
-        async (a) => (await axios.get(`${API}/albums/${a.id}`)).data
-      )
-    )
+    await Promise.all(albumList.map(async (a) => (await axios.get(`${API}/albums/${a.id}`)).data))
   )).map(constructTrackAlbumFromBandLab);
   const tracks = await rollingRequest<BandLabPost>(
     `${API}/users/${bartist.id}/track-posts?limit=100`
@@ -120,9 +114,7 @@ export default async function getBandLabArtist(
     albums: [
       ...albums,
       ...tracks
-        .filter(
-          (p) => !albums.find((a) => a.tracks.find((t) => t.uuid == p.id))
-        )
+        .filter((p) => !albums.find((a) => a.tracks.find((t) => t.uuid == p.id)))
         .map(constructPostTrackFromBandLab),
     ],
   };
@@ -130,16 +122,13 @@ export default async function getBandLabArtist(
 
 export async function searchBandLabArtists(query: string): Promise<Artist[]> {
   const res = <BandLabArtist[]>(
-    await axios.get(
-      `${API}/search/users?limit=12&query=${encodeURIComponent(query)}`,
-      {
-        headers: {
-          Authorization: `Bearer ${AuthTokens.bandlab}`,
-          "X-Client-Id": "BandLab-Web",
-          "X-Client-Version": "10.0.342",
-        },
-      }
-    )
+    await axios.get(`${API}/search/users?limit=12&query=${encodeURIComponent(query)}`, {
+      headers: {
+        Authorization: `Bearer ${AuthTokens.bandlab}`,
+        "X-Client-Id": "BandLab-Web",
+        "X-Client-Version": "10.0.342",
+      },
+    })
   ).data?.data;
   if (!res) return [];
   return res.map((a) => {

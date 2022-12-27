@@ -1,9 +1,9 @@
+import useAutoprefixer from "autoprefixer";
 import esbuild from "esbuild";
+import postCssPlugin from "esbuild-style-plugin";
 import esbuildSvelte from "esbuild-svelte";
 import sveltePreprocess from "svelte-preprocess";
-import postCssPlugin from "esbuild-style-plugin";
 import useTailwind from "tailwindcss";
-import useAutoprefixer from "autoprefixer";
 import { init } from "./server";
 
 console.log("Building client...");

@@ -28,9 +28,7 @@ Media.addEvent("ArtistAdd", async (event) => {
         ? {
             ...existingArtist,
             albums: [
-              ...existingArtist.albums.filter(
-                (l) => l.provider !== event.provider
-              ),
+              ...existingArtist.albums.filter((l) => l.provider !== event.provider),
               ...artist.albums.filter(
                 (l) =>
                   !existingArtist.albums
@@ -45,12 +43,8 @@ Media.addEvent("ArtistAdd", async (event) => {
           }
         : artist),
     };
-    fs.writeFileSync(
-      join(Media.artistdir(artist), "artist.json"),
-      JSON.stringify(meta)
-    );
-    if (existingArtist)
-      Media.artists.splice(Media.artists.indexOf(existingArtist), 1);
+    fs.writeFileSync(join(Media.artistdir(artist), "artist.json"), JSON.stringify(meta));
+    if (existingArtist) Media.artists.splice(Media.artists.indexOf(existingArtist), 1);
     Media.artists.push(meta);
     Media.queueAction({ type: "LibraryScan" });
   } catch (err) {

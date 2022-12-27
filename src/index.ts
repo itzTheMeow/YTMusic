@@ -18,6 +18,5 @@ export const config = {
   nonSymbol: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 };
 
-if (window.location.pathname == "/login")
-  new LoginPage({ target: document.body });
+if (window.location.pathname == "/login") new LoginPage({ target: document.body });
 else new App({ target: document.body });

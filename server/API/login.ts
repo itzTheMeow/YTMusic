@@ -1,12 +1,11 @@
-import { APIRouter } from "../server";
 import bcrypt from "bcrypt";
+import { APIRouter } from "../server";
 import { getAccount } from "../utils";
 
 APIRouter.create("login", "POST", async (req) => {
   const username = req.body?.username;
   const password = req.body?.password;
-  if (!username || !password)
-    return { err: true, message: "Invalid details provided." };
+  if (!username || !password) return { err: true, message: "Invalid details provided." };
 
   const account = getAccount(username);
   if (!account) return { err: true, message: "Account does not exist." };

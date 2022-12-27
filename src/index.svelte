@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
-  import { ListSearch, Logout, Settings } from "tabler-icons-svelte";
-  import { link, Route, Router } from "svelte-routing";
-  import Home from "./Home.svelte";
-  import { Auth } from "index";
-  import Artists from "Artists.svelte";
   import ArtistAdd from "ArtistAdd.svelte";
-  import { Queue } from "./queue";
-  import type { QueuedAction } from "../server/struct";
-  import { DateTime } from "luxon";
-  import ArtistManage from "ArtistManage.svelte";
   import ArtistAlbum from "ArtistAlbum.svelte";
+  import ArtistManage from "ArtistManage.svelte";
+  import Artists from "Artists.svelte";
+  import { Auth } from "index";
+  import { DateTime } from "luxon";
   import SettingsPage from "Settings.svelte";
+  import { onDestroy, onMount } from "svelte";
+  import { link, Route, Router } from "svelte-routing";
+  import { ListSearch, Logout, Settings } from "tabler-icons-svelte";
+  import type { QueuedAction } from "../server/struct";
+  import Home from "./Home.svelte";
+  import { Queue } from "./queue";
 
   if (!Auth.isAuthorized) window.location.href = "/login";
 
@@ -42,10 +42,7 @@
     <ul class="menu menu-horizontal p-0">
       <!-- svelte-ignore a11y-label-has-associated-control -->
       <div class="dropdown dropdown-end">
-        <label
-          tabindex="0"
-          class="btn btn-ghost btn-circle relative"
-          id="queueButton">
+        <label tabindex="0" class="btn btn-ghost btn-circle relative" id="queueButton">
           <ListSearch />
           {#if q.length}
             <div class="badge badge-primary absolute top-0 right-0">
@@ -57,7 +54,8 @@
           tabindex="0"
           class="mt-3 p-3 shadow menu menu-compact dropdown-content bg-base-200
             rounded-lg overflow-x-hidden w-max"
-          style="max-width:30vw;max-height:50vh;">
+          style="max-width:30vw;max-height:50vh;"
+        >
           {#if q.length}
             {#each q as qi}
               <div>

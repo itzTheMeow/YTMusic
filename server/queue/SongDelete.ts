@@ -1,5 +1,5 @@
-import { Media } from "../server";
 import fs from "fs";
+import { Media } from "../server";
 
 Media.addEvent("SongDelete", (event) => {
   try {
