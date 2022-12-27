@@ -1,4 +1,5 @@
 import { APIRouter } from "../server";
+import { searchSoundCloud } from "../sound/SoundCloud";
 import { searchYoutube } from "../sound/YouTube";
 import { SoundProviders } from "../struct";
 
@@ -12,6 +13,8 @@ APIRouter.create(
     switch (provider as SoundProviders) {
       case SoundProviders.YouTube:
         return { err: false, list: await searchYoutube(term) };
+      case SoundProviders.SoundCloud:
+        return { err: false, list: await searchSoundCloud(term) };
       default:
         return { err: true, message: "Invalid sound provider." };
     }

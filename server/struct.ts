@@ -29,6 +29,7 @@ export enum MetadataProviders {
 }
 export enum SoundProviders {
   YouTube = "youtube",
+  SoundCloud = "soundcloud",
 }
 export type QueuedAction = (
   | {

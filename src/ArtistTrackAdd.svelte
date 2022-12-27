@@ -2,10 +2,11 @@
   import { API } from "index";
   import Loader from "Loader.svelte";
   import { DateTime } from "luxon";
+  import ProviderIcon from "ProviderIcon.svelte";
   import { onDestroy } from "svelte";
   import SwitcherProviders from "SwitcherProviders.svelte";
   import { ArrowBack, Download, ExternalLink, Eye, X } from "tabler-icons-svelte";
-  import { highlightSelect, searchTimeout, stringDuration } from "utils";
+  import { highlightSelect, Providers, searchTimeout, stringDuration } from "utils";
   import type { Album, Artist, Downloadable, Track } from "../server/struct";
   import { SoundProviders } from "../server/struct";
 
@@ -31,7 +32,7 @@
     if (window.getComputedStyle(modal).visibility == "visible") {
       if (fetched !== searchTerm) {
         fetched = searchTerm;
-        trackFetch = API.searchTrack(SoundProviders.YouTube, searchTerm);
+        trackFetch = API.searchTrack(selectedProvider, searchTerm);
       }
     } else if (embedding) embedding = null;
   }, 10);
@@ -44,7 +45,7 @@
       artist: artist.id,
       album: album.id,
       track: track.id,
-      provider: SoundProviders.YouTube,
+      provider: selectedProvider,
       url,
     });
     if (res.err) {
@@ -102,7 +103,12 @@
             value={searchTerm}
             bind:this={searchInput}
           />
-          <SwitcherProviders type="sound" bind:selected={selectedProvider} />
+          <SwitcherProviders
+            type="sound"
+            select={album.provider}
+            bind:selected={selectedProvider}
+            on:selection={() => (fetched = null)}
+          />
         </div>
       </div>
 
@@ -141,7 +147,7 @@
                       </div>
                       {dl.author.name}
                     </a>
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 items-center">
                       <div
                         class="badge {dl.duration + 1500 >= track.duration &&
                         track.duration >= dl.duration - 1500
@@ -152,6 +158,9 @@
                       </div>
                       <div class="badge badge-accent">
                         {DateTime.fromMillis(dl.uploadedAt).toRelative()}
+                      </div>
+                      <div style:color={Providers[selectedProvider]} class="-ml-0.5">
+                        <ProviderIcon provider={selectedProvider} size={20} />
                       </div>
                     </div>
                     <div class="mt-0.5">

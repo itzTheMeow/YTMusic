@@ -4,6 +4,7 @@ import ffmpeg from "fluent-ffmpeg";
 import fs from "fs";
 import { image } from "image-downloader";
 import { Media } from "../server";
+import { downloadSoundcloud } from "../sound/SoundCloud";
 import { downloadYoutube } from "../sound/YouTube";
 import { SoundProviders } from "../struct";
 
@@ -14,6 +15,8 @@ Media.addEvent("SongDownload", async (event) => {
     switch (event.provider) {
       case SoundProviders.YouTube:
         return await downloadYoutube(event.url);
+      case SoundProviders.SoundCloud:
+        return await downloadSoundcloud(event.url);
     }
   })();
   if (typeof filePath !== "string") return console.error(filePath.err);

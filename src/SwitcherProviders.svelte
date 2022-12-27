@@ -6,6 +6,7 @@
 
   export let type: "meta" | "sound";
   export let className = "";
+  export let select: MetadataProviders | SoundProviders | undefined = undefined;
 
   // https://stackoverflow.com/questions/46432335/hex-to-hsl-convert-javascript
   function hex2hsl(prov: MetadataProviders | SoundProviders) {
@@ -46,7 +47,10 @@
   }
 
   export let selected: MetadataProviders | SoundProviders =
-    type == "meta" ? MetadataProviders.Spotify : SoundProviders.YouTube;
+    (type == "meta"
+      ? Object.values(MetadataProviders).find((e) => e == select)
+      : Object.values(SoundProviders).find((e) => e == select)) ||
+    (type == "meta" ? MetadataProviders.Spotify : SoundProviders.YouTube);
   const dispatch = createEventDispatcher();
 </script>
 
