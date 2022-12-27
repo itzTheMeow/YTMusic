@@ -91,7 +91,7 @@
         <h3 class="font-bold text-lg mb-1">
           {artist.name} - {track.title} ({stringDuration(track.duration)})
         </h3>
-        <div class="flex gap-2 items-center mb-2">
+        <div class="flex gap-2 items-center mb-2 [@media(max-width:600px)]:!flex-col">
           <input
             type="text"
             placeholder="Search {Object.entries(SoundProviders).find(
