@@ -28,7 +28,7 @@
         fetched = true;
         trackFetch = API.searchTrack(SoundProviders.YouTube, artist.id, album.id, track.id);
       }
-    }
+    } else if (embedding) embedding = null;
   }, 10);
   onDestroy(() => clearInterval(check));
 
