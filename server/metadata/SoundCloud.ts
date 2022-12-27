@@ -43,7 +43,7 @@ export function constructTrackAlbumFromSoundCloud(track: SoundcloudTrackV2): Alb
     id: ulid(),
     name: track.title || "",
     year: new Date(track.created_at).getFullYear(),
-    image: track.artwork_url?.replace("-large", "-t500x500") || "",
+    image: (track.artwork_url || track.user.avatar_url)?.replace("-large", "-t500x500") || "",
     uuid: "alb" + track.id,
     tracks: [
       {
