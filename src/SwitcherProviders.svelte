@@ -5,6 +5,7 @@
   import { MetadataProviders, SoundProviders } from "../server/struct";
 
   export let type: "meta" | "sound";
+  export let className = "";
 
   // https://stackoverflow.com/questions/46432335/hex-to-hsl-convert-javascript
   function hex2hsl(prov: MetadataProviders | SoundProviders) {
@@ -49,7 +50,7 @@
   const dispatch = createEventDispatcher();
 </script>
 
-<div class="btn-group w-full justify-center mt-4 mb-2">
+<div class="btn-group justify-center {className}">
   {#each Object.values(type == "meta" ? MetadataProviders : SoundProviders) as prov}
     <button
       class="btn {selected == prov ? 'btn-active' : ''}"

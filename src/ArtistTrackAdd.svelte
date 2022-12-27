@@ -3,8 +3,9 @@
   import Loader from "Loader.svelte";
   import { DateTime } from "luxon";
   import { onDestroy } from "svelte";
+  import SwitcherProviders from "SwitcherProviders.svelte";
   import { ArrowBack, Download, ExternalLink, Eye, X } from "tabler-icons-svelte";
-  import { stringDuration } from "utils";
+  import { highlightSelect, searchTimeout, stringDuration } from "utils";
   import type { Album, Artist, Downloadable, Track } from "../server/struct";
   import { SoundProviders } from "../server/struct";
 
@@ -12,8 +13,9 @@
   export let album: Album;
   export let track: Track;
 
-  let embedding: Downloadable | null = null;
-  let modal: HTMLDivElement;
+  let embedding: Downloadable | null = null,
+    selectedProvider: SoundProviders;
+  let modal: HTMLDivElement, searchInput: HTMLInputElement;
 
   let searchTerm = `${artist.name} - ${track.title}`;
 
@@ -57,105 +59,126 @@
 </script>
 
 <div class="modal" id={track.id} bind:this={modal}>
-  <div class="modal-box w-11/12 max-w-5xl">
-    {#await trackFetch}
-      <Loader />
-    {:then res}
-      {#if res.err}
-        <div class="text-sm">{res.message}</div>
-      {:else if embedding}
-        <div class="flex items-center justify-center gap-2 flex-col">
-          <iframe
-            class="block m-auto max-w-2xl"
-            width="100%"
-            src={embedding.embed}
-            title="Video Embed"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-            style="aspect-ratio: 560 / 315;"
-          />
-          <div class="btn btn-square" on:click={() => (embedding = null)}>
-            <ArrowBack />
-          </div>
-          <div
-            class="btn btn-sm btn-square btn-primary"
-            on:click={(e) => {
-              //@ts-ignore
-              handleDL(e, embedding.url);
-            }}
-          >
-            <Download />
-          </div>
+  <div class="modal-box flex flex-col h-full w-11/12 max-w-5xl">
+    {#if embedding}
+      <div class="flex items-center justify-center gap-2 flex-col">
+        <iframe
+          class="block m-auto max-w-2xl"
+          width="100%"
+          src={embedding.embed}
+          title="Video Embed"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          style="aspect-ratio: 560 / 315;"
+        />
+        <div class="btn btn-square" on:click={() => (embedding = null)}>
+          <ArrowBack />
         </div>
-      {:else}
+        <div
+          class="btn btn-sm btn-square btn-primary"
+          on:click={(e) => {
+            //@ts-ignore
+            handleDL(e, embedding.url);
+          }}
+        >
+          <Download />
+        </div>
+      </div>
+    {:else}
+      <div>
         <h3 class="font-bold text-lg mb-1">
           {artist.name} - {track.title} ({stringDuration(track.duration)})
         </h3>
-        <div class="flex flex-wrap gap-1 justify-center">
-          {#each res.list as dl}
-            <div
-              class="aspect-video relative rounded-3xl box-border overflow-hidden w-[calc(33%-0.5rem)] [@media(max-width:800px)]:w-[calc(50%-0.5rem)] [@media(max-width:600px)]:!w-full"
-            >
-              <div class="w-full h-full avatar">
-                <div class="w-full h-full">
-                  <img src={dl.thumbnail} alt={dl.title} class="object-contain blur-[2px]" />
-                </div>
-              </div>
-              <div
-                class="absolute top-0 left-0 bg-black bg-opacity-50 w-full h-full flex flex-col gap-1.5 p-2.5 justify-end"
-              >
-                <div class="font-bold text-lg">
-                  {dl.title.length > 32 ? dl.title.slice(0, 32).trim() + "..." : dl.title}
-                </div>
-                <a
-                  class="flex items-center gap-1 text-sm font-semibold"
-                  href={dl.author.url}
-                  target="_blank"
+        <div class="flex gap-2 items-center mb-2">
+          <input
+            type="text"
+            placeholder="Search {Object.entries(SoundProviders).find(
+              (e) => e[1] == selectedProvider
+            )?.[0] || ''}"
+            class="input input-bordered block flex-1"
+            use:highlightSelect
+            use:searchTimeout={() => (searchTerm = searchInput.value)}
+            value={searchTerm}
+            bind:this={searchInput}
+          />
+          <SwitcherProviders type="sound" bind:selected={selectedProvider} />
+        </div>
+      </div>
+
+      <div class="flex-1 overflow-y-auto">
+        {#await trackFetch}
+          <Loader />
+        {:then res}
+          {#if res.err}
+            <div class="text-sm">{res.message}</div>
+          {:else}
+            <div class="flex flex-wrap gap-1 justify-center">
+              {#each res.list as dl}
+                <div
+                  class="aspect-video relative rounded-3xl box-border overflow-hidden w-[calc(33%-0.5rem)] [@media(max-width:800px)]:w-[calc(50%-0.5rem)] [@media(max-width:600px)]:!w-full"
                 >
-                  <div class="avatar">
-                    <div class="w-5 rounded-full">
-                      <img src={dl.author.icon} alt={dl.author.name} />
+                  <div class="w-full h-full avatar">
+                    <div class="w-full h-full">
+                      <img src={dl.thumbnail} alt={dl.title} class="object-contain blur-[2px]" />
                     </div>
                   </div>
-                  {dl.author.name}
-                </a>
-                <div class="flex gap-2">
                   <div
-                    class="badge {dl.duration + 1500 >= track.duration &&
-                    track.duration >= dl.duration - 1500
-                      ? 'badge-success'
-                      : ''}"
+                    class="absolute top-0 left-0 bg-black bg-opacity-50 w-full h-full flex flex-col gap-1.5 p-2.5 justify-end"
                   >
-                    {stringDuration(dl.duration)}
-                  </div>
-                  <div class="badge badge-accent">
-                    {DateTime.fromMillis(dl.uploadedAt).toRelative()}
+                    <div class="font-bold text-lg">
+                      {dl.title.length > 32 ? dl.title.slice(0, 32).trim() + "..." : dl.title}
+                    </div>
+                    <a
+                      class="flex items-center gap-1 text-sm font-semibold"
+                      href={dl.author.url}
+                      target="_blank"
+                    >
+                      <div class="avatar">
+                        <div class="w-5 rounded-full">
+                          <img src={dl.author.icon} alt={dl.author.name} />
+                        </div>
+                      </div>
+                      {dl.author.name}
+                    </a>
+                    <div class="flex gap-2">
+                      <div
+                        class="badge {dl.duration + 1500 >= track.duration &&
+                        track.duration >= dl.duration - 1500
+                          ? 'badge-success'
+                          : ''}"
+                      >
+                        {stringDuration(dl.duration)}
+                      </div>
+                      <div class="badge badge-accent">
+                        {DateTime.fromMillis(dl.uploadedAt).toRelative()}
+                      </div>
+                    </div>
+                    <div class="mt-0.5">
+                      <div
+                        class="btn btn-sm btn-square btn-primary"
+                        on:click={(e) => handleDL(e, dl.url)}
+                      >
+                        <Download />
+                      </div>
+                      <div
+                        class="btn btn-sm btn-square btn-secondary"
+                        on:click={() => (embedding = dl)}
+                      >
+                        <Eye />
+                      </div>
+                      <a class="btn btn-sm btn-square btn-accent" href={dl.url} target="_blank">
+                        <ExternalLink />
+                      </a>
+                    </div>
                   </div>
                 </div>
-                <div class="mt-0.5">
-                  <div
-                    class="btn btn-sm btn-square btn-primary"
-                    on:click={(e) => handleDL(e, dl.url)}
-                  >
-                    <Download />
-                  </div>
-                  <div
-                    class="btn btn-sm btn-square btn-secondary"
-                    on:click={() => (embedding = dl)}
-                  >
-                    <Eye />
-                  </div>
-                  <a class="btn btn-sm btn-square btn-accent" href={dl.url} target="_blank">
-                    <ExternalLink />
-                  </a>
-                </div>
-              </div>
+              {/each}
             </div>
-          {/each}
-        </div>
-      {/if}
-    {/await}
+          {/if}
+        {/await}
+      </div>
+    {/if}
     <a href={"#"} class="btn btn-sm btn-circle absolute right-2 top-2"><X /></a>
   </div>
 </div>

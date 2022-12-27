@@ -7,11 +7,10 @@
   import { navigate } from "svelte-routing";
   import SwitcherProviders from "SwitcherProviders.svelte";
   import { Check, Dots, Plus } from "tabler-icons-svelte";
+  import { highlightSelect, searchTimeout } from "utils";
   import type { MetadataProviders } from "../server/struct";
 
   let searchInput: HTMLInputElement;
-  let wantSearch = false;
-  let inputSelected = true;
   let selectedProvider: MetadataProviders;
 
   let searchResults: ReturnType<typeof API.searchArtist>;
@@ -30,19 +29,11 @@
     }
   });
 
-  const searchCheck = setInterval(function () {
-    if (wantSearch) {
-      search();
-      wantSearch = false;
-    }
-  }, 1000);
-  let searchWaiting: number;
   onMount(() => {
     searchInput.select();
   });
   onDestroy(() => {
     offQueueChange(i);
-    clearInterval(searchCheck);
   });
 </script>
 
@@ -54,24 +45,15 @@
       placeholder="Search for a an artist..."
       class="input input-bordered block w-full max-w-3xl m-auto"
       bind:this={searchInput}
-      on:click={() => {
-        if (!inputSelected) searchInput.select();
-        inputSelected = true;
-      }}
-      on:blur={() => {
-        inputSelected = false;
-      }}
-      on:keyup={() => {
-        wantSearch = true;
-        clearTimeout(searchWaiting);
-        searchWaiting = Number(setTimeout(search, 700));
-      }}
+      use:highlightSelect
+      use:searchTimeout={search}
     />
   </div>
   <SwitcherProviders
     type="meta"
     on:selection={() => search(true)}
     bind:selected={selectedProvider}
+    className="mt-4 mb-2"
   />
 
   {#if searchResults}

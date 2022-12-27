@@ -19,3 +19,36 @@ export function stringDuration(duration: number) {
     .normalize()
     .toFormat("mm:ss");
 }
+
+export function highlightSelect(element: HTMLInputElement) {
+  let inputSelected = true;
+  element.addEventListener("click", () => {
+    if (!inputSelected) element.select();
+    inputSelected = true;
+  });
+  element.addEventListener("blur", () => {
+    inputSelected = false;
+  });
+}
+export function searchTimeout(element: HTMLInputElement, callback: () => any) {
+  let wantSearch = false,
+    searchWaiting: number;
+  const searchCheck = setInterval(function () {
+    if (wantSearch) {
+      callback();
+      wantSearch = false;
+    }
+  }, 1000);
+
+  element.addEventListener("keyup", () => {
+    wantSearch = true;
+    clearTimeout(searchWaiting);
+    searchWaiting = setTimeout(() => callback(), 700);
+  });
+
+  return {
+    destroy() {
+      clearInterval(searchCheck);
+    },
+  };
+}
