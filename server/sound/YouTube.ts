@@ -16,6 +16,7 @@ export async function searchYoutube(query: string): Promise<Downloadable[]> {
     const results =
       (await sr.search(query, {
         type: "video",
+        limit: 30,
       })) || [];
     return results.map(constructVideoFromYouTube);
   } catch (err) {

@@ -92,71 +92,67 @@
         <h3 class="font-bold text-lg mb-1">
           {artist.name} - {track.title} ({stringDuration(track.duration)})
         </h3>
-        <div class="overflow-x-auto">
-          <table class="table table-zebra w-full">
-            <tbody>
-              {#each res.list as dl}
-                <tr>
-                  <td class="font-bold">
-                    <div class="flex gap-2">
-                      <div class="avatar">
-                        <div class="h-16 w-28 rounded">
-                          <img src={dl.thumbnail} alt={dl.title} />
-                        </div>
-                      </div>
-                      <div class="flex flex-col h-full gap-2">
-                        <div>
-                          {dl.title.length > 64 ? dl.title.slice(0, 64).trim() + "..." : dl.title}
-                        </div>
-                        <div class="flex gap-2">
-                          <a
-                            class="flex items-center gap-1 text-sm"
-                            href={dl.author.url}
-                            target="_blank"
-                          >
-                            <div class="avatar">
-                              <div class="w-5 rounded-full">
-                                <img src={dl.author.icon} alt={dl.author.name} />
-                              </div>
-                            </div>
-                            {dl.author.name}
-                          </a>
-                          <div
-                            class="badge {dl.duration + 1500 >= track.duration &&
-                            track.duration >= dl.duration - 1500
-                              ? 'badge-success'
-                              : ''}"
-                          >
-                            {stringDuration(dl.duration)}
-                          </div>
-                          <div class="badge badge-accent">
-                            {DateTime.fromMillis(dl.uploadedAt).toRelative()}
-                          </div>
-                        </div>
-                      </div>
+        <div class="flex flex-wrap gap-1 justify-center">
+          {#each res.list as dl}
+            <div
+              class="aspect-video relative rounded-3xl box-border overflow-hidden w-[calc(33%-0.5rem)] [@media(max-width:800px)]:w-[calc(50%-0.5rem)] [@media(max-width:600px)]:!w-full"
+            >
+              <div class="w-full h-full avatar">
+                <div class="w-full h-full">
+                  <img src={dl.thumbnail} alt={dl.title} class="object-contain blur-[2px]" />
+                </div>
+              </div>
+              <div
+                class="absolute top-0 left-0 bg-black bg-opacity-50 w-full h-full flex flex-col gap-1.5 p-2.5 justify-end"
+              >
+                <div class="font-bold text-lg">
+                  {dl.title.length > 32 ? dl.title.slice(0, 32).trim() + "..." : dl.title}
+                </div>
+                <a
+                  class="flex items-center gap-1 text-sm font-semibold"
+                  href={dl.author.url}
+                  target="_blank"
+                >
+                  <div class="avatar">
+                    <div class="w-5 rounded-full">
+                      <img src={dl.author.icon} alt={dl.author.name} />
                     </div>
-                  </td>
-                  <td>
-                    <div
-                      class="btn btn-sm btn-square btn-primary"
-                      on:click={(e) => handleDL(e, dl.url)}
-                    >
-                      <Download />
-                    </div>
-                    <div
-                      class="btn btn-sm btn-square btn-secondary"
-                      on:click={() => (embedding = dl)}
-                    >
-                      <Eye />
-                    </div>
-                    <a class="btn btn-sm btn-square btn-accent" href={dl.url} target="_blank">
-                      <ExternalLink />
-                    </a>
-                  </td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
+                  </div>
+                  {dl.author.name}
+                </a>
+                <div class="flex gap-2">
+                  <div
+                    class="badge {dl.duration + 1500 >= track.duration &&
+                    track.duration >= dl.duration - 1500
+                      ? 'badge-success'
+                      : ''}"
+                  >
+                    {stringDuration(dl.duration)}
+                  </div>
+                  <div class="badge badge-accent">
+                    {DateTime.fromMillis(dl.uploadedAt).toRelative()}
+                  </div>
+                </div>
+                <div class="mt-0.5">
+                  <div
+                    class="btn btn-sm btn-square btn-primary"
+                    on:click={(e) => handleDL(e, dl.url)}
+                  >
+                    <Download />
+                  </div>
+                  <div
+                    class="btn btn-sm btn-square btn-secondary"
+                    on:click={() => (embedding = dl)}
+                  >
+                    <Eye />
+                  </div>
+                  <a class="btn btn-sm btn-square btn-accent" href={dl.url} target="_blank">
+                    <ExternalLink />
+                  </a>
+                </div>
+              </div>
+            </div>
+          {/each}
         </div>
       {/if}
     {/await}
