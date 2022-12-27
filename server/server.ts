@@ -12,28 +12,20 @@ import { createAccount, getAllAccounts } from "./utils";
 
 export const AuthTokens = (() => {
   try {
-    return JSON.parse(
-      fs.readFileSync(`${process.cwd()}/auth.json`).toString()
-    ) as {
+    return JSON.parse(fs.readFileSync(`${process.cwd()}/auth.json`).toString()) as {
       spotify: {
         id: string;
         secret: string;
       };
-      bandlab: string;
     };
   } catch {
-    console.error(
-      "Invalid auth.json file! Please read the documentation and fix it."
-    );
+    console.error("Invalid auth.json file! Please read the documentation and fix it.");
     process.exit();
   }
 })();
 
 export let APIRouter: APIRouteManager;
-export const Spotify = new SpotifyAuthManager(
-  AuthTokens.spotify.id,
-  AuthTokens.spotify.secret
-);
+export const Spotify = new SpotifyAuthManager(AuthTokens.spotify.id, AuthTokens.spotify.secret);
 export const SoundCloud = new SoundCloudAuthManager();
 export const Media = new MediaManager();
 
@@ -71,8 +63,6 @@ export function init() {
   if (!getAllAccounts().find((a) => a.permissions.owner)) {
     const pass = randomUUID().split("-")[0];
     createAccount("admin", pass);
-    console.log(
-      `Creating admin account with username "admin" and password "${pass}".`
-    );
+    console.log(`Creating admin account with username "admin" and password "${pass}".`);
   }
 }

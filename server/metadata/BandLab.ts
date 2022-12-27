@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ulid } from "ulid";
-import { AuthTokens, Media } from "../server";
+import { Media } from "../server";
 import { Album, Artist, ExtendedArtist, MetadataProviders } from "../struct";
 
 interface BandLabResponse<d = any> {
@@ -121,20 +121,14 @@ export default async function getBandLabArtist(id: string): Promise<ExtendedArti
 }
 
 export async function searchBandLabArtists(query: string): Promise<Artist[]> {
-  const res = <BandLabArtist[]>(
-    await axios.get(`${API}/search/users?limit=12&query=${encodeURIComponent(query)}`, {
-      headers: {
-        Authorization: `Bearer ${AuthTokens.bandlab}`,
-        "X-Client-Id": "BandLab-Web",
-        "X-Client-Version": "10.0.342",
-      },
-    })
-  ).data?.data;
-  if (!res) return [];
-  return res.map((a) => {
-    const artist = constructArtistFromBandLab(a);
-    return { ...artist, status: Media.hasArtist(artist) ? 2 : 0 };
-  });
+  try {
+    const res: BandLabArtist = (await axios.get(`${API}/users/${query}`)).data;
+    if (!res) return [];
+    const artist = constructArtistFromBandLab(res);
+    return [{ ...artist, status: Media.hasArtist(artist) ? 2 : 0 }];
+  } catch {
+    return [];
+  }
 }
 
 export function constructArtistFromBandLab(artist: BandLabArtist): Artist {
