@@ -2,18 +2,17 @@
   import ArtistCard from "ArtistCard.svelte";
   import { API } from "index";
   import Loader from "Loader.svelte";
-  import ProviderIcon from "ProviderIcon.svelte";
   import { offQueueChange, onQueueChange } from "queue";
   import { onDestroy, onMount } from "svelte";
   import { navigate } from "svelte-routing";
+  import SwitcherProviders from "SwitcherProviders.svelte";
   import { Check, Dots, Plus } from "tabler-icons-svelte";
-  import { hex2hsl, Providers } from "utils";
-  import { MetadataProviders } from "../server/struct";
+  import type { MetadataProviders } from "../server/struct";
 
   let searchInput: HTMLInputElement;
   let wantSearch = false;
   let inputSelected = true;
-  let selectedProvider: MetadataProviders = MetadataProviders.Spotify;
+  let selectedProvider: MetadataProviders;
 
   let searchResults: ReturnType<typeof API.searchArtist>;
   let lastSearched = "";
@@ -69,16 +68,11 @@
       }}
     />
   </div>
-  <div class="btn-group w-full justify-center mt-4 mb-2">
-    {#each Object.values(MetadataProviders) as prov}
-      <button
-        class="btn {selectedProvider == prov ? 'btn-active' : ''}"
-        style={`--${selectedProvider == prov ? "p" : "nc"}:${hex2hsl(Providers[prov])};`}
-        on:click={() => ((selectedProvider = prov), search(true))}
-        ><ProviderIcon size={26} provider={prov} /></button
-      >
-    {/each}
-  </div>
+  <SwitcherProviders
+    type="meta"
+    on:selection={() => search(true)}
+    bind:selected={selectedProvider}
+  />
 
   {#if searchResults}
     {#await searchResults}
