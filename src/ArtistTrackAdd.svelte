@@ -1,9 +1,10 @@
 <script lang="ts">
   import { API } from "index";
   import Loader from "Loader.svelte";
-  import { DateTime, Duration } from "luxon";
+  import { DateTime } from "luxon";
   import { onDestroy } from "svelte";
   import { ArrowBack, Download, ExternalLink, Eye, X } from "tabler-icons-svelte";
+  import { stringDuration } from "utils";
   import type { Album, Artist, Downloadable, Track } from "../server/struct";
   import { SoundProviders } from "../server/struct";
 
@@ -14,7 +15,9 @@
   let embedding: Downloadable | null = null;
   let modal: HTMLDivElement;
 
-  let fetched = false;
+  let searchTerm = `${artist.name} - ${track.title}`;
+
+  let fetched: string | null = null;
   let trackFetch: ReturnType<typeof API.searchTrack> = new Promise((r) =>
     r({
       err: true,
@@ -24,9 +27,9 @@
   const check = setInterval(() => {
     if (!modal) return;
     if (window.getComputedStyle(modal).visibility == "visible") {
-      if (!fetched) {
-        fetched = true;
-        trackFetch = API.searchTrack(SoundProviders.YouTube, artist.id, album.id, track.id);
+      if (fetched !== searchTerm) {
+        fetched = searchTerm;
+        trackFetch = API.searchTrack(SoundProviders.YouTube, searchTerm);
       }
     } else if (embedding) embedding = null;
   }, 10);
@@ -86,7 +89,9 @@
           </div>
         </div>
       {:else}
-        <h3 class="font-bold text-lg mb-1">{track.title}</h3>
+        <h3 class="font-bold text-lg mb-1">
+          {artist.name} - {track.title} ({stringDuration(track.duration)})
+        </h3>
         <div class="overflow-x-auto">
           <table class="table table-zebra w-full">
             <tbody>
@@ -122,12 +127,7 @@
                               ? 'badge-success'
                               : ''}"
                           >
-                            {Duration.fromObject({
-                              minutes: 0,
-                              seconds: Math.floor(dl.duration / 1000),
-                            })
-                              .normalize()
-                              .toFormat("mm:ss")}
+                            {stringDuration(dl.duration)}
                           </div>
                           <div class="badge badge-accent">
                             {DateTime.fromMillis(dl.uploadedAt).toRelative()}

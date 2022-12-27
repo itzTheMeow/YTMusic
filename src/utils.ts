@@ -1,3 +1,4 @@
+import { Duration } from "luxon";
 import { MetadataProviders, SoundProviders } from "../server/struct";
 
 export const Providers: {
@@ -46,4 +47,13 @@ export function hex2hsl(hex: string) {
   l = Math.round(l);
   h = Math.round(360 * h);
   return `${h} ${s}% ${l}%`;
+}
+
+export function stringDuration(duration: number) {
+  return Duration.fromObject({
+    minutes: 0,
+    seconds: Math.floor(duration / 1000),
+  })
+    .normalize()
+    .toFormat("mm:ss");
 }

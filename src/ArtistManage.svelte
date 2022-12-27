@@ -95,11 +95,11 @@
                 class="btn btn-sm btn-accent w-max"
                 bind:this={refreshMetaBtn}
                 on:click={async () => {
-                  refreshMetaBtn.classList.add("btn-loading");
+                  refreshMetaBtn.classList.add("loading");
                   for (const [source, id] of Object.entries(r.artist.providers)) {
                     await API.post("artist_add", { id, source });
                   }
-                  refreshMetaBtn.classList.remove("btn-loading");
+                  refreshMetaBtn.classList.remove("loading");
                 }}
               >
                 Refresh Metadata

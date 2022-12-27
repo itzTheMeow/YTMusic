@@ -114,6 +114,7 @@
                         source: Object.entries(artist.providers)[0][0],
                       });
                       artist.status = 1;
+                      //@ts-ignore
                       artists = artists;
                   }
                 }}

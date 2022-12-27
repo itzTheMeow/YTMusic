@@ -9,6 +9,10 @@ import { Downloadable } from "../struct";
 
 export async function searchYoutube(query: string): Promise<Downloadable[]> {
   try {
+    if (sr.validate(query, "VIDEO") || sr.validate(query, "VIDEO_ID")) {
+      const vid = await sr.getVideo(query);
+      if (vid) return [constructVideoFromYouTube(vid)];
+    }
     const results =
       (await sr.search(query, {
         type: "video",

@@ -1,12 +1,12 @@
 import { Auth } from "index";
 import {
-  APIResponse,
-  Artist,
-  ArtistMeta,
-  Downloadable,
   MetadataProviders,
-  Settings,
   SoundProviders,
+  type APIResponse,
+  type Artist,
+  type ArtistMeta,
+  type Downloadable,
+  type Settings,
 } from "../server/struct";
 
 type Res<T extends object> = Promise<
@@ -59,17 +59,10 @@ export default class {
   public async fetchArtist(id: string): Res<{ artist: ArtistMeta }> {
     return (await this.post("/artist_get", { id })) as any;
   }
-  public async searchTrack(
-    provider: SoundProviders,
-    artist: string,
-    album: string,
-    track: string
-  ): Res<{ list: Downloadable[] }> {
+  public async searchTrack(provider: SoundProviders, term: string): Res<{ list: Downloadable[] }> {
     return (await this.post("/track_search", {
       provider,
-      artist,
-      album,
-      track,
+      term,
     })) as any;
   }
   public async getSettings(): Res<{ settings: Settings }> {
