@@ -125,5 +125,6 @@ if (isMainThread) {
       })
     );
     post({ type: "Data", data: newData });
+    process.exit();
   })();
 }
