@@ -132,7 +132,7 @@
                   <div
                     class="absolute top-0 left-0 bg-black bg-opacity-50 w-full h-full flex flex-col gap-1.5 p-2.5 justify-end"
                   >
-                    <div class="font-bold text-lg">
+                    <div class="font-bold text-lg" title={dl.title}>
                       {dl.title.length > 32 ? dl.title.slice(0, 32).trim() + "..." : dl.title}
                     </div>
                     <a
