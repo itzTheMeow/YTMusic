@@ -3,9 +3,13 @@ import { ulid } from "ulid";
 import { Media, SoundCloud } from "../server";
 import { Album, Artist, ExtendedArtist, MetadataProviders } from "../struct";
 
-export default async function getSoundCloudArtist(id: string): Promise<ExtendedArtist> {
-  const user = await SoundCloud.api.users.getV2(id);
-  const tracks = await SoundCloud.api.users.tracksV2(user.id);
+export default async function getSoundCloudArtist(
+  id: string
+): Promise<ExtendedArtist> {
+  const user = await SoundCloud.api.users.getV2(id.padStart(8, "0"));
+  const tracks = await SoundCloud.api.users.tracksV2(
+    String(user.id).padStart(8, "0")
+  );
 
   return {
     ...constructArtistFromSoundCloud(user),
@@ -13,8 +17,12 @@ export default async function getSoundCloudArtist(id: string): Promise<ExtendedA
   };
 }
 
-export async function searchSoundCloudArtists(query: string): Promise<Artist[]> {
-  return (await SoundCloud.api.users.searchV2({ q: query, limit: 12 })).collection
+export async function searchSoundCloudArtists(
+  query: string
+): Promise<Artist[]> {
+  return (
+    await SoundCloud.api.users.searchV2({ q: query, limit: 12 })
+  ).collection
     .filter((a) => a)
     .map((a) => {
       const artist = constructArtistFromSoundCloud(a);
@@ -22,7 +30,9 @@ export async function searchSoundCloudArtists(query: string): Promise<Artist[]> 
     });
 }
 
-export function constructArtistFromSoundCloud(artist: SoundcloudUserV2): Artist {
+export function constructArtistFromSoundCloud(
+  artist: SoundcloudUserV2
+): Artist {
   return {
     id: ulid(),
     name: artist.username || "",
@@ -36,14 +46,20 @@ export function constructArtistFromSoundCloud(artist: SoundcloudUserV2): Artist 
   };
 }
 
-export function constructTrackAlbumFromSoundCloud(track: SoundcloudTrackV2): Album {
+export function constructTrackAlbumFromSoundCloud(
+  track: SoundcloudTrackV2
+): Album {
   return {
     type: "single",
     url: track.permalink_url || "",
     id: ulid(),
     name: track.title || "",
     year: new Date(track.created_at).getFullYear(),
-    image: (track.artwork_url || track.user.avatar_url)?.replace("-large", "-t500x500") || "",
+    image:
+      (track.artwork_url || track.user.avatar_url)?.replace(
+        "-large",
+        "-t500x500"
+      ) || "",
     uuid: "alb" + track.id,
     tracks: [
       {
