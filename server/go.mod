@@ -2,7 +2,10 @@ module github.com/itzTheMeow/YTMusic
 
 go 1.20
 
-require github.com/gofiber/fiber/v2 v2.42.0
+require (
+	github.com/gofiber/fiber/v2 v2.42.0
+	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
+)
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
