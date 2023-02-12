@@ -13,7 +13,7 @@ func InitAPIMeta() {
 				Message: "Account does not exist.",
 			})
 		}
-		if !CheckPasswordHash(body.Password, account.password) {
+		if !CheckPasswordHash(body.Password, account.Password) {
 			return c.JSON(&APIErrorResponse{
 				Error:   true,
 				Message: "Invalid password.",
