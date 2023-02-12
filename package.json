@@ -7,7 +7,7 @@
     "build": "tsc -b tsconfig.json",
     "start": "npm run build && node .",
     "dev": "npm run build && node . --watch",
-    "generate": "tygo generate"
+    "generate": "export PATH=${PATH}:`go env GOPATH`/bin && tygo generate"
   },
   "repository": {
     "type": "git",
