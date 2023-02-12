@@ -6,8 +6,8 @@ func InitAPIMeta() {
 	App.Post("/api/login", func(c *fiber.Ctx) error {
 		var body APILoginRequest
 		c.BodyParser(&body)
-		account := GetAccount(body.Username)
-		if Database.Get("account", &account) != nil {
+		account := GetAccountName(body.Username)
+		if account == nil {
 			return c.JSON(&APIErrorResponse{
 				Error:   true,
 				Message: "Account does not exist.",
