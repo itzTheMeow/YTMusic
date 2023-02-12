@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/oklog/ulid/v2"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -18,7 +16,7 @@ func CheckPasswordHash(password, hash string) bool {
 
 func GetAccount(id string) *Account {
 	var accounts []*Account
-	err := Database.Get(fmt.Sprintf("account_%v", id), &accounts)
+	err := Database.Get("accounts", &accounts)
 	if err != nil {
 		for _, acc := range accounts {
 			if acc.ID == id {
@@ -31,14 +29,26 @@ func GetAccount(id string) *Account {
 	return nil
 }
 func SetAccount(account Account) Account {
-	Database.Put(fmt.Sprintf("account_%v", account.ID), account)
+	var accounts []*Account
+	err := Database.Get("accounts", &accounts)
+	if err != nil {
+		for i, acc := range accounts {
+			if acc.ID == account.ID {
+				accounts[i] = &account
+				Database.Put("accounts", &accounts)
+			}
+		}
+	} else {
+		accounts = []*Account{&account}
+		Database.Put("accounts", &accounts)
+	}
 	return account
 }
 func CreateAccount(username string, password string) Account {
 	hashed := HashPassword(password)
 
 	return SetAccount(Account{
-		ID:       ulid.Make(),
+		ID:       ulid.Make().String(),
 		Username: username,
 		password: hashed,
 		Permissions: AccountPermissions{

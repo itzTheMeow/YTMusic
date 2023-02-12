@@ -2,31 +2,26 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/oklog/ulid/v2"
 )
 
+var App *fiber.App
+
 func main() {
-	app := fiber.New()
+	App = fiber.New()
 
-	app.Post("/api/login", func(c *fiber.Ctx) error {
-		var body APILoginRequest
-		c.BodyParser(&body)
-		account := GetAccount(body.Username)
-		if Database.Get("account", &account) != nil {
-			return c.JSON(&APIErrorResponse{
-				Error:   true,
-				Message: "Account does not exist.",
-			})
-		}
-		if !CheckPasswordHash(body.Password, account.password) {
-			return c.JSON(&APIErrorResponse{
-				Error:   true,
-				Message: "Invalid password.",
-			})
-		}
-		return c.JSON(account)
-	})
+	var accounts []interface{}
+	if Database.Get("accounts", &accounts) != nil {
+		pass := ulid.Make().String()
+		pass = strings.ToLower(pass[len(pass)-6:])
+		admin := CreateAccount("admin", pass)
+		print(fmt.Sprintf("Automatically created account \"%v\" with password \"%v\". Please change your password once logging in.", admin.Username, admin.password))
+	}
 
-	app.Listen(fmt.Sprint(":", Config.port))
+	InitAPIMeta()
+
+	App.Listen(fmt.Sprint(":", Config.port))
 }

@@ -4,9 +4,9 @@ go 1.20
 
 require (
 	github.com/gofiber/fiber/v2 v2.42.0
-	github.com/oklog/ulid v1.3.1
+	github.com/oklog/ulid/v2 v2.1.0
 	github.com/rapidloop/skv v0.0.0-20180909015525-9def2caac4cc
-	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
+	golang.org/x/crypto v0.6.0
 )
 
 require (
