@@ -36,8 +36,11 @@ func SetAccount(account Account) Account {
 			if acc.ID == account.ID {
 				accounts[i] = &account
 				Database.Put("accounts", &accounts)
+				return account
 			}
 		}
+		accounts = append(accounts, &account)
+		Database.Put("accounts", &accounts)
 	} else {
 		accounts = []*Account{&account}
 		Database.Put("accounts", &accounts)
