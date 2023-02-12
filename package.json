@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc -b tsconfig.json",
     "start": "npm run build && node .",
-    "dev": "npm run build && node . --watch"
+    "dev": "npm run build && node . --watch",
+    "generate": "tygo generate"
   },
   "repository": {
     "type": "git",
