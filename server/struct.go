@@ -8,6 +8,7 @@ type AccountPermissions struct {
 	SongRemove   bool `json:"songRemove"`
 }
 type Account struct {
+	ID          string `json:"id"`
 	Username    string `json:"username"`
 	password    string
 	Token       string             `json:"authToken"`

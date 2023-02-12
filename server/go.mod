@@ -4,11 +4,14 @@ go 1.20
 
 require (
 	github.com/gofiber/fiber/v2 v2.42.0
+	github.com/oklog/ulid v1.3.1
+	github.com/rapidloop/skv v0.0.0-20180909015525-9def2caac4cc
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
 )
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
+	github.com/boltdb/bolt v1.3.1 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/klauspost/compress v1.15.15 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect

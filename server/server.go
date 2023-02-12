@@ -9,19 +9,23 @@ import (
 func main() {
 	app := fiber.New()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.JSON(&Account{
-			Username: "Meow",
-			password: "",
-			Token:    "token",
-			Permissions: AccountPermissions{
-				Owner:        false,
-				ArtistAdd:    false,
-				ArtistRemove: false,
-				SongDownload: false,
-				SongRemove:   false,
-			},
-		})
+	app.Post("/api/login", func(c *fiber.Ctx) error {
+		var body APILoginRequest
+		c.BodyParser(&body)
+		account := GetAccount(body.Username)
+		if Database.Get("account", &account) != nil {
+			return c.JSON(&APIErrorResponse{
+				Error:   true,
+				Message: "Account does not exist.",
+			})
+		}
+		if !CheckPasswordHash(body.Password, account.password) {
+			return c.JSON(&APIErrorResponse{
+				Error:   true,
+				Message: "Invalid password.",
+			})
+		}
+		return c.JSON(account)
 	})
 
 	app.Listen(fmt.Sprint(":", Config.port))
