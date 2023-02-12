@@ -10,6 +10,6 @@ type AccountPermissions struct {
 type Account struct {
 	Username    string `json:"username"`
 	password    string
-	Token       string              `json:"authToken"`
-	Permissions *AccountPermissions `json:"permissions"`
+	Token       string             `json:"authToken"`
+	Permissions AccountPermissions `json:"permissions"`
 }

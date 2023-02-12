@@ -1,0 +1,4 @@
+packages:
+  - path: "github.com/itzTheMeow/YTMusic"
+    output_path: "src/typings.d.ts"
+    indent: "  "

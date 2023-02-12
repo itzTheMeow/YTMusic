@@ -14,7 +14,7 @@ func main() {
 			Username: "Meow",
 			password: "",
 			Token:    "token",
-			Permissions: &AccountPermissions{
+			Permissions: AccountPermissions{
 				Owner:        false,
 				ArtistAdd:    false,
 				ArtistRemove: false,
