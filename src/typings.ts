@@ -14,3 +14,7 @@ export interface APILoginRequest {
 export interface APILoginResponse {
   token: string;
 }
+export interface APIArtistSearchRequest {
+  query: string;
+  provider: any /* types.MetadataProvider */;
+}

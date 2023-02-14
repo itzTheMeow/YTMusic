@@ -13,13 +13,13 @@
   let searchInput: HTMLInputElement;
   let selectedProvider: MetadataProviders;
 
-  let searchResults: ReturnType<typeof API.searchArtist>;
+  let searchResults: ReturnType<typeof API.searchArtists>;
   let lastSearched = "";
   function search(bypass = false) {
     if (!bypass && lastSearched == searchInput.value) return;
     if (!searchInput.value) return (searchResults = null as any);
     lastSearched = searchInput.value;
-    searchResults = API.searchArtist(searchInput.value, selectedProvider);
+    searchResults = API.searchArtists(searchInput.value, selectedProvider);
   }
 
   let wasAdded: string[] = [];
@@ -64,8 +64,8 @@
         <div class="text-sm">{artists.message}</div>
       {:else}
         <div class="flex flex-row flex-wrap gap-4 justify-center mt-3">
-          {#if artists.list.length}
-            {#each artists.list as artist}
+          {#if artists.length}
+            {#each artists as artist}
               <ArtistCard {artist}>
                 <div
                   class="ml-auto mb-auto cursor-pointer"

@@ -1,15 +1,15 @@
 package types
 
-type MetadataProvider int
-type SoundProvider int
+type MetadataProvider string
+type SoundProvider string
 
 const (
-	MetaProviderSpotify MetadataProvider = iota
-	MetaProviderSoundCloud
-	MetaProviderKonami
-	MetaProviderBandLab
+	MetaProviderSpotify    MetadataProvider = "spotify"
+	MetaProviderSoundCloud MetadataProvider = "soundcloud"
+	MetaProviderKonami     MetadataProvider = "konami"
+	MetaProviderBandLab    MetadataProvider = "bandlab"
 )
 const (
-	SoundProviderYouTube SoundProvider = iota
-	SoundProviderSoundCloud
+	SoundProviderYouTube    SoundProvider = "youtube"
+	SoundProviderSoundCloud SoundProvider = "soundcloud"
 )

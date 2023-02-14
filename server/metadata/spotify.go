@@ -35,10 +35,12 @@ func SearchSpotifyArtists(query string) []types.Artist {
 	artists := make([]types.Artist, 0)
 	if SpotifyClient != nil {
 		res, err := SpotifyClient.Search(ctx, query, spotify.SearchTypeArtist, spotify.Limit(15))
-		if err != nil {
+		if err == nil {
 			for _, artist := range res.Artists.Artists {
 				artists = append(artists, ConstructArtistFromSpotify(artist))
 			}
+		} else {
+			log.Println(err)
 		}
 	}
 	return artists
@@ -50,7 +52,11 @@ func findImage(images []spotify.Image) string {
 			return img.URL
 		}
 	}
-	return images[0].URL
+	if len(images) > 0 {
+		return images[0].URL
+	} else {
+		return ""
+	}
 }
 
 func ConstructArtistFromSpotify(artist spotify.FullArtist) types.Artist {

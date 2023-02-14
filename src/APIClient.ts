@@ -1,12 +1,11 @@
 import { Auth } from "index";
-import {
-  MetaProviderSpotify,
-  type APIErrorResponse,
-  type APILoginRequest,
-  type APILoginResponse,
-  type Artist,
-  type MetadataProvider,
+import type {
+  APIArtistSearchRequest,
+  APIErrorResponse,
+  APILoginRequest,
+  APILoginResponse,
 } from "typings";
+import { MetaProviderSpotify, type Artist, type MetadataProvider } from "typings_struct";
 
 type Res<T extends {}> = Promise<({ err: true } & APIErrorResponse) | ({ err: false } & T)>;
 
@@ -36,19 +35,16 @@ export default class {
       password,
     });
   }
-  public async searchArtist(
-    term: string,
-    provider: MetadataProvider = MetaProviderSpotify
-  ): Res<{ list: ArtistMeta[] }> {
-    return (await this.post("/artist_search", {
-      term,
+  public async searchArtists(query: string, provider: MetadataProvider = MetaProviderSpotify) {
+    return await this.post<APIArtistSearchRequest, Artist[]>("/artist_search", {
+      query,
       provider,
-    })) as any;
+    });
   }
   public async listArtists(): Res<{ list: Artist[] }> {
     return (await this.post("/artist_list", {})) as any;
   }
-  public async fetchArtist(id: string): Res<{ artist: ArtistMeta }> {
+  public async fetchArtist(id: string): Res<{ artist: Artist }> {
     return (await this.post("/artist_get", { id })) as any;
   }
   public async searchTrack(provider: SoundProviders, term: string): Res<{ list: Downloadable[] }> {

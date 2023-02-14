@@ -34,6 +34,7 @@ func main() {
 	}
 
 	InitAPIMeta()
+	InitAPISearch()
 	App.Static("/", path.Join(util.Config.BasePath, "public"))
 	App.Get("*", func(c *fiber.Ctx) error {
 		return c.SendFile(path.Join(util.Config.BasePath, "index.html"))

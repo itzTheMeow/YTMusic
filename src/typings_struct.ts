@@ -95,11 +95,11 @@ export interface Settings {
 //////////
 // source: providers.go
 
-export type MetadataProvider = number /* int */;
-export type SoundProvider = number /* int */;
-export const MetaProviderSpotify: MetadataProvider = 0;
-export const MetaProviderSoundCloud: MetadataProvider = 1;
-export const MetaProviderKonami: MetadataProvider = 2;
-export const MetaProviderBandLab: MetadataProvider = 3;
-export const SoundProviderYouTube: SoundProvider = 0;
-export const SoundProviderSoundCloud: SoundProvider = 1;
+export type MetadataProvider = string;
+export type SoundProvider = string;
+export const MetaProviderSpotify: MetadataProvider = "spotify";
+export const MetaProviderSoundCloud: MetadataProvider = "soundcloud";
+export const MetaProviderKonami: MetadataProvider = "konami";
+export const MetaProviderBandLab: MetadataProvider = "bandlab";
+export const SoundProviderYouTube: SoundProvider = "youtube";
+export const SoundProviderSoundCloud: SoundProvider = "soundcloud";
