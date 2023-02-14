@@ -7,19 +7,20 @@ import {
   type MetadataProvider,
 } from "typings";
 
-type Res<T extends object> = Promise<({ err: true } & APIErrorResponse) | ({ err: false } & T)>;
+type Res<T extends {}> = Promise<({ err: true } & APIErrorResponse) | ({ err: false } & T)>;
 
 export default class {
   constructor(public readonly url: string) {}
   private sanitizePath(path: string) {
     return !path.startsWith("/") ? "/" + path : path;
   }
-  public async post<REQ extends {}, RES extends {}>(path: string, data: REQ): Promise<Res<RES>> {
+  public async post<REQ extends {}, RES extends {}>(path: string, data: REQ): Res<RES> {
     try {
       return await fetch(this.url + this.sanitizePath(path), {
         method: "POST",
-        body: JSON.stringify({ auth: Auth.authKey, ...data }),
+        body: JSON.stringify(data),
         headers: {
+          Authorization: Auth.authKey,
           "Content-Type": "application/json",
         },
       }).then((r) => r.json());

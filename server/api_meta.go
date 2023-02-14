@@ -23,4 +23,16 @@ func InitAPIMeta() {
 			Token: account.Token,
 		})
 	})
+	App.Post("/api/has_auth", func(c *fiber.Ctx) error {
+		if GetAuthorizedAccount(c) != nil {
+			return c.JSON(&APIErrorResponse{
+				Error: false,
+			})
+		} else {
+			return c.JSON(&APIErrorResponse{
+				Error:   true,
+				Message: "Invalid authorization token.",
+			})
+		}
+	})
 }

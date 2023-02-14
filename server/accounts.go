@@ -3,6 +3,7 @@ package main
 import (
 	"strings"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/oklog/ulid/v2"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -36,6 +37,20 @@ func GetAccountName(name string) *Account {
 	if err == nil {
 		for _, acc := range accounts {
 			if strings.ToLower(acc.Username) == strings.ToLower(name) {
+				return acc
+			} else {
+				return nil
+			}
+		}
+	}
+	return nil
+}
+func GetAuthorizedAccount(req *fiber.Ctx) *Account {
+	var accounts []*Account
+	err := Database.Get("accounts", &accounts)
+	if err == nil {
+		for _, acc := range accounts {
+			if acc.Token == req.Get("Authorization") {
 				return acc
 			} else {
 				return nil
