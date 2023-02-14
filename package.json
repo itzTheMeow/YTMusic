@@ -5,7 +5,7 @@
   "main": "build.mjs",
   "scripts": {
     "start": "go run ./server",
-    "dev": "npm run generate && node . --watch",
+    "dev": "npm run generate && cp src/index.html out/index.html && node . --watch",
     "generate": "export PATH=${PATH}:`go env GOPATH`/bin && tygo generate"
   },
   "repository": {

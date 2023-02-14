@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"path"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -15,6 +17,12 @@ func main() {
 	App = fiber.New(fiber.Config{
 		DisableStartupMessage: true,
 	})
+	basePath := ""
+	if DevEnv {
+		basePath = path.Join(Grab(os.Getwd()), "../out")
+	} else {
+		basePath, _ = os.Getwd()
+	}
 
 	var accounts []*Account
 	if Database.Get("accounts", &accounts) != nil {
@@ -25,6 +33,10 @@ func main() {
 	}
 
 	InitAPIMeta()
+	App.Static("/", path.Join(basePath, "public"))
+	App.Get("*", func(c *fiber.Ctx) error {
+		return c.SendFile(path.Join(basePath, "index.html"))
+	})
 
 	App.Hooks().OnListen(func() error {
 		fmt.Println(fmt.Sprintf("Server listening on port %v.", Config.port))
