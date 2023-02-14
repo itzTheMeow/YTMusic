@@ -28,7 +28,6 @@ export interface AccountPermissions {
 export interface Account {
   id: string;
   username: string;
-  pass: string;
   authToken: string;
   permissions: AccountPermissions;
 }
