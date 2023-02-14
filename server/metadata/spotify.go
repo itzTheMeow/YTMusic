@@ -6,6 +6,7 @@ import (
 
 	"github.com/itzTheMeow/YTMusic/types"
 	"github.com/itzTheMeow/YTMusic/util"
+	"github.com/oklog/ulid/v2"
 	"github.com/zmb3/spotify/v2"
 	spotifyauth "github.com/zmb3/spotify/v2/auth"
 	"golang.org/x/oauth2/clientcredentials"
@@ -30,14 +31,66 @@ func InitSpotify() {
 	}
 }
 
-func SearchSpotifyArtists(query string) {
+func SearchSpotifyArtists(query string) []types.Artist {
+	artists := make([]types.Artist, 0)
 	if SpotifyClient != nil {
-		res, err := SpotifyClient.Search(ctx, query, spotify.SearchTypeArtist)
+		res, err := SpotifyClient.Search(ctx, query, spotify.SearchTypeArtist, spotify.Limit(15))
 		if err != nil {
-			var artists []types.Artist
 			for _, artist := range res.Artists.Artists {
-				artists = append(artists, artist)
+				artists = append(artists, ConstructArtistFromSpotify(artist))
 			}
 		}
 	}
+	return artists
 }
+
+func findImage(images []spotify.Image) string {
+	for _, img := range images {
+		if img.Width == img.Height {
+			return img.URL
+		}
+	}
+	return images[0].URL
+}
+
+func ConstructArtistFromSpotify(artist spotify.FullArtist) types.Artist {
+	providers := make(map[types.MetadataProvider]string)
+	providers[types.MetaProviderSpotify] = artist.ID.String()
+	return types.Artist{
+		ID:        ulid.Make().String(),
+		Name:      artist.Name,
+		URL:       artist.ExternalURLs["spotify"],
+		Genres:    artist.Genres,
+		Followers: int(artist.Followers.Count),
+		Icon:      findImage(artist.Images),
+		Providers: providers,
+	}
+}
+
+/*
+func ConstructAlbumFromSpotify(album: SpotifyApi.AlbumObjectSimplified): Album {
+  return {
+    type: (album.album_type as any) || "",
+    url: album.external_urls.spotify || "",
+    id: ulid(),
+    name: album.name || "",
+    year: Number(album.release_date.split("-")[0]) || 0,
+    image: findImage(album.images),
+    tracks: [],
+    uuid: album.id || "",
+    provider: MetadataProviders.Spotify,
+  };
+}
+
+func ConstructTrackFromSpotify(track: SpotifyApi.TrackObjectSimplified): Track {
+  return {
+    id: track.id,
+    uuid: track.id,
+    title: track.name || "",
+    url: track.external_urls.spotify || "",
+    number: track.track_number || 0,
+    duration: track.duration_ms || 0,
+    explicit: track.explicit || false,
+  };
+}
+*/

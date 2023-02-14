@@ -17,7 +17,7 @@ type Artist struct {
 	// Artist
 	ID        string                      `json:"id"`
 	Name      string                      `json:"name"`
-	Url       string                      `json:"url"`
+	URL       string                      `json:"url"`
 	Genres    []string                    `json:"genres"`
 	Followers int                         `json:"followers"`
 	Icon      string                      `json:"icon"`
@@ -32,7 +32,7 @@ type Album struct {
 	Type     AlbumType        `json:"type"`
 	ID       string           `json:"id"`
 	Name     string           `json:"name"`
-	Url      string           `json:"url"`
+	URL      string           `json:"url"`
 	Year     int              `json:"year"`
 	Image    string           `json:"image"`
 	Tracks   []Track          `json:"tracks"`
@@ -42,7 +42,7 @@ type Album struct {
 type Track struct {
 	Id       string `json:"id"`
 	Title    string `json:"title"`
-	Url      string `json:"url"`
+	URL      string `json:"url"`
 	Number   int    `json:"number"`
 	Duration int    `json:"duration"`
 	Explicit bool   `json:"explicit"`
