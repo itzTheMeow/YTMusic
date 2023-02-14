@@ -5,6 +5,14 @@
 
 export type QueueAction = number /* int */;
 export const QALibraryScan: QueueAction = 0;
+export const QAArtistAdd: QueueAction = 1;
 export interface QueueItem {
   type: QueueAction;
+  data: string;
+}
+export interface QueuedLibraryScan {
+}
+export interface QueuedArtistAdd {
+  id: string;
+  provider: string;
 }

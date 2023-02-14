@@ -31,6 +31,18 @@ func InitSpotify() {
 	}
 }
 
+func FetchSpotifyArtist(id string) (*types.Artist, error) {
+	spotifyArtist, err := SpotifyClient.GetArtist(ctx, spotify.ID(id))
+	if err != nil {
+		return nil, err
+	}
+
+	artist := ConstructArtistFromSpotify(*spotifyArtist)
+	artist.Albums = make([]types.Album, 0)
+
+	return &artist, nil
+}
+
 func SearchSpotifyArtists(query string) []types.Artist {
 	artists := make([]types.Artist, 0)
 	if SpotifyClient != nil {

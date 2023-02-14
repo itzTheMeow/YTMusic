@@ -10,16 +10,19 @@ import (
 )
 
 var Config = struct {
-	Port     int
-	BasePath string
+	Port           int
+	BasePath       string
+	DisableFSChars string
 }{
-	Port: 8777,
+	Port:           8777,
+	DisableFSChars: `<>:"/\\|?*`,
 }
 var DevEnv = os.Args[1] == "--dev"
 
 var UserConfig struct {
-	SpotifyClientID     string `yaml:"spotify-id"`
-	SpotifyClientSecret string `yaml:"spotify-secret"`
+	LibraryLocation     string `yaml:"library-folder" json:"libraryFolder"`
+	SpotifyClientID     string `yaml:"spotify-id" json:"spotifyID"`
+	SpotifyClientSecret string `yaml:"spotify-secret" json:"spotifySecret"`
 }
 
 func InitConfig() {
