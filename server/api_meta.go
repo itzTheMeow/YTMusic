@@ -1,6 +1,9 @@
 package main
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+	"github.com/itzTheMeow/YTMusic/queue"
+)
 
 func InitAPIMeta() {
 	App.Post("/api/login", func(c *fiber.Ctx) error {
@@ -32,6 +35,16 @@ func InitAPIMeta() {
 			return c.JSON(&APIErrorResponse{
 				Error:   true,
 				Message: "Invalid authorization token.",
+			})
+		}
+	})
+	App.Post("/api/queue_get", func(c *fiber.Ctx) error {
+		if GetAuthorizedAccount(c) != nil {
+			return c.JSON(queue.Items)
+		} else {
+			return c.JSON(&APIErrorResponse{
+				Error:   true,
+				Message: "Unauthorized",
 			})
 		}
 	})
