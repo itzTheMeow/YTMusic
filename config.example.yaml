@@ -1,0 +1,4 @@
+# Create a spotify application here:
+# https://developer.spotify.com/dashboard/applications
+spotify-id: "" # Your spotify app client ID.
+spotify-secret: "" # Your spotify app secret.

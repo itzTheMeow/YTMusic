@@ -6,12 +6,16 @@ require (
 	github.com/gofiber/fiber/v2 v2.42.0
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/rapidloop/skv v0.0.0-20180909015525-9def2caac4cc
+	github.com/zmb3/spotify/v2 v2.3.1
 	golang.org/x/crypto v0.6.0
+	golang.org/x/oauth2 v0.0.0-20210810183815-faf39c7919d5
+	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
 )
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/boltdb/bolt v1.3.1 // indirect
+	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/klauspost/compress v1.15.15 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
@@ -25,5 +29,8 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.44.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
+	golang.org/x/net v0.6.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
+	google.golang.org/appengine v1.6.7 // indirect
+	google.golang.org/protobuf v1.27.1 // indirect
 )

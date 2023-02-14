@@ -1,4 +1,4 @@
-package main
+package util
 
 func Grab[T any](v T, err error) T {
 	if err != nil {
