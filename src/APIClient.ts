@@ -4,6 +4,7 @@ import {
   type APIErrorResponse,
   type APILoginRequest,
   type APILoginResponse,
+  type Artist,
   type MetadataProvider,
 } from "typings";
 

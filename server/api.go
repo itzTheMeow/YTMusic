@@ -2,7 +2,7 @@ package main
 
 type APIErrorResponse struct {
 	Error   bool   `json:"err"`
-	Message string `json:"message"`
+	Message string `json:"message,omitempty"`
 }
 
 type APILoginRequest struct {

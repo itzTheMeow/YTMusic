@@ -5,7 +5,7 @@
 
 export interface APIErrorResponse {
   err: boolean;
-  message: string;
+  message?: string;
 }
 export interface APILoginRequest {
   username: string;
@@ -40,3 +40,17 @@ export const MetaProviderKonami: MetadataProvider = 2;
 export const MetaProviderBandLab: MetadataProvider = 3;
 export const SoundProviderYouTube: SoundProvider = 0;
 export const SoundProviderSoundCloud: SoundProvider = 1;
+export type ArtistStatus = number /* int */;
+export const ArtistIsAbsent: ArtistStatus = 0;
+export const ArtistIsQueued: ArtistStatus = 1;
+export const ArtistIsPresent: ArtistStatus = 2;
+export interface Artist {
+  id: string;
+  name: string;
+  url: string;
+  genres: string[];
+  followers: number /* int */;
+  icon: string;
+  providers: { [key: MetadataProvider]: string};
+  status?: ArtistStatus;
+}

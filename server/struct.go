@@ -28,3 +28,22 @@ const (
 	SoundProviderYouTube SoundProvider = iota
 	SoundProviderSoundCloud
 )
+
+type ArtistStatus int
+
+const (
+	ArtistIsAbsent ArtistStatus = iota
+	ArtistIsQueued
+	ArtistIsPresent
+)
+
+type Artist struct {
+	ID        string                      `json:"id"`
+	Name      string                      `json:"name"`
+	Url       string                      `json:"url"`
+	Genres    []string                    `json:"genres"`
+	Followers int                         `json:"followers"`
+	Icon      string                      `json:"icon"`
+	Providers map[MetadataProvider]string `json:"providers"`
+	Status    ArtistStatus                `json:"status,omitempty"`
+}
