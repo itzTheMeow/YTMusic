@@ -5,3 +5,6 @@ packages:
   - path: "github.com/itzTheMeow/YTMusic/queue"
     output_path: "src/typings_queue.ts"
     indent: "  "
+  - path: "github.com/itzTheMeow/YTMusic/types"
+    output_path: "src/typings_struct.ts"
+    indent: "  "

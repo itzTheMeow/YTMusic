@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/itzTheMeow/YTMusic/types"
 	"github.com/oklog/ulid/v2"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -17,8 +18,8 @@ func CheckPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-func GetAccount(id string) *Account {
-	var accounts []*Account
+func GetAccount(id string) *types.Account {
+	var accounts []*types.Account
 	err := Database.Get("accounts", &accounts)
 	if err == nil {
 		for _, acc := range accounts {
@@ -31,8 +32,8 @@ func GetAccount(id string) *Account {
 	}
 	return nil
 }
-func GetAccountName(name string) *Account {
-	var accounts []*Account
+func GetAccountName(name string) *types.Account {
+	var accounts []*types.Account
 	err := Database.Get("accounts", &accounts)
 	if err == nil {
 		for _, acc := range accounts {
@@ -45,8 +46,8 @@ func GetAccountName(name string) *Account {
 	}
 	return nil
 }
-func GetAuthorizedAccount(req *fiber.Ctx) *Account {
-	var accounts []*Account
+func GetAuthorizedAccount(req *fiber.Ctx) *types.Account {
+	var accounts []*types.Account
 	err := Database.Get("accounts", &accounts)
 	if err == nil {
 		for _, acc := range accounts {
@@ -59,8 +60,8 @@ func GetAuthorizedAccount(req *fiber.Ctx) *Account {
 	}
 	return nil
 }
-func SetAccount(account Account) Account {
-	var accounts []*Account
+func SetAccount(account types.Account) types.Account {
+	var accounts []*types.Account
 	err := Database.Get("accounts", &accounts)
 	if err == nil {
 		for i, acc := range accounts {
@@ -73,20 +74,20 @@ func SetAccount(account Account) Account {
 		accounts = append(accounts, &account)
 		Database.Put("accounts", &accounts)
 	} else {
-		accounts = []*Account{&account}
+		accounts = []*types.Account{&account}
 		Database.Put("accounts", &accounts)
 	}
 	return account
 }
-func CreateAccount(username string, password string) Account {
+func CreateAccount(username string, password string) types.Account {
 	hashed := HashPassword(password)
 
-	return SetAccount(Account{
+	return SetAccount(types.Account{
 		ID:       ulid.Make().String(),
 		Username: username,
 		Password: hashed,
 		Token:    strings.ToLower(ulid.Make().String()),
-		Permissions: AccountPermissions{
+		Permissions: types.AccountPermissions{
 			ArtistAdd:    false,
 			ArtistRemove: false,
 			Owner:        false,

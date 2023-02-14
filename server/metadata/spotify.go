@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/itzTheMeow/YTMusic/types"
 	"github.com/itzTheMeow/YTMusic/util"
 	"github.com/zmb3/spotify/v2"
 	spotifyauth "github.com/zmb3/spotify/v2/auth"
@@ -31,6 +32,12 @@ func InitSpotify() {
 
 func SearchSpotifyArtists(query string) {
 	if SpotifyClient != nil {
-		SpotifyClient.Search(ctx, query, spotify.SearchTypeArtist)
+		res, err := SpotifyClient.Search(ctx, query, spotify.SearchTypeArtist)
+		if err != nil {
+			var artists []types.Artist
+			for _, artist := range res.Artists.Artists {
+				artists = append(artists, artist)
+			}
+		}
 	}
 }

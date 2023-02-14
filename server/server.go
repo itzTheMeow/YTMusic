@@ -8,6 +8,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/itzTheMeow/YTMusic/metadata"
+	"github.com/itzTheMeow/YTMusic/types"
 	"github.com/itzTheMeow/YTMusic/util"
 	"github.com/oklog/ulid/v2"
 )
@@ -24,7 +25,7 @@ func main() {
 		DisableStartupMessage: true,
 	})
 
-	var accounts []*Account
+	var accounts []*types.Account
 	if Database.Get("accounts", &accounts) != nil {
 		pass := ulid.Make().String()
 		pass = strings.ToLower(pass[len(pass)-6:])
