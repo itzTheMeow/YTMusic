@@ -5,8 +5,8 @@
   "main": "serverDist/build.js",
   "scripts": {
     "build": "tsc -b tsconfig.json",
-    "start": "npm run build && node .",
-    "dev": "npm run build && node . --watch",
+    "start": "npm run generate && go run ./server",
+    "dev": "npm run generate && go run ./server --watch",
     "generate": "export PATH=${PATH}:`go env GOPATH`/bin && tygo generate"
   },
   "repository": {
