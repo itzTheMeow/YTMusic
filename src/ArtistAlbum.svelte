@@ -86,7 +86,7 @@
           <div class="flex flex-col gap-1 ml-1">
             <div class="flex items-center gap-1">
               <div class="text-3xl">{res.l.name} ({res.l.year})</div>
-              <a class="text-secondary" href={res.l.url} target="_blank"
+              <a class="text-secondary" href={res.l.url} target="_blank" rel="noreferrer"
                 ><ExternalLink size={32} /></a
               >
             </div>
@@ -179,7 +179,12 @@
                     <Download />
                   </a>
                 {/if}
-                <a class="btn btn-square btn-sm btn-secondary" href={track.url} target="_blank">
+                <a
+                  class="btn btn-square btn-sm btn-secondary"
+                  href={track.url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   <ExternalLink />
                 </a>
               </td>

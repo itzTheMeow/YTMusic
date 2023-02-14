@@ -73,7 +73,7 @@
           <div class="flex flex-col gap-1 ml-1">
             <div class="flex items-center gap-1">
               <div class="text-3xl">{r.artist.name}</div>
-              <a class="text-secondary" href={r.artist.url} target="_blank"
+              <a class="text-secondary" href={r.artist.url} target="_blank" rel="noreferrer"
                 ><ExternalLink size={32} /></a
               >
             </div>
@@ -181,7 +181,9 @@
           <div class="card-body p-5">
             <h2 class="card-title">
               {album.name}
-              <a class="text-secondary" href={album.url} target="_blank"><ExternalLink /></a>
+              <a class="text-secondary" href={album.url} target="_blank" rel="noreferrer"
+                ><ExternalLink /></a
+              >
             </h2>
             <div class="card-actions">
               <div class="badge badge-info">{album.type.toUpperCase()}</div>

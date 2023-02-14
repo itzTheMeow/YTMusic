@@ -139,6 +139,7 @@
                       class="flex items-center gap-1 text-sm font-semibold"
                       href={dl.author.url}
                       target="_blank"
+                      rel="noreferrer"
                     >
                       <div class="avatar">
                         <div class="w-5 rounded-full">
@@ -176,7 +177,12 @@
                       >
                         <Eye />
                       </div>
-                      <a class="btn btn-sm btn-square btn-accent" href={dl.url} target="_blank">
+                      <a
+                        class="btn btn-sm btn-square btn-accent"
+                        href={dl.url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
                         <ExternalLink />
                       </a>
                     </div>
