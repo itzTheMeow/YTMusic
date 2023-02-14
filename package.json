@@ -4,8 +4,8 @@
   "description": "Music downloader and manager.",
   "main": "build.mjs",
   "scripts": {
-    "start": "npm run generate && node . && go run ./server",
-    "dev": "npm run generate && go run ./server && node . --watch",
+    "start": "go run ./server",
+    "dev": "npm run generate && node . --watch",
     "generate": "export PATH=${PATH}:`go env GOPATH`/bin && tygo generate"
   },
   "repository": {

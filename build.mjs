@@ -10,7 +10,7 @@ esbuild
   .build({
     entryPoints: [`./src/index.ts`],
     bundle: true,
-    outdir: `./dist`,
+    outdir: `./out/public`,
     mainFields: ["svelte", "browser", "module", "main"],
     minify: false,
     sourcemap: "inline",
@@ -20,6 +20,7 @@ esbuild
     watch: process.argv.includes(`--watch`),
     plugins: [
       esbuildSvelte({
+        filterWarnings: (w) => !w.code.startsWith("a11y-"),
         preprocess: sveltePreprocess(),
       }),
       postCssPlugin({
