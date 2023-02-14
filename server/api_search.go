@@ -14,6 +14,8 @@ func InitAPISearch() {
 		switch body.Provider {
 		case types.MetaProviderSpotify:
 			artists = metadata.SearchSpotifyArtists(body.Query)
+		case types.MetaProviderSoundCloud:
+			artists = metadata.SearchSoundCloudArtists(body.Query)
 		default:
 			return c.JSON(&APIErrorResponse{
 				Error:   true,

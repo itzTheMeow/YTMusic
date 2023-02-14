@@ -21,6 +21,7 @@ func main() {
 	log.Printf("Starting YTMusic...")
 	util.InitConfig()
 	metadata.InitSpotify()
+	metadata.InitSoundCloud()
 	App = fiber.New(fiber.Config{
 		DisableStartupMessage: true,
 	})
