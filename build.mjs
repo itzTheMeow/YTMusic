@@ -4,7 +4,6 @@ import postCssPlugin from "esbuild-style-plugin";
 import esbuildSvelte from "esbuild-svelte";
 import sveltePreprocess from "svelte-preprocess";
 import useTailwind from "tailwindcss";
-import { init } from "./server";
 
 console.log("Building client...");
 esbuild
@@ -32,9 +31,6 @@ esbuild
     logLevel: "info",
     target: "es6",
     loader: { ".png": "file" },
-  })
-  .then(() => {
-    init();
   })
   //@ts-ignore
   .catch((error, location) => {

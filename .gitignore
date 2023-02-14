@@ -4,3 +4,4 @@ database.db
 auth.json
 Music
 .tmp_dl
+out
