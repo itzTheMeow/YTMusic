@@ -31,6 +31,9 @@ export interface Account {
   authToken: string;
   permissions: AccountPermissions;
 }
+export interface Settings {
+  libraryLocation: string;
+}
 export type MetadataProvider = number /* int */;
 export type SoundProvider = number /* int */;
 export const MetaProviderSpotify: MetadataProvider = 0;
@@ -40,10 +43,16 @@ export const MetaProviderBandLab: MetadataProvider = 3;
 export const SoundProviderYouTube: SoundProvider = 0;
 export const SoundProviderSoundCloud: SoundProvider = 1;
 export type ArtistStatus = number /* int */;
+export type AlbumType = string;
 export const ArtistIsAbsent: ArtistStatus = 0;
 export const ArtistIsQueued: ArtistStatus = 1;
 export const ArtistIsPresent: ArtistStatus = 2;
+export const AlbumTypeAlbum: AlbumType = "album";
+export const AlbumTypeSingle: AlbumType = "single";
 export interface Artist {
+  /**
+   * Artist
+   */
   id: string;
   name: string;
   url: string;
@@ -52,4 +61,48 @@ export interface Artist {
   icon: string;
   providers: { [key: MetadataProvider]: string};
   status?: ArtistStatus;
+  /**
+   * Extended Artist
+   */
+  albums?: Album[];
+  /**
+   * Metadata
+   */
+  version?: number /* int */;
+}
+export interface Album {
+  type: AlbumType;
+  id: string;
+  name: string;
+  url: string;
+  year: number /* int */;
+  image: string;
+  tracks: Track[];
+  uuid: string;
+  provider: MetadataProvider;
+}
+export interface Track {
+  id: string;
+  title: string;
+  url: string;
+  number: number /* int */;
+  duration: number /* int */;
+  explicit: boolean;
+  added?: boolean;
+  uuid: string;
+}
+export interface DownloadableAuthor {
+  name: string;
+  icon: string;
+  url: string;
+}
+export interface Downloadable {
+  title: string;
+  duration: number /* int */;
+  uploadedAt: number /* int */;
+  views: number /* int */;
+  thumbnail: string;
+  author: DownloadableAuthor;
+  url: string;
+  embed: string;
 }
