@@ -19,6 +19,8 @@ func InitAPIMeta() {
 				Message: "Invalid password.",
 			})
 		}
-		return c.JSON(account)
+		return c.JSON(&APILoginResponse{
+			Token: account.Token,
+		})
 	})
 }

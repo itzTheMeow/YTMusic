@@ -70,6 +70,7 @@ func CreateAccount(username string, password string) Account {
 		ID:       ulid.Make().String(),
 		Username: username,
 		Password: hashed,
+		Token:    strings.ToLower(ulid.Make().String()),
 		Permissions: AccountPermissions{
 			ArtistAdd:    false,
 			ArtistRemove: false,

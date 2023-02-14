@@ -3,9 +3,6 @@
 //////////
 // source: api.go
 
-export interface APIRequestBase {
-  auth: string;
-}
 export interface APIErrorResponse {
   err: boolean;
   message: string;
@@ -13,6 +10,9 @@ export interface APIErrorResponse {
 export interface APILoginRequest {
   username: string;
   password: string;
+}
+export interface APILoginResponse {
+  token: string;
 }
 
 //////////
@@ -32,3 +32,11 @@ export interface Account {
   authToken: string;
   permissions: AccountPermissions;
 }
+export type MetadataProvider = number /* int */;
+export type SoundProvider = number /* int */;
+export const MetaProviderSpotify: MetadataProvider = 0;
+export const MetaProviderSoundCloud: MetadataProvider = 1;
+export const MetaProviderKonami: MetadataProvider = 2;
+export const MetaProviderBandLab: MetadataProvider = 3;
+export const SoundProviderYouTube: SoundProvider = 0;
+export const SoundProviderSoundCloud: SoundProvider = 1;
