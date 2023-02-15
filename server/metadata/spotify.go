@@ -73,7 +73,7 @@ func runAlbumSet(artist *types.Artist, off int) error {
 	return nil
 }
 func runTrackSet(album *types.Album, off int) error {
-	tracks, err := SpotifyClient.GetAlbumTracks(ctx, spotify.ID(album.ID), spotify.Limit(50), spotify.Offset(off))
+	tracks, err := SpotifyClient.GetAlbumTracks(ctx, spotify.ID(album.UUID), spotify.Limit(50), spotify.Offset(off))
 	if err != nil {
 		return err
 	}
