@@ -8,18 +8,18 @@
   import { onDestroy } from "svelte";
   import { link } from "svelte-routing";
   import { Download, ExternalLink, Trash } from "tabler-icons-svelte";
-  import type { Album, Artist } from "../server/struct";
+  import type { Album, Artist } from "typings_struct";
 
   export let id: string;
   export let albid: string;
 
   let albumDetails = new Promise<{ a: Artist; l: Album } | string>(async (r) => {
     const res = await API.fetchArtist(id);
-    if (res.err) return r(res.message);
-    const l = res.artist.albums.find((a) => a.id == albid);
+    if (res.err) return r(res.message!);
+    const l = res.albums!.find((a) => a.id == albid);
     if (!l) return r("Album not found.");
     r({
-      a: res.artist,
+      a: res,
       l,
     });
 
@@ -33,13 +33,13 @@
     if (e.type == "LibraryScan") {
       const oldLib = JSON.stringify(((await new Promise((r) => albumDetails.then(r))) as any).l);
       const res = await API.fetchArtist(id);
-      if (res.err) return (albumDetails = new Promise((r) => r(res.message)));
-      const l = res.artist.albums.find((a) => a.id == albid);
+      if (res.err) return (albumDetails = new Promise((r) => r(res.message!)));
+      const l = res.albums!.find((a) => a.id == albid);
       if (!l) return (albumDetails = new Promise((r) => r("Album not found.")));
       if (oldLib == JSON.stringify(l)) return;
       albumDetails = new Promise((r) =>
         r({
-          a: res.artist,
+          a: res,
           l,
         })
       );

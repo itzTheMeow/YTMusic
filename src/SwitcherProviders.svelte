@@ -1,15 +1,24 @@
 <script lang="ts">
   import ProviderIcon from "ProviderIcon.svelte";
   import { createEventDispatcher } from "svelte";
+  import {
+    MetaProviderBandLab,
+    MetaProviderKonami,
+    MetaProviderSoundCloud,
+    MetaProviderSpotify,
+    SoundProviderSoundCloud,
+    SoundProviderYouTube,
+    type MetadataProvider,
+    type SoundProvider,
+  } from "typings_struct";
   import { Providers } from "utils";
-  import { MetadataProviders, SoundProviders } from "../server/struct";
 
   export let type: "meta" | "sound";
   export let className = "";
-  export let select: MetadataProviders | SoundProviders | undefined = undefined;
+  export let select: MetadataProvider | SoundProvider | undefined = undefined;
 
   // https://stackoverflow.com/questions/46432335/hex-to-hsl-convert-javascript
-  function hex2hsl(prov: MetadataProviders | SoundProviders) {
+  function hex2hsl(prov: MetadataProvider | SoundProvider) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(Providers[prov])!;
     let r = parseInt(result[1], 16),
       g = parseInt(result[2], 16),
@@ -46,16 +55,13 @@
     return `${h} ${s}% ${l}%`;
   }
 
-  export let selected: MetadataProviders | SoundProviders =
-    (type == "meta"
-      ? Object.values(MetadataProviders).find((e) => e == select)
-      : Object.values(SoundProviders).find((e) => e == select)) ||
-    (type == "meta" ? MetadataProviders.Spotify : SoundProviders.YouTube);
+  export let selected: MetadataProvider | SoundProvider =
+    select || (type == "meta" ? MetaProviderSpotify : SoundProviderYouTube);
   const dispatch = createEventDispatcher();
 </script>
 
 <div class="btn-group justify-center {className}">
-  {#each Object.values(type == "meta" ? MetadataProviders : SoundProviders) as prov}
+  {#each Object.values(type == "meta" ? [MetaProviderSpotify, MetaProviderSoundCloud, MetaProviderKonami, MetaProviderBandLab] : [SoundProviderYouTube, SoundProviderSoundCloud]) as prov}
     <button
       class="btn {selected == prov ? 'btn-active' : ''}"
       style={`--${selected == prov ? "p" : "nc"}:${hex2hsl(prov)};`}

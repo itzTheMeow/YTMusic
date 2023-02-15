@@ -1,5 +1,6 @@
 import { Auth } from "index";
 import type {
+  APIArtistGetRequest,
   APIArtistSearchRequest,
   APIErrorResponse,
   APILoginRequest,
@@ -44,8 +45,8 @@ export default class {
   public async listArtists() {
     return await this.post<{}, Artist[]>("/artist_list", {});
   }
-  public async fetchArtist(id: string): Res<{ artist: Artist }> {
-    return (await this.post("/artist_get", { id })) as any;
+  public async fetchArtist(id: string) {
+    return await this.post<APIArtistGetRequest, Artist>("/artist_get", { id });
   }
   public async searchTrack(provider: SoundProviders, term: string): Res<{ list: Downloadable[] }> {
     return (await this.post("/track_search", {

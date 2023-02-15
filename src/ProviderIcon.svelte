@@ -7,11 +7,12 @@
     MetaProviderSpotify,
     SoundProviderSoundCloud,
     SoundProviderYouTube,
+    type MetadataProvider,
+    type SoundProvider,
   } from "typings_struct";
-  import type { MetadataProviders, SoundProviders } from "../server/struct";
 
   export let size = 18;
-  export let provider: MetadataProviders | SoundProviders;
+  export let provider: MetadataProvider | SoundProvider;
 </script>
 
 {#if provider == MetaProviderSpotify}

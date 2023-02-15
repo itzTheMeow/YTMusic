@@ -46,4 +46,29 @@ func InitAPIArtists() {
 		}
 		return c.JSON(list)
 	})
+	App.Post("/api/artist_get", func(c *fiber.Ctx) error {
+		if a := GetAuthorizedAccount(c); a == nil {
+			return c.JSON(APIErrorResponse{
+				Error:   true,
+				Message: "Unauthorized.",
+			})
+		}
+		var body APIArtistGetRequest
+		c.BodyParser(&body)
+		if body.ID == "" {
+			return c.JSON(APIErrorResponse{
+				Error:   true,
+				Message: "Request malformed.",
+			})
+		}
+		for _, a := range media.Artists {
+			if a.ID == body.ID {
+				return c.JSON(a)
+			}
+		}
+		return c.JSON(APIErrorResponse{
+			Error:   true,
+			Message: "Artist not found.",
+		})
+	})
 }

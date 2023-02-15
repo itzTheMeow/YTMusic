@@ -79,6 +79,7 @@ export interface AccountPermissions {
   owner: boolean;
   artistAdd: boolean;
   artistRemove: boolean;
+  artistRemoveSelf: boolean;
   songDownload: boolean;
   songRemove: boolean;
 }

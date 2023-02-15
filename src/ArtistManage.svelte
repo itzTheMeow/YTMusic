@@ -6,7 +6,7 @@
   import { onDestroy } from "svelte";
   import { link, navigate } from "svelte-routing";
   import { ExternalLink } from "tabler-icons-svelte";
-  import type { Album } from "../server/struct";
+  import type { Album } from "typings_struct";
 
   export let id: string;
 
@@ -45,24 +45,24 @@
 
 {#await artistDetails}
   <Loader />
-{:then r}
-  {#if r.err}
-    <div class="text-sm">{r.message}</div>
+{:then artist}
+  {#if artist.err || !artist.albums}
+    <div class="text-sm">{"message" in artist ? artist.message : "Error"}</div>
   {:else}
     <div class="card w-3/4 bg-base-300 shadow-xl box-border m-auto">
       <div class="card-body">
         <h2 class="card-title flex-wrap">
-          {#if r.artist.icon}
+          {#if artist.icon}
             <div class="avatar">
               <div class="w-36 rounded">
-                <img src={r.artist.icon} alt={r.artist.name} id={r.artist.id} />
+                <img src={artist.icon} alt={artist.name} id={artist.id} />
               </div>
             </div>
           {:else}
             <div class="avatar placeholder">
               <div class="w-36 rounded bg-neutral-focus text-neutral-content">
                 <span class="text-lg">
-                  {r.artist.name
+                  {artist.name
                     .split(/ +/g)
                     .map((a) => a[0].toUpperCase())
                     .join("")}
@@ -72,19 +72,19 @@
           {/if}
           <div class="flex flex-col gap-1 ml-1">
             <div class="flex items-center gap-1">
-              <div class="text-3xl">{r.artist.name}</div>
-              <a class="text-secondary" href={r.artist.url} target="_blank" rel="noreferrer"
+              <div class="text-3xl">{artist.name}</div>
+              <a class="text-secondary" href={artist.url} target="_blank" rel="noreferrer"
                 ><ExternalLink size={32} /></a
               >
             </div>
             <div class="flex gap-1">
               <div class="badge">
-                Followers: {r.artist.followers.toLocaleString()}
+                Followers: {artist.followers.toLocaleString()}
               </div>
-              <ArtistProviders providers={Object.keys(r.artist.providers)} size={20} />
+              <ArtistProviders providers={Object.keys(artist.providers)} size={20} />
             </div>
             <div class="flex gap-2 flex-wrap">
-              {#each r.artist.genres as genre}
+              {#each artist.genres as genre}
                 <div class="badge badge-outline badge-md text-xs" style="padding:10px;">
                   {genre}
                 </div>
@@ -96,7 +96,7 @@
                 bind:this={refreshMetaBtn}
                 on:click={async () => {
                   refreshMetaBtn.classList.add("loading");
-                  for (const [source, id] of Object.entries(r.artist.providers)) {
+                  for (const [source, id] of Object.entries(artist.providers)) {
                     await API.post("artist_add", { id, source });
                   }
                   refreshMetaBtn.classList.remove("loading");
@@ -111,7 +111,7 @@
                   if (confirm("Are you sure?")) {
                     delButton.classList.add("loading");
                     const res = await API.post("/artist_remove", {
-                      id: r.artist.id,
+                      id: artist.id,
                     });
                     delButton.classList.remove("loading");
                     if (!res.err) navigate("/artists");
@@ -125,25 +125,25 @@
         </h2>
         <div class="flex gap-3 items-center justify-center">
           <div class="font-bold w-max">
-            {r.artist.albums.reduce(
+            {artist.albums.reduce(
               (a, b) => a + b.tracks.filter((t) => t.added).length,
               0
-            )}/{r.artist.albums.reduce((a, b) => a + b.tracks.length, 0)}
+            )}/{artist.albums.reduce((a, b) => a + b.tracks.length, 0)}
             {" "}Tracks
           </div>
           <progress
             class="progress flex-1 {(() => {
-              const len = r.artist.albums.reduce(
+              const len = artist.albums.reduce(
                 (a, b) => a + b.tracks.filter((t) => t.added).length,
                 0
               );
-              if (len == r.artist.albums.reduce((a, b) => a + b.tracks.length, 0))
+              if (len == artist.albums.reduce((a, b) => a + b.tracks.length, 0))
                 return 'progress-success';
               else if (len == 0) return 'progress-error';
               else return 'progress-warning';
             })()}"
-            value={r.artist.albums.reduce((a, b) => a + b.tracks.filter((t) => t.added).length, 0)}
-            max={r.artist.albums.reduce((a, b) => a + b.tracks.length, 0)}
+            value={artist.albums.reduce((a, b) => a + b.tracks.filter((t) => t.added).length, 0)}
+            max={artist.albums.reduce((a, b) => a + b.tracks.length, 0)}
           />
         </div>
       </div>
@@ -157,7 +157,7 @@
     />
     {#if !albumSearch}
       <div class="btn-group w-full justify-center mt-3">
-        {#each getLetters(r.artist.albums) as letter}
+        {#each getLetters(artist.albums) as letter}
           <button
             class="btn {filteredLetter == letter ? 'btn-active' : ''}"
             on:click={() => (filteredLetter = letter)}>{letter}</button
@@ -166,9 +166,9 @@
       </div>
     {/if}
     <div class="flex gap-2 flex-wrap flex-row justify-center mt-3">
-      {#each (albumSearch ? r.artist.albums
+      {#each (albumSearch ? artist.albums
             .filter((a) => a.name.toLowerCase().includes(albumSearch.toLowerCase()))
-            .slice(0, 15) : r.artist.albums.filter((a) => {
+            .slice(0, 15) : artist.albums.filter((a) => {
             if (config.nonSymbol.includes(filteredLetter)) return a.name
                 .toUpperCase()
                 .startsWith(filteredLetter);
@@ -193,7 +193,7 @@
             <div class="card-actions items-center mt-auto">
               <a
                 class="btn btn-primary btn-sm"
-                href={`/artists/${r.artist.id}/albums/${album.id}`}
+                href={`/artists/${artist.id}/albums/${album.id}`}
                 use:link>Manage</a
               >
               <div

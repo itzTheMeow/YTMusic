@@ -6,16 +6,15 @@
   import { onDestroy } from "svelte";
   import SwitcherProviders from "SwitcherProviders.svelte";
   import { ArrowBack, Download, ExternalLink, Eye, X } from "tabler-icons-svelte";
+  import type { Album, Artist, Downloadable, SoundProvider, Track } from "typings_struct";
   import { highlightSelect, Providers, searchTimeout, stringDuration } from "utils";
-  import type { Album, Artist, Downloadable, Track } from "../server/struct";
-  import { SoundProviders } from "../server/struct";
 
   export let artist: Artist;
   export let album: Album;
   export let track: Track;
 
   let embedding: Downloadable | null = null,
-    selectedProvider: SoundProviders;
+    selectedProvider: SoundProvider;
   let modal: HTMLDivElement, searchInput: HTMLInputElement;
 
   let searchTerm = `${artist.name} - ${track.title}`;
@@ -94,9 +93,9 @@
         <div class="flex gap-2 items-center mb-2 [@media(max-width:600px)]:!flex-col">
           <input
             type="text"
-            placeholder="Search {Object.entries(SoundProviders).find(
-              (e) => e[1] == selectedProvider
-            )?.[0] || ''}"
+            placeholder="Search {selectedProvider
+              ? selectedProvider[0].toUpperCase() + selectedProvider.slice(1).toLowerCase()
+              : ''}"
             class="input input-bordered block flex-1"
             use:highlightSelect
             use:searchTimeout={() => (searchTerm = searchInput.value)}

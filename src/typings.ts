@@ -18,6 +18,9 @@ export interface APIArtistSearchRequest {
   query: string;
   provider: any /* types.MetadataProvider */;
 }
+export interface APIArtistGetRequest {
+  id: string;
+}
 export interface APIArtistAddRequest {
   id: string;
   provider: any /* types.MetadataProvider */;
