@@ -55,13 +55,22 @@
     return `${h} ${s}% ${l}%`;
   }
 
+  const MetaList = [
+      MetaProviderSpotify,
+      MetaProviderSoundCloud,
+      MetaProviderKonami,
+      MetaProviderBandLab,
+    ],
+    SoundList = [SoundProviderYouTube, SoundProviderSoundCloud];
+
   export let selected: MetadataProvider | SoundProvider =
-    select || (type == "meta" ? MetaProviderSpotify : SoundProviderYouTube);
+    (type == "meta" ? MetaList.find((m) => m == select) : SoundList.find((s) => s == select)) ||
+    (type == "meta" ? MetaProviderSpotify : SoundProviderYouTube);
   const dispatch = createEventDispatcher();
 </script>
 
 <div class="btn-group justify-center {className}">
-  {#each Object.values(type == "meta" ? [MetaProviderSpotify, MetaProviderSoundCloud, MetaProviderKonami, MetaProviderBandLab] : [SoundProviderYouTube, SoundProviderSoundCloud]) as prov}
+  {#each Object.values(type == "meta" ? MetaList : SoundList) as prov}
     <button
       class="btn {selected == prov ? 'btn-active' : ''}"
       style={`--${selected == prov ? "p" : "nc"}:${hex2hsl(prov)};`}

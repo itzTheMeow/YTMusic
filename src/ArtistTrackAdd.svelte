@@ -119,7 +119,7 @@
             <div class="text-sm">{res.message}</div>
           {:else}
             <div class="flex flex-wrap gap-1 justify-center">
-              {#each res.list as dl (dl.url)}
+              {#each res as dl (dl.url)}
                 <div
                   class="aspect-video relative rounded-3xl box-border overflow-hidden w-[calc(33%-0.5rem)] [@media(max-width:800px)]:w-[calc(50%-0.5rem)] [@media(max-width:600px)]:!w-full"
                 >

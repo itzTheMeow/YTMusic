@@ -5,8 +5,15 @@ import type {
   APIErrorResponse,
   APILoginRequest,
   APILoginResponse,
+  APITrackSearchRequest,
 } from "typings";
-import { MetaProviderSpotify, type Artist, type MetadataProvider } from "typings_struct";
+import {
+  MetaProviderSpotify,
+  type Artist,
+  type Downloadable,
+  type MetadataProvider,
+  type SoundProvider,
+} from "typings_struct";
 
 type Res<T extends {}> = Promise<({ err: true } & APIErrorResponse) | ({ err: false } & T)>;
 
@@ -48,11 +55,11 @@ export default class {
   public async fetchArtist(id: string) {
     return await this.post<APIArtistGetRequest, Artist>("/artist_get", { id });
   }
-  public async searchTrack(provider: SoundProviders, term: string): Res<{ list: Downloadable[] }> {
-    return (await this.post("/track_search", {
+  public async searchTrack(provider: SoundProvider, query: string) {
+    return await this.post<APITrackSearchRequest, Downloadable[]>("/track_search", {
       provider,
-      term,
-    })) as any;
+      query,
+    });
   }
   public async getSettings(): Res<{ settings: Settings }> {
     return (await this.post("/settings_get", {})) as any;

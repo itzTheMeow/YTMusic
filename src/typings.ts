@@ -25,3 +25,7 @@ export interface APIArtistAddRequest {
   id: string;
   provider: any /* types.MetadataProvider */;
 }
+export interface APITrackSearchRequest {
+  query: string;
+  provider: any /* types.SoundProvider */;
+}
