@@ -96,8 +96,8 @@
                 bind:this={refreshMetaBtn}
                 on:click={async () => {
                   refreshMetaBtn.classList.add("loading");
-                  for (const [source, id] of Object.entries(artist.providers)) {
-                    await API.post("artist_add", { id, source });
+                  for (const [provider, id] of Object.entries(artist.providers)) {
+                    await API.post("artist_add", { id, provider });
                   }
                   refreshMetaBtn.classList.remove("loading");
                 }}

@@ -46,6 +46,13 @@ func FetchSpotifyArtist(id string) (*types.Artist, error) {
 		return nil, err
 	}
 
+	for _, alb := range artist.Albums {
+		err = runTrackSet(&alb, 0)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	return &artist, nil
 }
 func runAlbumSet(artist *types.Artist, off int) error {
@@ -62,6 +69,19 @@ func runAlbumSet(artist *types.Artist, off int) error {
 	}
 	if len(albums.Albums) == 50 {
 		return runAlbumSet(artist, off+50)
+	}
+	return nil
+}
+func runTrackSet(album *types.Album, off int) error {
+	tracks, err := SpotifyClient.GetAlbumTracks(ctx, spotify.ID(album.ID), spotify.Limit(50), spotify.Offset(off))
+	if err != nil {
+		return err
+	}
+	for _, track := range tracks.Tracks {
+		album.Tracks = append(album.Tracks, ConstructTrackFromSpotify(track))
+	}
+	if len(tracks.Tracks) == 50 {
+		return runTrackSet(album, off+50)
 	}
 	return nil
 }
@@ -120,7 +140,7 @@ func ConstructAlbumFromSpotify(album spotify.SimpleAlbum) types.Album {
 		Provider: types.MetaProviderSpotify,
 	}
 }
-func ConstructTrackFromSpotify(track spotify.FullTrack) types.Track {
+func ConstructTrackFromSpotify(track spotify.SimpleTrack) types.Track {
 	return types.Track{
 		ID:       ulid.Make().String(),
 		UUID:     track.ID.String(),
