@@ -53,8 +53,6 @@ func GetAuthorizedAccount(req *fiber.Ctx) *types.Account {
 		for _, acc := range accounts {
 			if acc.Token == req.Get("Authorization") {
 				return acc
-			} else {
-				return nil
 			}
 		}
 	}
