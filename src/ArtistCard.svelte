@@ -1,7 +1,7 @@
 <script lang="ts">
   import ArtistProviders from "ArtistProviders.svelte";
   import { ExternalLink } from "tabler-icons-svelte";
-  import type { Artist } from "../server/struct";
+  import type { Artist } from "typings_struct";
 
   export let artist: Artist;
 </script>

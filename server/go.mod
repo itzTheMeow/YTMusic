@@ -9,6 +9,7 @@ require (
 	github.com/zackradisic/soundcloud-api v0.1.8
 	github.com/zmb3/spotify/v2 v2.3.1
 	golang.org/x/crypto v0.6.0
+	golang.org/x/exp v0.0.0-20230213192124-5e25df0256eb
 	golang.org/x/oauth2 v0.0.0-20210810183815-faf39c7919d5
 	gopkg.in/goyy/goyy.v0 v0.0.0-20190218140538-82e7740e526e
 	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c

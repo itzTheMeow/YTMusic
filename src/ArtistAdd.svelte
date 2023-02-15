@@ -88,7 +88,7 @@
                       default:
                         await API.post("artist_add", {
                           id: Object.entries(artist.providers)[0][1],
-                          source: Object.entries(artist.providers)[0][0],
+                          provider: Object.entries(artist.providers)[0][0],
                         });
                         artist.status = 1;
                         //@ts-ignore

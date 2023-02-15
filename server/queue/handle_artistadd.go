@@ -20,6 +20,7 @@ func HandleArtistAdd(data []byte) {
 	}
 	var artist *types.Artist
 
+	log.Printf("Fetching new artist %v from %v.", item.ID, item.Provider)
 	switch item.Provider {
 	case types.MetaProviderSpotify:
 		artist, err = metadata.FetchSpotifyArtist(item.ID)
@@ -37,4 +38,5 @@ func HandleArtistAdd(data []byte) {
 
 	os.Mkdir(media.ArtistPath(*artist), os.ModePerm)
 	os.WriteFile(path.Join(media.ArtistPath(*artist), "artist.json"), artistJSON, os.ModePerm)
+	log.Printf("Added new artist %v.", artist.Name)
 }

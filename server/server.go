@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 	"path"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/itzTheMeow/YTMusic/media"
 	"github.com/itzTheMeow/YTMusic/metadata"
 	"github.com/itzTheMeow/YTMusic/types"
 	"github.com/itzTheMeow/YTMusic/util"
@@ -20,8 +22,12 @@ func main() {
 	log.SetPrefix("=> ")
 	log.Printf("Starting YTMusic...")
 	util.InitConfig()
+
+	os.Mkdir(media.Location(), os.ModePerm)
+
 	metadata.InitSpotify()
 	metadata.InitSoundCloud()
+
 	App = fiber.New(fiber.Config{
 		DisableStartupMessage: true,
 	})
@@ -36,6 +42,7 @@ func main() {
 
 	InitAPIMeta()
 	InitAPISearch()
+	InitAPIArtists()
 	App.Static("/", path.Join(util.Config.BasePath, "public"))
 	App.Get("*", func(c *fiber.Ctx) error {
 		return c.SendFile(path.Join(util.Config.BasePath, "index.html"))

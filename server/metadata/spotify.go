@@ -9,6 +9,7 @@ import (
 	"github.com/oklog/ulid/v2"
 	"github.com/zmb3/spotify/v2"
 	spotifyauth "github.com/zmb3/spotify/v2/auth"
+	"golang.org/x/exp/slices"
 	"golang.org/x/oauth2/clientcredentials"
 )
 
@@ -40,7 +41,29 @@ func FetchSpotifyArtist(id string) (*types.Artist, error) {
 	artist := ConstructArtistFromSpotify(*spotifyArtist)
 	artist.Albums = make([]types.Album, 0)
 
+	err = runAlbumSet(&artist, 0)
+	if err != nil {
+		return nil, err
+	}
+
 	return &artist, nil
+}
+func runAlbumSet(artist *types.Artist, off int) error {
+	albums, err := SpotifyClient.GetArtistAlbums(ctx, spotify.ID(artist.ID), append(make([]spotify.AlbumType, 0), spotify.AlbumTypeAlbum, spotify.AlbumTypeAppearsOn, spotify.AlbumTypeSingle), spotify.Limit(50), spotify.Offset(off))
+	if err != nil {
+		return err
+	}
+	for _, album := range albums.Albums {
+		if album.AlbumType != "compilation" && slices.IndexFunc(artist.Albums, func(a types.Album) bool {
+			return a.Name == album.Name
+		}) == -1 {
+			artist.Albums = append(artist.Albums, ConstructAlbumFromSpotify(album))
+		}
+	}
+	if len(albums.Albums) == 50 {
+		return runAlbumSet(artist, off+50)
+	}
+	return nil
 }
 
 func SearchSpotifyArtists(query string) []types.Artist {

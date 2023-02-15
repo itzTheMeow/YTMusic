@@ -14,5 +14,5 @@ export interface QueuedLibraryScan {
 }
 export interface QueuedArtistAdd {
   id: string;
-  provider: string;
+  provider: any /* types.MetadataProvider */;
 }

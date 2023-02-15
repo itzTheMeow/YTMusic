@@ -10,7 +10,15 @@ import (
 )
 
 func Location() string {
-	return path.Join(util.Config.BasePath, util.UserConfig.LibraryLocation)
+	if len(util.UserConfig.LibraryLocation) > 0 {
+		if strings.HasPrefix(util.UserConfig.LibraryLocation, ".") {
+			return path.Join(util.Config.BasePath, util.UserConfig.LibraryLocation)
+		} else {
+			return path.Clean(util.UserConfig.LibraryLocation)
+		}
+	} else {
+		return path.Join(util.Config.BasePath, "Music")
+	}
 }
 func ArtistPath(artist types.Artist) string {
 	return path.Join(Location(), SanitizeFileName(artist.Name))
