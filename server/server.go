@@ -38,6 +38,15 @@ func main() {
 		pass := ulid.Make().String()
 		pass = strings.ToLower(pass[len(pass)-6:])
 		admin := CreateAccount("admin", pass)
+		admin.Permissions = types.AccountPermissions{
+			ArtistAdd:        true,
+			ArtistRemove:     true,
+			ArtistRemoveSelf: true,
+			Owner:            true,
+			SongDownload:     true,
+			SongRemove:       true,
+		}
+		SetAccount(admin)
 		log.Printf(fmt.Sprintf("Automatically created account \"%v\" with password \"%v\". Please change your password once logging in.", admin.Username, pass))
 	}
 
