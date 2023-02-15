@@ -57,7 +57,7 @@
           style="max-width:30vw;max-height:50vh;"
         >
           {#if q.length}
-            {#each q as qi}
+            {#each q as qi (qi.id)}
               <div>
                 <div class="badge badge-secondary badge-outline">{qi.type}</div>
                 <div class="text-sm">

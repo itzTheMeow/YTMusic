@@ -140,7 +140,7 @@
           </tr>
         </thead>
         <tbody>
-          {#each res.l.tracks as track}
+          {#each res.l.tracks as track (track.id)}
             <tr>
               <th>{track.number}</th>
               <td>
@@ -194,7 +194,7 @@
       </table>
     </div>
 
-    {#each res.l.tracks as track}
+    {#each res.l.tracks as track (track.id)}
       <ArtistTrackAdd artist={res.a} album={res.l} {track} />
     {/each}
   {/if}

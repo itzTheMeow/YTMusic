@@ -7,6 +7,7 @@ export type QueueAction = number /* int */;
 export const QALibraryScan: QueueAction = 0;
 export const QAArtistAdd: QueueAction = 1;
 export interface QueueItem {
+  id: string;
   type: QueueAction;
   data: string;
 }

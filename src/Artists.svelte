@@ -68,7 +68,7 @@
                 .toUpperCase()
                 .startsWith(filteredLetter);
             else return !config.nonSymbol.includes(a.name.toUpperCase()[0]);
-          }) as artist}
+          }) as artist (artist.id)}
         <ArtistCard {artist}>
           <a class="ml-auto mb-auto cursor-pointer" href={`/artists/${artist.id}/manage`} use:link>
             <div class="text-primary">

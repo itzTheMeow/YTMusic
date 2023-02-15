@@ -65,7 +65,7 @@
       {:else}
         <div class="flex flex-row flex-wrap gap-4 justify-center mt-3">
           {#if artists.length}
-            {#each artists as artist}
+            {#each artists as artist (artist.id)}
               <ArtistCard {artist}>
                 <div
                   class="ml-auto mb-auto cursor-pointer"

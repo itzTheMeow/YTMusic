@@ -10,6 +10,7 @@ const (
 )
 
 type QueueItem struct {
+	ID   string      `json:"id"`
 	Type QueueAction `json:"type"`
 	Data []byte      `json:"data"`
 }

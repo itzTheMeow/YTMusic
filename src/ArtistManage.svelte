@@ -173,7 +173,7 @@
                 .toUpperCase()
                 .startsWith(filteredLetter);
             else return !config.nonSymbol.includes(a.name.toUpperCase()[0]);
-          })).sort((a1, a2) => (a1.name.toLowerCase() > a2.name.toLowerCase() ? 1 : -1)) as album}
+          })).sort( (a1, a2) => (a1.name.toLowerCase() > a2.name.toLowerCase() ? 1 : -1) ) as album (album.id)}
         <div class="card w-64 bg-base-300 shadow-xl">
           <figure>
             <img src={album.image} alt={album.name} class="w-full aspect-square" />

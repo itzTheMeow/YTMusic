@@ -3,6 +3,8 @@ package queue
 import (
 	"encoding/json"
 	"log"
+
+	"github.com/oklog/ulid/v2"
 )
 
 var Items []*QueueItem = make([]*QueueItem, 0)
@@ -14,6 +16,7 @@ func Add(t QueueAction, data any) {
 		return
 	}
 	Items = append(Items, &QueueItem{
+		ID:   ulid.Make().String(),
 		Type: t,
 		Data: d,
 	})
