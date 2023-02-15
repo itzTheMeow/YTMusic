@@ -8,7 +8,7 @@ import (
 
 func InitAPISearch() {
 	App.Post("/api/artist_search", func(c *fiber.Ctx) error {
-		if a := GetAuthorizedAccount(c); a == nil {
+		if a := GetAuthorizedAccount(c); a == nil || !a.Permissions.ArtistAdd {
 			return c.JSON(APIErrorResponse{
 				Error:   true,
 				Message: "Unauthorized.",
