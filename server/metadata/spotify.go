@@ -46,13 +46,6 @@ func FetchSpotifyArtist(id string) (*types.Artist, error) {
 		return nil, err
 	}
 
-	for _, alb := range artist.Albums {
-		err = runTrackSet(&alb, 0)
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	return &artist, nil
 }
 func runAlbumSet(artist *types.Artist, off int) error {
@@ -64,7 +57,12 @@ func runAlbumSet(artist *types.Artist, off int) error {
 		if album.AlbumType != "compilation" && slices.IndexFunc(artist.Albums, func(a types.Album) bool {
 			return a.Name == album.Name
 		}) == -1 {
-			artist.Albums = append(artist.Albums, ConstructAlbumFromSpotify(album))
+			alb := ConstructAlbumFromSpotify(album)
+			err = runTrackSet(&alb, 0)
+			if err != nil {
+				return err
+			}
+			artist.Albums = append(artist.Albums, alb)
 		}
 	}
 	if len(albums.Albums) == 50 {

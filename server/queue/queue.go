@@ -35,9 +35,9 @@ func Run() {
 
 	switch item.Type {
 	case QAArtistAdd:
-		HandleArtistAdd(item.Data)
+		go HandleArtistAdd(item.Data)
 	case QALibraryScan:
-		HandleLibraryScan(item.Data)
+		go HandleLibraryScan(item.Data)
 	}
 
 	Running = false
