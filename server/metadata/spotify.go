@@ -49,7 +49,7 @@ func FetchSpotifyArtist(id string) (*types.Artist, error) {
 	return &artist, nil
 }
 func runAlbumSet(artist *types.Artist, off int) error {
-	albums, err := SpotifyClient.GetArtistAlbums(ctx, spotify.ID(artist.ID), append(make([]spotify.AlbumType, 0), spotify.AlbumTypeAlbum, spotify.AlbumTypeAppearsOn, spotify.AlbumTypeSingle), spotify.Limit(50), spotify.Offset(off))
+	albums, err := SpotifyClient.GetArtistAlbums(ctx, spotify.ID(artist.Providers[types.MetaProviderSpotify]), append(make([]spotify.AlbumType, 0), spotify.AlbumTypeAlbum, spotify.AlbumTypeAppearsOn, spotify.AlbumTypeSingle), spotify.Limit(50), spotify.Offset(off))
 	if err != nil {
 		return err
 	}
