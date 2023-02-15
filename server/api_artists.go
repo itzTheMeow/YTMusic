@@ -9,6 +9,12 @@ import (
 
 func InitAPIArtists() {
 	App.Post("/api/artist_add", func(c *fiber.Ctx) error {
+		if a := GetAuthorizedAccount(c); a == nil || !a.Permissions.ArtistAdd {
+			return c.JSON(APIErrorResponse{
+				Error:   true,
+				Message: "Unauthorized.",
+			})
+		}
 		var body APIArtistAddRequest
 		c.BodyParser(&body)
 		if body.ID == "" || body.Provider == "" {
@@ -26,6 +32,12 @@ func InitAPIArtists() {
 		})
 	})
 	App.Post("/api/artist_list", func(c *fiber.Ctx) error {
+		if a := GetAuthorizedAccount(c); a == nil {
+			return c.JSON(APIErrorResponse{
+				Error:   true,
+				Message: "Unauthorized.",
+			})
+		}
 		list := make([]types.Artist, 0)
 		for _, a := range media.Artists {
 			artist := a

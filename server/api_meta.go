@@ -39,13 +39,12 @@ func InitAPIMeta() {
 		}
 	})
 	App.Post("/api/queue_get", func(c *fiber.Ctx) error {
-		if GetAuthorizedAccount(c) != nil {
-			return c.JSON(queue.Items)
-		} else {
-			return c.JSON(&APIErrorResponse{
+		if a := GetAuthorizedAccount(c); a == nil {
+			return c.JSON(APIErrorResponse{
 				Error:   true,
-				Message: "Unauthorized",
+				Message: "Unauthorized.",
 			})
 		}
+		return c.JSON(queue.Items)
 	})
 }
