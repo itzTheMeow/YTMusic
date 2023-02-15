@@ -10,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/itzTheMeow/YTMusic/media"
 	"github.com/itzTheMeow/YTMusic/metadata"
+	"github.com/itzTheMeow/YTMusic/queue"
 	"github.com/itzTheMeow/YTMusic/types"
 	"github.com/itzTheMeow/YTMusic/util"
 	"github.com/oklog/ulid/v2"
@@ -52,5 +53,6 @@ func main() {
 		log.Printf(fmt.Sprintf("Server listening on port %v.", util.Config.Port))
 		return nil
 	})
+	queue.Add(queue.QALibraryScan, nil)
 	App.Listen(fmt.Sprint(":", util.Config.Port))
 }

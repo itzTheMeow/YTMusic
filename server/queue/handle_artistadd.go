@@ -5,10 +5,12 @@ import (
 	"log"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/itzTheMeow/YTMusic/media"
 	"github.com/itzTheMeow/YTMusic/metadata"
 	"github.com/itzTheMeow/YTMusic/types"
+	"golang.org/x/exp/slices"
 )
 
 func HandleArtistAdd(data []byte) {
@@ -30,6 +32,24 @@ func HandleArtistAdd(data []byte) {
 		return
 	}
 
+	existingI := slices.IndexFunc(media.Artists, func(a types.Artist) bool {
+		return strings.ToLower(a.Name) == strings.ToLower(artist.Name)
+	})
+	if existingI >= 0 {
+		existing := media.Artists[existingI]
+		artist.ID = existing.ID
+		for _, alb := range existing.Albums {
+			if i := slices.IndexFunc(artist.Albums, func(a types.Album) bool {
+				return strings.ToLower(a.Name) == strings.ToLower(alb.Name)
+			}); i >= 0 {
+				artist.Albums[i] = alb
+			} else {
+				artist.Albums = append(artist.Albums, alb)
+			}
+		}
+	}
+
+	artist.Version = 2
 	artistJSON, err := json.Marshal(artist)
 
 	if err != nil {
@@ -38,5 +58,23 @@ func HandleArtistAdd(data []byte) {
 
 	os.Mkdir(media.ArtistPath(*artist), os.ModePerm)
 	os.WriteFile(path.Join(media.ArtistPath(*artist), "artist.json"), artistJSON, os.ModePerm)
-	log.Printf("Added new artist %v.", artist.Name)
+
+	found := slices.IndexFunc(media.Artists, func(a types.Artist) bool {
+		return strings.ToLower(a.Name) == strings.ToLower(artist.Name)
+	})
+	if found >= 0 {
+		media.Artists[found] = *artist
+	} else {
+		media.Artists = append(media.Artists, *artist)
+	}
+
+	Add(QALibraryScan, QueuedLibraryScan{
+		Directory: artist.Name,
+	})
+
+	if existingI >= 0 {
+		log.Printf("Updated artist %v.", artist.Name)
+	} else {
+		log.Printf("Added new artist %v.", artist.Name)
+	}
 }

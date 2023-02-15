@@ -14,7 +14,9 @@ type QueueItem struct {
 	Data []byte      `json:"data"`
 }
 
-type QueuedLibraryScan struct{}
+type QueuedLibraryScan struct {
+	Directory string `json:"dir"`
+}
 
 type QueuedArtistAdd struct {
 	ID       string                 `json:"id"`
