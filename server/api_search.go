@@ -44,6 +44,8 @@ func InitAPISearch() {
 		switch body.Provider {
 		case types.SoundProviderYouTube:
 			list = sound.SearchYoutube(body.Query)
+		case types.SoundProviderSoundCloud:
+			list = sound.SearchSoundCloud(body.Query)
 		default:
 			return c.JSON(&APIErrorResponse{
 				Error:   true,
