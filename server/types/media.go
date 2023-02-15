@@ -40,12 +40,12 @@ type Album struct {
 	Provider MetadataProvider `json:"provider"`
 }
 type Track struct {
-	Id       string `json:"id"`
+	ID       string `json:"id"`
 	Title    string `json:"title"`
 	URL      string `json:"url"`
 	Number   int    `json:"number"`
 	Duration int    `json:"duration"`
 	Explicit bool   `json:"explicit"`
 	Added    bool   `json:"added,omitempty"`
-	Uuid     string `json:"uuid"`
+	UUID     string `json:"uuid"`
 }

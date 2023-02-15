@@ -84,31 +84,27 @@ func ConstructArtistFromSpotify(artist spotify.FullArtist) types.Artist {
 		Providers: providers,
 	}
 }
-
-/*
-func ConstructAlbumFromSpotify(album: SpotifyApi.AlbumObjectSimplified): Album {
-  return {
-    type: (album.album_type as any) || "",
-    url: album.external_urls.spotify || "",
-    id: ulid(),
-    name: album.name || "",
-    year: Number(album.release_date.split("-")[0]) || 0,
-    image: findImage(album.images),
-    tracks: [],
-    uuid: album.id || "",
-    provider: MetadataProviders.Spotify,
-  };
+func ConstructAlbumFromSpotify(album spotify.SimpleAlbum) types.Album {
+	return types.Album{
+		Type:     types.AlbumType(album.AlbumType),
+		URL:      album.ExternalURLs["spotify"],
+		ID:       ulid.Make().String(),
+		Name:     album.Name,
+		Year:     album.ReleaseDateTime().Year(),
+		Image:    findImage(album.Images),
+		Tracks:   make([]types.Track, 0),
+		UUID:     album.ID.String(),
+		Provider: types.MetaProviderSpotify,
+	}
 }
-
-func ConstructTrackFromSpotify(track: SpotifyApi.TrackObjectSimplified): Track {
-  return {
-    id: track.id,
-    uuid: track.id,
-    title: track.name || "",
-    url: track.external_urls.spotify || "",
-    number: track.track_number || 0,
-    duration: track.duration_ms || 0,
-    explicit: track.explicit || false,
-  };
+func ConstructTrackFromSpotify(track spotify.FullTrack) types.Track {
+	return types.Track{
+		ID:       ulid.Make().String(),
+		UUID:     track.ID.String(),
+		Title:    track.Name,
+		URL:      track.ExternalURLs["spotify"],
+		Number:   track.TrackNumber,
+		Duration: int(track.TimeDuration().Milliseconds()),
+		Explicit: track.Explicit,
+	}
 }
-*/
