@@ -11,6 +11,7 @@ export interface QueueItem {
   data: string;
 }
 export interface QueuedLibraryScan {
+  dir: string;
 }
 export interface QueuedArtistAdd {
   id: string;

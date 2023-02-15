@@ -77,9 +77,7 @@
                         const d = await API.listArtists();
                         if (d.err) return;
                         navigate(
-                          `/artists/${
-                            d.list.find((a) => a.name == artist.name)?.id || artist.id
-                          }/manage`
+                          `/artists/${d.find((a) => a.name == artist.name)?.id || artist.id}/manage`
                         );
                         break;
                       case 1: //@ts-ignore

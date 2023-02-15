@@ -41,8 +41,8 @@ export default class {
       provider,
     });
   }
-  public async listArtists(): Res<{ list: Artist[] }> {
-    return (await this.post("/artist_list", {})) as any;
+  public async listArtists() {
+    return await this.post<{}, Artist[]>("/artist_list", {});
   }
   public async fetchArtist(id: string): Res<{ artist: Artist }> {
     return (await this.post("/artist_get", { id })) as any;
