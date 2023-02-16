@@ -29,3 +29,10 @@ export interface APITrackSearchRequest {
   query: string;
   provider: any /* types.SoundProvider */;
 }
+export interface APITrackAddRequest {
+  artist: string;
+  album: string;
+  track: string;
+  provider: any /* types.SoundProvider */;
+  url: string;
+}

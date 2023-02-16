@@ -75,6 +75,9 @@ export interface Track {
 //////////
 // source: meta.go
 
+/**
+ * Docs in src/utils.ts
+ */
 export interface AccountPermissions {
   owner: boolean;
   artistAdd: boolean;
@@ -82,6 +85,7 @@ export interface AccountPermissions {
   artistRemoveSelf: boolean;
   songDownload: boolean;
   songRemove: boolean;
+  songRemoveSelf: boolean;
 }
 export interface Account {
   id: string;

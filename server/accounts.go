@@ -18,13 +18,25 @@ func CheckPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
+func migrateAccount(account *types.Account) *types.Account {
+	if account.Permissions.Owner {
+		account.Permissions.ArtistAdd = true
+		account.Permissions.ArtistRemove = true
+		account.Permissions.ArtistRemoveSelf = true
+		account.Permissions.SongDownload = true
+		account.Permissions.SongRemove = true
+		account.Permissions.SongRemoveSelf = true
+	}
+	return account
+}
+
 func GetAccount(id string) *types.Account {
 	var accounts []*types.Account
 	err := Database.Get("accounts", &accounts)
 	if err == nil {
 		for _, acc := range accounts {
 			if acc.ID == id {
-				return acc
+				return migrateAccount(acc)
 			} else {
 				return nil
 			}
@@ -38,7 +50,7 @@ func GetAccountName(name string) *types.Account {
 	if err == nil {
 		for _, acc := range accounts {
 			if strings.ToLower(acc.Username) == strings.ToLower(name) {
-				return acc
+				return migrateAccount(acc)
 			} else {
 				return nil
 			}
@@ -52,7 +64,7 @@ func GetAuthorizedAccount(req *fiber.Ctx) *types.Account {
 	if err == nil {
 		for _, acc := range accounts {
 			if acc.Token == req.Get("Authorization") {
-				return acc
+				return migrateAccount(acc)
 			}
 		}
 	}

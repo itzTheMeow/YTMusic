@@ -5,6 +5,7 @@ import {
   MetaProviderSoundCloud,
   MetaProviderSpotify,
   SoundProviderYouTube,
+  type AccountPermissions,
   type MetadataProvider,
   type SoundProvider,
 } from "typings_struct";
@@ -17,6 +18,15 @@ export const Providers: {
   [MetaProviderKonami]: "#B60014",
   [MetaProviderBandLab]: "#f12c18",
   [SoundProviderYouTube]: "#ff0000",
+};
+export const Permissions: { [key in keyof AccountPermissions]: string } = {
+  artistAdd: "Allows adding new artists and refreshing metadata on existing artists.",
+  artistRemove: "Allows deleting any artist (and their songs/metadata)",
+  artistRemoveSelf: "Allows deleting only artists added by the user.",
+  owner: "Has all permissions on the server. Can promote and demote any other owner.",
+  songDownload: "Allows downloading new songs.",
+  songRemove: "Allows deleting downloaded songs.",
+  songRemoveSelf: "Allows deleting only songs downloaded by the user.",
 };
 
 export function stringDuration(duration: number) {

@@ -33,3 +33,10 @@ type APITrackSearchRequest struct {
 	Query    string              `json:"query"`
 	Provider types.SoundProvider `json:"provider"`
 }
+type APITrackAddRequest struct {
+	Artist   string              `json:"artist"`
+	Album    string              `json:"album"`
+	Track    string              `json:"track"`
+	Provider types.SoundProvider `json:"provider"`
+	URL      string              `json:"url"`
+}
