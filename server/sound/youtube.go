@@ -2,6 +2,7 @@ package sound
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -9,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/itzTheMeow/YTMusic/media"
 	"github.com/itzTheMeow/YTMusic/types"
 	"github.com/levigross/grequests"
+	"github.com/oklog/ulid/v2"
 	"github.com/wader/goutubedl"
 )
 
@@ -78,7 +79,7 @@ func ConstructDownloadableFromYouTube(vid pipedAPISearchResponse) types.Download
 }
 
 func DownloadYouTube(url string) (*string, error) {
-	filepath := path.Join(os.TempDir(), media.SanitizeFileName(url)+".mp4")
+	filepath := path.Join(os.TempDir(), ulid.Make().String())
 
 	result, err := goutubedl.New(context.Background(), url, goutubedl.Options{
 		Type: goutubedl.TypeSingle,
@@ -96,6 +97,10 @@ func DownloadYouTube(url string) (*string, error) {
 		return nil, err
 	}
 	defer file.Close()
-	io.Copy(file, downloadResult)
+	w, err := io.Copy(file, downloadResult)
+	if err != nil {
+		return nil, err
+	}
+	print(fmt.Sprint("wrote", w))
 	return &filepath, nil
 }

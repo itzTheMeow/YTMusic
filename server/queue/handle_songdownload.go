@@ -38,7 +38,12 @@ func HandleSongDownload(data []byte) {
 
 	convertpath := *dlpath + ".ff.mp3"
 	trans := new(transcoder.Transcoder)
-	trans.Initialize(*dlpath, convertpath)
+	err = trans.Initialize(*dlpath, convertpath)
+	if err != nil {
+		//os.Remove(*dlpath)
+		log.Println(fmt.Sprintf("Failed to init convert track %v. %v", item.Track.Title, err))
+		return
+	}
 	err = <-trans.Run(false)
 	os.Remove(*dlpath)
 	if err != nil {
