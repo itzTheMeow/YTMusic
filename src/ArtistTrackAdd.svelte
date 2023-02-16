@@ -6,6 +6,7 @@
   import { onDestroy } from "svelte";
   import SwitcherProviders from "SwitcherProviders.svelte";
   import { ArrowBack, Download, ExternalLink, Eye, X } from "tabler-icons-svelte";
+  import type { APITrackAddRequest } from "typings";
   import type { Album, Artist, Downloadable, SoundProvider, Track } from "typings_struct";
   import { highlightSelect, Providers, searchTimeout, stringDuration } from "utils";
 
@@ -40,7 +41,7 @@
   async function handleDL(e: MouseEvent, url: string) {
     const btn = e.target as HTMLElement;
     btn.classList.add("loading");
-    const res = await API.post("/track_add", {
+    const res = await API.post<APITrackAddRequest, {}>("/track_add", {
       artist: artist.id,
       album: album.id,
       track: track.id,
