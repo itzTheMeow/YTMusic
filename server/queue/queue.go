@@ -20,7 +20,7 @@ func Add(t QueueAction, data any) {
 		Type: t,
 		Data: d,
 	})
-	Run()
+	go Run()
 }
 
 var Running = false
@@ -29,15 +29,16 @@ func Run() {
 	if Running || len(Items) == 0 {
 		return
 	}
+
 	Running = true
 	item := Items[0]
 	Items = Items[1:]
 
 	switch item.Type {
 	case QAArtistAdd:
-		go HandleArtistAdd(item.Data)
+		HandleArtistAdd(item.Data)
 	case QALibraryScan:
-		go HandleLibraryScan(item.Data)
+		HandleLibraryScan(item.Data)
 	}
 
 	Running = false
