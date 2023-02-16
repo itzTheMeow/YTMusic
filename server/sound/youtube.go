@@ -1,8 +1,6 @@
 package sound
 
 import (
-	"context"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -13,7 +11,6 @@ import (
 	"github.com/itzTheMeow/YTMusic/types"
 	"github.com/levigross/grequests"
 	"github.com/oklog/ulid/v2"
-	"github.com/wader/goutubedl"
 )
 
 type pipedAPISearchResponse struct {
@@ -81,26 +78,18 @@ func ConstructDownloadableFromYouTube(vid pipedAPISearchResponse) types.Download
 func DownloadYouTube(url string) (*string, error) {
 	filepath := path.Join(os.TempDir(), ulid.Make().String())
 
-	result, err := goutubedl.New(context.Background(), url, goutubedl.Options{
-		Type: goutubedl.TypeSingle,
-	})
+	result, err := DownloadURL(url)
 	if err != nil {
 		return nil, err
 	}
-	downloadResult, err := result.Download(context.Background(), "best")
-	if err != nil {
-		return nil, err
-	}
-	defer downloadResult.Close()
 	file, err := os.Create(filepath)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
-	w, err := io.Copy(file, downloadResult)
+	_, err = io.Copy(file, result)
 	if err != nil {
 		return nil, err
 	}
-	print(fmt.Sprint("wrote", w))
 	return &filepath, nil
 }
