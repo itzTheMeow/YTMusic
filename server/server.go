@@ -14,7 +14,6 @@ import (
 	"github.com/itzTheMeow/YTMusic/types"
 	"github.com/itzTheMeow/YTMusic/util"
 	"github.com/oklog/ulid/v2"
-	"github.com/wader/goutubedl"
 )
 
 var App *fiber.App
@@ -27,7 +26,6 @@ func main() {
 
 	os.Mkdir(media.Location(), os.ModePerm)
 
-	goutubedl.Path = "yt-dlp"
 	metadata.InitSpotify()
 	metadata.InitSoundCloud()
 
