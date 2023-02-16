@@ -3,11 +3,13 @@ module github.com/itzTheMeow/YTMusic
 go 1.20
 
 require (
+	github.com/bogem/id3v2/v2 v2.1.4
 	github.com/gofiber/fiber/v2 v2.42.0
 	github.com/levigross/grequests v0.0.0-20221222020224-9eee758d18d5
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/rapidloop/skv v0.0.0-20180909015525-9def2caac4cc
 	github.com/wader/goutubedl v0.0.0-20230215182234-3143935aeaf5
+	github.com/xfrr/goffmpeg v0.0.0-20210624103149-5ca2d3062daf
 	github.com/zackradisic/soundcloud-api v0.1.8
 	github.com/zmb3/spotify/v2 v2.3.1
 	golang.org/x/crypto v0.6.0
@@ -39,6 +41,7 @@ require (
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/net v0.6.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
+	golang.org/x/text v0.7.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 )
