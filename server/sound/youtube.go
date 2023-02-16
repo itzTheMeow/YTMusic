@@ -80,7 +80,7 @@ func ConstructDownloadableFromYouTube(vid pipedAPISearchResponse) types.Download
 func DownloadYouTube(url string) (*string, error) {
 	filepath := path.Join(os.TempDir(), media.SanitizeFileName(url)+".mp4")
 
-	result, err := goutubedl.New(context.Background(), "asdadsdas", goutubedl.Options{
+	result, err := goutubedl.New(context.Background(), url, goutubedl.Options{
 		Type: goutubedl.TypeSingle,
 	})
 	if err != nil {
