@@ -5,7 +5,7 @@
   import ThemePreview from "ThemePreview.svelte";
 
   let scanButton: HTMLDivElement;
-  let libraryFolder: HTMLInputElement;
+  let libraryLocation: HTMLInputElement;
 
   const settingsP = API.getSettings();
 
@@ -21,7 +21,7 @@
     passSubmit.classList.add("loading");
     const changed = await API.changePassword(curPass, newPass);
     passSubmit.classList.remove("loading");
-    if (changed.err) return (changeError = changed.message);
+    if (changed.err) return (changeError = changed.message!);
     Auth.logout();
   }
 </script>
@@ -49,18 +49,18 @@
         type="text"
         placeholder="/home/Music"
         class="input input-bordered w-72"
-        value={res.settings.libraryFolder}
-        bind:this={libraryFolder}
+        value={res.settings.libraryLocation}
+        bind:this={libraryLocation}
         on:keyup={async () => {
-          libraryFolder.classList.remove("input-error");
-          if (libraryFolder.value) {
+          libraryLocation.classList.remove("input-error");
+          if (libraryLocation.value) {
             //@ts-ignore
-            libraryFolder.nextElementSibling.style.display = "block";
-            await API.setSetting("libraryFolder", libraryFolder.value);
+            libraryLocation.nextElementSibling.style.display = "block";
+            await API.setSetting("libraryLocation", libraryLocation.value);
             //@ts-ignore
-            libraryFolder.nextElementSibling.style.display = "";
+            libraryLocation.nextElementSibling.style.display = "";
           } else {
-            libraryFolder.classList.add("input-error");
+            libraryLocation.classList.add("input-error");
           }
         }}
       />

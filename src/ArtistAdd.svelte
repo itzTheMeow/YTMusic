@@ -2,11 +2,11 @@
   import ArtistCard from "ArtistCard.svelte";
   import { API } from "index";
   import Loader from "Loader.svelte";
-  import { offQueueChange, onQueueChange } from "queue";
   import { onDestroy, onMount } from "svelte";
   import { navigate } from "svelte-routing";
   import SwitcherProviders from "SwitcherProviders.svelte";
   import { Check, Dots, Plus } from "tabler-icons-svelte";
+  import { QAArtistAdd, type QueuedArtistAdd } from "typings_queue";
   import { highlightSelect, searchTimeout } from "utils";
   import type { MetadataProviders } from "../server/struct";
 
@@ -23,9 +23,9 @@
   }
 
   let wasAdded: string[] = [];
-  const i = onQueueChange((v) => {
-    if (v.type == "ArtistAdd") {
-      wasAdded = [...wasAdded, v.id];
+  const i = API.onQueueChange((v) => {
+    if (v.type == QAArtistAdd && v.is == "remove") {
+      wasAdded = [...wasAdded, (<QueuedArtistAdd>JSON.parse(v.data)).id];
     }
   });
 
@@ -33,7 +33,7 @@
     searchInput.select();
   });
   onDestroy(() => {
-    offQueueChange(i);
+    API.offQueueChange(i);
   });
 </script>
 

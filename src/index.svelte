@@ -11,7 +11,7 @@
   import { link, Route, Router } from "svelte-routing";
   import { ListSearch, Logout, Settings } from "tabler-icons-svelte";
   import type { QueueItem } from "typings_queue";
-  import ulid from "ulid";
+  import { decodeTime } from "ulid";
   import Home from "./Home.svelte";
 
   if (!Auth.isAuthorized) window.location.href = "/login";
@@ -61,7 +61,7 @@
               <div>
                 <div class="badge badge-secondary badge-outline">{qi.type}</div>
                 <div class="text-sm">
-                  Added {DateTime.fromMillis(ulid.decodeTime(qi.id)).toRelative()}
+                  Added {DateTime.fromMillis(decodeTime(qi.id)).toRelative()}
                 </div>
                 <!-- TODO: add more details
               {#if qi.type == 'ArtistAdd'}
