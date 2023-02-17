@@ -20,6 +20,9 @@ func Add(t QueueAction, data any) {
 		Type: t,
 		Data: d,
 	})
+	for _, upd := range Updaters {
+		upd(true, Items[len(Items)-1])
+	}
 	go Run()
 }
 

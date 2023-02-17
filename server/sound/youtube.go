@@ -1,6 +1,7 @@
 package sound
 
 import (
+	"errors"
 	"io"
 	"log"
 	"os"
@@ -87,9 +88,12 @@ func DownloadYouTube(url string) (*string, error) {
 		return nil, err
 	}
 	defer file.Close()
-	_, err = io.Copy(file, result)
+	written, err := io.Copy(file, result)
 	if err != nil {
 		return nil, err
+	}
+	if written == 0 {
+		return nil, errors.New("Failed to download video.")
 	}
 	return &filepath, nil
 }

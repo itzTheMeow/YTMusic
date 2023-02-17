@@ -31,6 +31,7 @@
 
   //TODO: redo this to not use await
   const i = API.onQueueChange(async (e) => {
+    console.log(e);
     if (e.type == QALibraryScan && e.is == "remove") {
       const oldLib = JSON.stringify(((await new Promise((r) => albumDetails.then(r))) as any).l);
       const res = await API.fetchArtist(id);

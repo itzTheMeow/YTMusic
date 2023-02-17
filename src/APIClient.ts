@@ -42,12 +42,13 @@ export default class {
         const d = JSON.parse(data) as WSPacket;
         if (d.type == "sync") {
           Queue.update((q) => {
-            const nq = <QueueItem[]>JSON.parse(data);
+            const nq = <QueueItem[]>JSON.parse(d.data);
             q.forEach((i) => {
               if (!nq.find(({ id }) => id == i.id))
                 this.queueListeners.forEach((l) => l.cb({ ...i, is: "remove" }));
             });
             nq.forEach((i) => {
+              i.data = atob(i.data);
               if (!q.find(({ id }) => id == i.id))
                 this.queueListeners.forEach((l) => l.cb({ ...i, is: "add" }));
             });
@@ -55,13 +56,15 @@ export default class {
           });
         } else if (d.type == "add") {
           Queue.update((q) => {
-            const nq = <QueueItem>JSON.parse(data);
+            const nq = <QueueItem>JSON.parse(d.data);
+            nq.data = atob(nq.data);
             this.queueListeners.forEach((l) => l.cb({ ...nq, is: "add" }));
             return [...q, nq];
           });
         } else if (d.type == "remove") {
           Queue.update((q) => {
-            const nq = <QueueItem>JSON.parse(data);
+            const nq = <QueueItem>JSON.parse(d.data);
+            nq.data = atob(nq.data);
             this.queueListeners.forEach((l) => l.cb({ ...nq, is: "remove" }));
             return q.filter(({ id }) => id !== nq.id);
           });

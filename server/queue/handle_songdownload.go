@@ -87,9 +87,15 @@ func HandleSongDownload(data []byte) {
 		return
 	}
 
+	tp := media.TrackPath(item.Artist, item.Album, item.Track)
 	os.Mkdir(media.AlbumPath(item.Artist, item.Album), os.ModePerm)
-	os.Rename(convertpath, media.TrackPath(item.Artist, item.Album, item.Track))
+	os.Remove(tp)
+	os.Rename(convertpath, tp)
 	os.Remove(convertpath)
+
+	Add(QALibraryScan, QueuedLibraryScan{
+		Directory: media.SanitizeFileName(item.Artist.Name),
+	})
 
 	log.Println(fmt.Sprintf("Done downloading in %v!", time.Now().Sub(startTime).String()))
 }
