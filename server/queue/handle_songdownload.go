@@ -3,6 +3,7 @@ package queue
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"time"
@@ -37,17 +38,17 @@ func HandleSongDownload(data []byte) {
 		log.Println(fmt.Sprintf("Failed to download track %v. %v", item.Track.Title, err))
 		return
 	}
+	defer os.Remove(*dlpath)
 
 	convertpath := *dlpath + ".ff.mp3"
+	defer os.Remove(convertpath)
 	trans := new(transcoder.Transcoder)
 	err = trans.Initialize(*dlpath, convertpath)
 	if err != nil {
-		os.Remove(*dlpath)
 		log.Println(fmt.Sprintf("Failed to init convert track %v. %v", item.Track.Title, err))
 		return
 	}
 	err = <-trans.Run(false)
-	os.Remove(*dlpath)
 	if err != nil {
 		log.Println(fmt.Sprintf("Failed to convert track %v. %v", item.Track.Title, err))
 		return
@@ -56,7 +57,6 @@ func HandleSongDownload(data []byte) {
 	tag, err := id3v2.Open(convertpath, id3v2.Options{Parse: true})
 	if err != nil {
 		log.Println(fmt.Sprintf("Failed to open file for tagging: %v, %v", item.Track.Title, err))
-		os.Remove(convertpath)
 		return
 	}
 	defer tag.Close()
@@ -92,8 +92,11 @@ func HandleSongDownload(data []byte) {
 	tp := media.TrackPath(item.Artist, item.Album, item.Track)
 	os.Mkdir(media.AlbumPath(item.Artist, item.Album), os.ModePerm)
 	os.Remove(tp)
-	os.Rename(convertpath, tp)
-	os.Remove(convertpath)
+	src, _ := os.Open(convertpath)
+	defer src.Close()
+	file, _ := os.Create(tp)
+	io.Copy(file, src)
+	defer file.Close()
 
 	Add(QALibraryScan, QueuedLibraryScan{
 		Directory: item.Artist.Name,
