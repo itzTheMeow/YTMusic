@@ -14,7 +14,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-func doArtist(artists *[]types.Artist, dir string) *types.Artist {
+func doArtist(dir string) *types.Artist {
 	meta, err := os.ReadFile(path.Join(dir, "artist.json"))
 	if err != nil {
 		log.Println(fmt.Sprintf("Invalid artist '%v' in media folder.", path.Base(dir)))
@@ -25,6 +25,19 @@ func doArtist(artists *[]types.Artist, dir string) *types.Artist {
 	if err != nil {
 		log.Println(fmt.Sprintf("Invalid artist JSON '%v' in media folder.", path.Base(dir)))
 		return nil
+	}
+	for ai, alb := range artistJSON.Albums {
+		files, err := os.ReadDir(media.AlbumPath(artistJSON, alb))
+		if err == nil {
+			for _, f := range files {
+				i := slices.IndexFunc(alb.Tracks, func(track types.Track) bool {
+					return f.Name() == media.TrackName(track)
+				})
+				if i >= 0 {
+					artistJSON.Albums[ai].Tracks[i].Added = true
+				}
+			}
+		}
 	}
 	return &artistJSON
 }
@@ -40,7 +53,7 @@ func HandleLibraryScan(data []byte) {
 	artists := make([]types.Artist, 0)
 
 	if len(item.Directory) > 0 {
-		if artist := doArtist(&artists, path.Join(media.Location(), media.SanitizeFileName(item.Directory))); artist != nil {
+		if artist := doArtist(path.Join(media.Location(), media.SanitizeFileName(item.Directory))); artist != nil {
 			if i := slices.IndexFunc(media.Artists, func(a types.Artist) bool {
 				return strings.ToLower(a.Name) == strings.ToLower(artist.Name)
 			}); i >= 0 {
@@ -59,7 +72,7 @@ func HandleLibraryScan(data []byte) {
 
 		for _, folder := range files {
 			if folder.IsDir() {
-				if artist := doArtist(&artists, path.Join(media.Location(), folder.Name())); artist != nil {
+				if artist := doArtist(path.Join(media.Location(), folder.Name())); artist != nil {
 					artists = append(artists, *artist)
 				}
 			}
