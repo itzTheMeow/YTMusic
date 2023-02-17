@@ -1,0 +1,14 @@
+[Unit]
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+ExecStart=/home/USERNAME/YTMusic/out/YTMusic
+WorkingDirectory=/home/USERNAME/YTMusic/out
+User=USERNAME
+Restart=always
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=%n
