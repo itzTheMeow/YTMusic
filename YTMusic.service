@@ -4,8 +4,8 @@
 WantedBy=multi-user.target
 
 [Service]
-ExecStart=$CWD/out/YTMusic
-WorkingDirectory=$CWD/out
+ExecStart=$CWD/YTMusic
+WorkingDirectory=$CWD
 User=$USER
 Restart=always
 RestartSec=5
