@@ -1,4 +1,4 @@
 git pull
 pnpm i
-go run ./server --dev &
-pnpm start
+pnpm start &
+go run ./server --dev
