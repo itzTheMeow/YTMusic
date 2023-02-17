@@ -25,17 +25,40 @@ type QueueCallback = (c: QueueItem & { is: "add" | "remove" }) => any;
 export const Queue = writable<QueueItem[]>([]);
 
 export default class {
-  public socket: WebSocket;
+  public socket: WebSocket | null = null;
   public connected = false;
   constructor(public readonly url: string) {
+    this.connect();
+    setInterval(() => {
+      if (this.connected) this.socket?.send("wantSync");
+    }, 1000 * 60); // every minute sync queue
+  }
+  public connect() {
+    this.connected = false;
+    if (this.socket) {
+      const sock = this.socket;
+      sock.close();
+      this.socket.onopen = () => sock.close();
+      this.socket.onclose = this.socket.onerror = this.socket.onmessage = null;
+    }
     this.socket = new WebSocket(
       window.location.protocol.replace("http", "ws") + "//" + window.location.host + "/ws"
     );
     this.socket.onopen = () => {
       this.connected = true;
+      console.log("Socket Connect");
     };
     this.socket.onclose = () => {
       this.connected = false;
+      console.log("Socket D/C");
+      this.socket?.close();
+      setTimeout(() => this.connect(), 1000);
+    };
+    this.socket.onerror = (e) => {
+      this.connected = false;
+      console.error("Socket Error", e);
+      this.socket?.close();
+      setTimeout(() => this.connect(), 1000);
     };
     this.socket.onmessage = ({ data }) => {
       try {
@@ -71,9 +94,6 @@ export default class {
         }
       } catch {}
     };
-    setInterval(() => {
-      if (this.connected) this.socket.send("wantSync");
-    }, 1000 * 60); // every minute sync queue
   }
   private sanitizePath(path: string) {
     return !path.startsWith("/") ? "/" + path : path;

@@ -26,6 +26,8 @@ func HandleArtistAdd(data []byte) {
 	switch item.Provider {
 	case types.MetaProviderSpotify:
 		artist, err = metadata.FetchSpotifyArtist(item.ID)
+	case types.MetaProviderSoundCloud:
+		artist, err = metadata.FetchSoundCloudArtist(item.ID)
 	}
 	if err != nil {
 		log.Printf("Failed to fetch %v artist by ID %v. %v", item.Provider, item.ID, err)

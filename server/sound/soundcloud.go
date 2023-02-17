@@ -13,8 +13,8 @@ import (
 	"github.com/itzTheMeow/YTMusic/metadata"
 	"github.com/itzTheMeow/YTMusic/types"
 	"github.com/itzTheMeow/YTMusic/util"
+	soundcloud "github.com/juanefec/soundcloud-api"
 	"github.com/oklog/ulid/v2"
-	soundcloud "github.com/zackradisic/soundcloud-api"
 )
 
 func SearchSoundCloud(query string) []types.Downloadable {
@@ -47,10 +47,8 @@ func SearchSoundCloud(query string) []types.Downloadable {
 }
 
 func ConstructDownloadableFromSoundCloud(track soundcloud.Track) types.Downloadable {
-	thumb := ""
-	if track.ArtworkURL != "" {
-		thumb = track.ArtworkURL
-	} else {
+	thumb := track.ArtworkURL
+	if thumb == "" {
 		thumb = track.User.AvatarURL
 	}
 	return types.Downloadable{
