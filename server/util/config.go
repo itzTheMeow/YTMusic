@@ -2,7 +2,6 @@ package util
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 
@@ -29,7 +28,7 @@ func InitConfig() {
 		Config.BasePath, _ = os.Getwd()
 	}
 
-	yamlfile, err := ioutil.ReadFile(path.Join(Grab(os.Getwd()), "config.yaml"))
+	yamlfile, err := os.ReadFile(path.Join(Grab(os.Getwd()), "config.yaml"))
 	if err != nil {
 		fmt.Println("Failed to read YAML config.\n", err)
 	} else {
