@@ -40,7 +40,7 @@ func HandleLibraryScan(data []byte) {
 	artists := make([]types.Artist, 0)
 
 	if len(item.Directory) > 0 {
-		if artist := doArtist(&artists, path.Join(media.Location(), item.Directory)); artist != nil {
+		if artist := doArtist(&artists, path.Join(media.Location(), media.SanitizeFileName(item.Directory))); artist != nil {
 			if i := slices.IndexFunc(media.Artists, func(a types.Artist) bool {
 				return strings.ToLower(a.Name) == strings.ToLower(artist.Name)
 			}); i >= 0 {

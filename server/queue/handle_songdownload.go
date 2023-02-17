@@ -94,7 +94,7 @@ func HandleSongDownload(data []byte) {
 	os.Remove(convertpath)
 
 	Add(QALibraryScan, QueuedLibraryScan{
-		Directory: media.SanitizeFileName(item.Artist.Name),
+		Directory: item.Artist.Name,
 	})
 
 	log.Println(fmt.Sprintf("Done downloading in %v!", time.Now().Sub(startTime).String()))
