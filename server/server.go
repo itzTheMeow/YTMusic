@@ -3,12 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 	"path"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/itzTheMeow/YTMusic/media"
 	"github.com/itzTheMeow/YTMusic/metadata"
 	"github.com/itzTheMeow/YTMusic/queue"
 	"github.com/itzTheMeow/YTMusic/types"
@@ -23,8 +21,6 @@ func main() {
 	log.SetPrefix("=> ")
 	log.Printf("Starting YTMusic...")
 	util.InitConfig()
-
-	os.Mkdir(media.Location(), os.ModePerm)
 
 	metadata.InitSpotify()
 	metadata.InitSoundCloud()

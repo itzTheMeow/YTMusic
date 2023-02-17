@@ -2,6 +2,7 @@ package media
 
 import (
 	"fmt"
+	"os"
 	"path"
 
 	"github.com/itzTheMeow/YTMusic/types"
@@ -10,15 +11,18 @@ import (
 )
 
 func Location() string {
+	var loc string
 	if len(util.UserConfig.LibraryFolder) > 0 {
 		if strings.HasPrefix(util.UserConfig.LibraryFolder, ".") {
-			return path.Join(util.Config.BasePath, util.UserConfig.LibraryFolder)
+			loc = path.Join(util.Config.BasePath, util.UserConfig.LibraryFolder)
 		} else {
-			return path.Clean(util.UserConfig.LibraryFolder)
+			loc = path.Clean(util.UserConfig.LibraryFolder)
 		}
 	} else {
-		return path.Join(util.Config.BasePath, "Music")
+		loc = path.Join(util.Config.BasePath, "Music")
 	}
+	os.Mkdir(loc, os.ModePerm)
+	return loc
 }
 func ArtistPath(artist types.Artist) string {
 	return path.Join(Location(), SanitizeFileName(artist.Name))

@@ -79,4 +79,17 @@ func InitAPIMeta() {
 			Error: false,
 		})
 	})
+	App.Post("/api/scan_lib", func(c *fiber.Ctx) error {
+		if GetAuthorizedAccount(c) != nil {
+			queue.Add(queue.QALibraryScan, nil)
+			return c.JSON(&APIErrorResponse{
+				Error: false,
+			})
+		} else {
+			return c.JSON(&APIErrorResponse{
+				Error:   true,
+				Message: "Unauthorized.",
+			})
+		}
+	})
 }
