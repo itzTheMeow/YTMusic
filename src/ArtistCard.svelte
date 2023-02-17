@@ -1,7 +1,7 @@
 <script lang="ts">
   import ArtistProviders from "ArtistProviders.svelte";
   import { ExternalLink } from "tabler-icons-svelte";
-  import type { Artist } from "../server/struct";
+  import type { Artist } from "typings_struct";
 
   export let artist: Artist;
 </script>
@@ -34,7 +34,9 @@
       <div class="flex flex-col gap-1">
         <div class="flex items-center gap-1">
           <div>{artist.name}</div>
-          <a class="text-secondary" href={artist.url} target="_blank"><ExternalLink /></a>
+          <a class="text-secondary" href={artist.url} target="_blank" rel="noreferrer"
+            ><ExternalLink /></a
+          >
         </div>
         <div class="badge">{artist.followers.toLocaleString()}</div>
       </div>

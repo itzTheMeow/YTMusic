@@ -1,14 +1,32 @@
 import { Duration } from "luxon";
-import { MetadataProviders, SoundProviders } from "../server/struct";
+import {
+  MetaProviderBandLab,
+  MetaProviderKonami,
+  MetaProviderSoundCloud,
+  MetaProviderSpotify,
+  SoundProviderYouTube,
+  type AccountPermissions,
+  type MetadataProvider,
+  type SoundProvider,
+} from "typings_struct";
 
 export const Providers: {
-  [key in MetadataProviders | SoundProviders]: string;
+  [key in MetadataProvider | SoundProvider]: string;
 } = {
-  [MetadataProviders.Spotify]: "#1DB954",
-  [MetadataProviders.SoundCloud]: "#F26F23",
-  [MetadataProviders.Konami]: "#B60014",
-  [MetadataProviders.BandLab]: "#f12c18",
-  [SoundProviders.YouTube]: "#ff0000",
+  [MetaProviderSpotify]: "#1DB954",
+  [MetaProviderSoundCloud]: "#F26F23",
+  [MetaProviderKonami]: "#B60014",
+  [MetaProviderBandLab]: "#f12c18",
+  [SoundProviderYouTube]: "#ff0000",
+};
+export const Permissions: { [key in keyof AccountPermissions]: string } = {
+  artistAdd: "Allows adding new artists and refreshing metadata on existing artists.",
+  artistRemove: "Allows deleting any artist (and their songs/metadata)",
+  artistRemoveSelf: "Allows deleting only artists added by the user.",
+  owner: "Has all permissions on the server. Can promote and demote any other owner.",
+  songDownload: "Allows downloading new songs.",
+  songRemove: "Allows deleting downloaded songs.",
+  songRemoveSelf: "Allows deleting only songs downloaded by the user.",
 };
 
 export function stringDuration(duration: number) {

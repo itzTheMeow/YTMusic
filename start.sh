@@ -1,3 +1,4 @@
 git pull
-npm i
-npm start
+pnpm i
+go run . --dev &
+pnpm start

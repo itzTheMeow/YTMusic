@@ -5,7 +5,7 @@
   import { onDestroy } from "svelte";
   import { link } from "svelte-routing";
   import { Plus, Settings } from "tabler-icons-svelte";
-  import type { Artist } from "../server/struct";
+  import type { Artist } from "typings_struct";
 
   let filteredLetter = "";
   function getLetters(artists: Artist[]) {
@@ -34,7 +34,7 @@
 {:then artists}
   <div class="flex gap-2 items-center w-5/6 mx-auto">
     <div class="text-3xl font-bold">
-      {artists.err ? 0 : artists.list.length.toLocaleString()} Artists
+      {artists.err ? 0 : artists.length.toLocaleString()} Artists
     </div>
     <a class="btn btn-primary btn-square btn-outline btn-sm" href="/artists/add" use:link>
       <Plus size={32} />
@@ -52,7 +52,7 @@
   {:else}
     {#if !artistSearch}
       <div class="btn-group w-full justify-center mt-4">
-        {#each getLetters(artists.list) as letter}
+        {#each getLetters(artists) as letter}
           <button
             class="btn {filteredLetter == letter ? 'btn-active' : ''}"
             on:click={() => (filteredLetter = letter)}>{letter}</button
@@ -61,14 +61,14 @@
       </div>
     {/if}
     <div class="flex flex-row flex-wrap gap-4 justify-center mt-3">
-      {#each artistSearch ? artists.list
+      {#each artistSearch ? artists
             .filter((a) => a.name.toLowerCase().includes(artistSearch.toLowerCase()))
-            .slice(0, 15) : artists.list.filter((a) => {
+            .slice(0, 15) : artists.filter((a) => {
             if (config.nonSymbol.includes(filteredLetter)) return a.name
                 .toUpperCase()
                 .startsWith(filteredLetter);
             else return !config.nonSymbol.includes(a.name.toUpperCase()[0]);
-          }) as artist}
+          }) as artist (artist.id)}
         <ArtistCard {artist}>
           <a class="ml-auto mb-auto cursor-pointer" href={`/artists/${artist.id}/manage`} use:link>
             <div class="text-primary">

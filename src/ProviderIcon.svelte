@@ -1,18 +1,27 @@
 <script lang="ts">
   import { BrandSoundcloud, BrandSpotify, BrandYoutube, LetterK, Music } from "tabler-icons-svelte";
-  import { MetadataProviders, SoundProviders } from "../server/struct";
+  import {
+    MetaProviderBandLab,
+    MetaProviderKonami,
+    MetaProviderSoundCloud,
+    MetaProviderSpotify,
+    SoundProviderSoundCloud,
+    SoundProviderYouTube,
+    type MetadataProvider,
+    type SoundProvider,
+  } from "typings_struct";
 
   export let size = 18;
-  export let provider: MetadataProviders | SoundProviders;
+  export let provider: MetadataProvider | SoundProvider;
 </script>
 
-{#if provider == MetadataProviders.Spotify}
+{#if provider == MetaProviderSpotify}
   <BrandSpotify {size} />
-{:else if provider == MetadataProviders.SoundCloud}
+{:else if provider == MetaProviderSoundCloud || provider == SoundProviderSoundCloud}
   <BrandSoundcloud {size} />
-{:else if provider == MetadataProviders.Konami}
+{:else if provider == MetaProviderKonami}
   <LetterK {size} />
-{:else if provider == MetadataProviders.BandLab}
+{:else if provider == MetaProviderBandLab}
   <!-- waiting for tabler-icons to release their own svelte components -->
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +42,7 @@
       d="M15.078 4h-5.136l3.678 8.768c.547 1.14 .847 1.822 .162 2.676c-.053 .093 -1.332 1.907 -3.053 1.495c-.825 -.187 -1.384 -.926 -1.32 -1.74c.04 -.91 .62 -1.717 1.488 -2.074a4.463 4.463 0 0 1 2.723 -.358"
     /></svg
   >
-{:else if provider == SoundProviders.YouTube}
+{:else if provider == SoundProviderYouTube}
   <BrandYoutube {size} />
 {:else}
   <Music {size} />

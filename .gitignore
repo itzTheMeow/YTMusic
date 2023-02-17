@@ -1,7 +1,6 @@
 node_modules
-dist
-serverDist
-enhanced.sqlite
-auth.json
+database.db
 Music
 .tmp_dl
+out
+config.yaml

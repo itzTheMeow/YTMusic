@@ -6,16 +6,16 @@
   import { onDestroy } from "svelte";
   import SwitcherProviders from "SwitcherProviders.svelte";
   import { ArrowBack, Download, ExternalLink, Eye, X } from "tabler-icons-svelte";
+  import type { APITrackAddRequest } from "typings";
+  import type { Album, Artist, Downloadable, SoundProvider, Track } from "typings_struct";
   import { highlightSelect, Providers, searchTimeout, stringDuration } from "utils";
-  import type { Album, Artist, Downloadable, Track } from "../server/struct";
-  import { SoundProviders } from "../server/struct";
 
   export let artist: Artist;
   export let album: Album;
   export let track: Track;
 
   let embedding: Downloadable | null = null,
-    selectedProvider: SoundProviders;
+    selectedProvider: SoundProvider;
   let modal: HTMLDivElement, searchInput: HTMLInputElement;
 
   let searchTerm = `${artist.name} - ${track.title}`;
@@ -41,7 +41,7 @@
   async function handleDL(e: MouseEvent, url: string) {
     const btn = e.target as HTMLElement;
     btn.classList.add("loading");
-    const res = await API.post("/track_add", {
+    const res = await API.post<APITrackAddRequest, {}>("/track_add", {
       artist: artist.id,
       album: album.id,
       track: track.id,
@@ -94,9 +94,9 @@
         <div class="flex gap-2 items-center mb-2 [@media(max-width:600px)]:!flex-col">
           <input
             type="text"
-            placeholder="Search {Object.entries(SoundProviders).find(
-              (e) => e[1] == selectedProvider
-            )?.[0] || ''}"
+            placeholder="Search {selectedProvider
+              ? selectedProvider[0].toUpperCase() + selectedProvider.slice(1).toLowerCase()
+              : ''}"
             class="input input-bordered block flex-1"
             use:highlightSelect
             use:searchTimeout={() => (searchTerm = searchInput.value)}
@@ -120,7 +120,7 @@
             <div class="text-sm">{res.message}</div>
           {:else}
             <div class="flex flex-wrap gap-1 justify-center">
-              {#each res.list as dl}
+              {#each res as dl (dl.url)}
                 <div
                   class="aspect-video relative rounded-3xl box-border overflow-hidden w-[calc(33%-0.5rem)] [@media(max-width:800px)]:w-[calc(50%-0.5rem)] [@media(max-width:600px)]:!w-full"
                 >
@@ -139,6 +139,7 @@
                       class="flex items-center gap-1 text-sm font-semibold"
                       href={dl.author.url}
                       target="_blank"
+                      rel="noreferrer"
                     >
                       <div class="avatar">
                         <div class="w-5 rounded-full">
@@ -176,7 +177,12 @@
                       >
                         <Eye />
                       </div>
-                      <a class="btn btn-sm btn-square btn-accent" href={dl.url} target="_blank">
+                      <a
+                        class="btn btn-sm btn-square btn-accent"
+                        href={dl.url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
                         <ExternalLink />
                       </a>
                     </div>

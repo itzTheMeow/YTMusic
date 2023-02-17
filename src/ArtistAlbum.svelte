@@ -4,22 +4,22 @@
   import { API } from "index";
   import Loader from "Loader.svelte";
   import { Duration } from "luxon";
-  import { offQueueChange, onQueueChange } from "queue";
   import { onDestroy } from "svelte";
   import { link } from "svelte-routing";
   import { Download, ExternalLink, Trash } from "tabler-icons-svelte";
-  import type { Album, Artist } from "../server/struct";
+  import { QALibraryScan } from "typings_queue";
+  import type { Album, Artist } from "typings_struct";
 
   export let id: string;
   export let albid: string;
 
   let albumDetails = new Promise<{ a: Artist; l: Album } | string>(async (r) => {
     const res = await API.fetchArtist(id);
-    if (res.err) return r(res.message);
-    const l = res.artist.albums.find((a) => a.id == albid);
+    if (res.err) return r(res.message!);
+    const l = res.albums!.find((a) => a.id == albid);
     if (!l) return r("Album not found.");
     r({
-      a: res.artist,
+      a: res,
       l,
     });
 
@@ -29,17 +29,16 @@
     );
   });
 
-  const i = onQueueChange(async (e) => {
-    if (e.type == "LibraryScan") {
-      const oldLib = JSON.stringify(((await new Promise((r) => albumDetails.then(r))) as any).l);
+  //TODO: redo this to not use await
+  const i = API.onQueueChange(async (e) => {
+    if (e.type == QALibraryScan && e.is == "remove") {
       const res = await API.fetchArtist(id);
-      if (res.err) return (albumDetails = new Promise((r) => r(res.message)));
-      const l = res.artist.albums.find((a) => a.id == albid);
+      if (res.err) return (albumDetails = new Promise((r) => r(res.message!)));
+      const l = res.albums!.find((a) => a.id == albid);
       if (!l) return (albumDetails = new Promise((r) => r("Album not found.")));
-      if (oldLib == JSON.stringify(l)) return;
       albumDetails = new Promise((r) =>
         r({
-          a: res.artist,
+          a: res,
           l,
         })
       );
@@ -49,7 +48,7 @@
       );
     }
   });
-  onDestroy(() => offQueueChange(i));
+  onDestroy(() => API.offQueueChange(i));
 </script>
 
 {#await albumDetails}
@@ -86,7 +85,7 @@
           <div class="flex flex-col gap-1 ml-1">
             <div class="flex items-center gap-1">
               <div class="text-3xl">{res.l.name} ({res.l.year})</div>
-              <a class="text-secondary" href={res.l.url} target="_blank"
+              <a class="text-secondary" href={res.l.url} target="_blank" rel="noreferrer"
                 ><ExternalLink size={32} /></a
               >
             </div>
@@ -140,7 +139,7 @@
           </tr>
         </thead>
         <tbody>
-          {#each res.l.tracks as track}
+          {#each res.l.tracks as track (track.id)}
             <tr>
               <th>{track.number}</th>
               <td>
@@ -165,7 +164,7 @@
                     on:click={async (e) => {
                       //@ts-ignore
                       e.target.classList.add("btn-outline");
-                      await API.post("/track_remove", {
+                      await API.post("/track_delete", {
                         artist: res.a.id,
                         album: res.l.id,
                         track: track.id,
@@ -179,7 +178,12 @@
                     <Download />
                   </a>
                 {/if}
-                <a class="btn btn-square btn-sm btn-secondary" href={track.url} target="_blank">
+                <a
+                  class="btn btn-square btn-sm btn-secondary"
+                  href={track.url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   <ExternalLink />
                 </a>
               </td>
@@ -189,7 +193,7 @@
       </table>
     </div>
 
-    {#each res.l.tracks as track}
+    {#each res.l.tracks as track (track.id)}
       <ArtistTrackAdd artist={res.a} album={res.l} {track} />
     {/each}
   {/if}

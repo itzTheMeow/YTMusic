@@ -2,30 +2,35 @@
   import ArtistCard from "ArtistCard.svelte";
   import { API } from "index";
   import Loader from "Loader.svelte";
-  import { offQueueChange, onQueueChange } from "queue";
   import { onDestroy, onMount } from "svelte";
   import { navigate } from "svelte-routing";
   import SwitcherProviders from "SwitcherProviders.svelte";
   import { Check, Dots, Plus } from "tabler-icons-svelte";
+  import { QAArtistAdd, type QueuedArtistAdd } from "typings_queue";
+  import {
+    ArtistIsAbsent,
+    ArtistIsPresent,
+    ArtistIsQueued,
+    type MetadataProvider,
+  } from "typings_struct";
   import { highlightSelect, searchTimeout } from "utils";
-  import type { MetadataProviders } from "../server/struct";
 
   let searchInput: HTMLInputElement;
-  let selectedProvider: MetadataProviders;
+  let selectedProvider: MetadataProvider;
 
-  let searchResults: ReturnType<typeof API.searchArtist>;
+  let searchResults: ReturnType<typeof API.searchArtists>;
   let lastSearched = "";
   function search(bypass = false) {
     if (!bypass && lastSearched == searchInput.value) return;
     if (!searchInput.value) return (searchResults = null as any);
     lastSearched = searchInput.value;
-    searchResults = API.searchArtist(searchInput.value, selectedProvider);
+    searchResults = API.searchArtists(searchInput.value, selectedProvider);
   }
 
   let wasAdded: string[] = [];
-  const i = onQueueChange((v) => {
-    if (v.type == "ArtistAdd") {
-      wasAdded = [...wasAdded, v.id];
+  const i = API.onQueueChange((v) => {
+    if (v.type == QAArtistAdd && v.is == "remove") {
+      wasAdded = [...wasAdded, (<QueuedArtistAdd>JSON.parse(v.data)).id];
     }
   });
 
@@ -33,7 +38,7 @@
     searchInput.select();
   });
   onDestroy(() => {
-    offQueueChange(i);
+    API.offQueueChange(i);
   });
 </script>
 
@@ -64,8 +69,8 @@
         <div class="text-sm">{artists.message}</div>
       {:else}
         <div class="flex flex-row flex-wrap gap-4 justify-center mt-3">
-          {#if artists.list.length}
-            {#each artists.list as artist}
+          {#if artists.length}
+            {#each artists as artist (artist.id)}
               <ArtistCard {artist}>
                 <div
                   class="ml-auto mb-auto cursor-pointer"
@@ -73,22 +78,21 @@
                     if (wasAdded.find((w) => Object.values(artist.providers).includes(w)))
                       artist.status = 2;
                     switch (artist.status) {
-                      case 2:
+                      case ArtistIsPresent:
                         const d = await API.listArtists();
                         if (d.err) return;
                         navigate(
-                          `/artists/${
-                            d.list.find((a) => a.name == artist.name)?.id || artist.id
-                          }/manage`
+                          `/artists/${d.find((a) => a.name == artist.name)?.id || artist.id}/manage`
                         );
                         break;
-                      case 1: //@ts-ignore
-                        document.getElementById("queueButton").focus();
+                      case ArtistIsQueued:
+                        document.getElementById("queueButton")?.focus();
                         break;
+                      case ArtistIsAbsent:
                       default:
                         await API.post("artist_add", {
                           id: Object.entries(artist.providers)[0][1],
-                          source: Object.entries(artist.providers)[0][0],
+                          provider: Object.entries(artist.providers)[0][0],
                         });
                         artist.status = 1;
                         //@ts-ignore
@@ -96,11 +100,11 @@
                     }
                   }}
                 >
-                  {#if artist.status == 2 || wasAdded.find( (w) => Object.values(artist.providers).includes(w) )}
+                  {#if artist.status == ArtistIsPresent || wasAdded.find( (w) => Object.values(artist.providers).includes(w) )}
                     <div class="text-success">
                       <Check size={40} />
                     </div>
-                  {:else if artist.status == 1}
+                  {:else if artist.status == ArtistIsQueued}
                     <div class="text-primary-content">
                       <Dots size={40} />
                     </div>

@@ -1,0 +1,7 @@
+# Create a spotify application here:
+# https://developer.spotify.com/dashboard/applications
+spotify-id: "" # Your spotify app client ID.
+spotify-secret: "" # Your spotify app secret.
+
+# Location of the music library. Relative to the (if specified) working directory.
+library-folder: "./Music"

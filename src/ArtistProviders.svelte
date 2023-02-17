@@ -1,12 +1,12 @@
 <script lang="ts">
   import ProviderIcon from "ProviderIcon.svelte";
+  import type { MetadataProvider } from "typings_struct";
   import { Providers } from "utils";
-  import type { MetadataProviders } from "../server/struct";
 
   export let size = 18;
-  export let providers: (MetadataProviders | string)[];
+  export let providers: (MetadataProvider | string)[];
 
-  let provs: MetadataProviders[];
+  let provs: MetadataProvider[];
   $: provs = providers as any;
 </script>
 

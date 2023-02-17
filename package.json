@@ -2,11 +2,11 @@
   "name": "ytmusic",
   "version": "1.0.0",
   "description": "Music downloader and manager.",
-  "main": "serverDist/build.js",
+  "main": "build.mjs",
   "scripts": {
-    "build": "tsc -b tsconfig.json",
-    "start": "npm run build && node .",
-    "dev": "npm run build && node . --watch"
+    "start": "go run ./server",
+    "dev": "npm run generate && cp src/index.html out/index.html && node . --watch",
+    "generate": "export PATH=${PATH}:`go env GOPATH`/bin && tygo generate"
   },
   "repository": {
     "type": "git",
@@ -20,41 +20,22 @@
   "homepage": "https://github.com/itzTheMeow/YTMusic#readme",
   "dependencies": {
     "@tsconfig/svelte": "^3.0.0",
-    "@types/bcrypt": "^5.0.0",
-    "@types/express": "^4.17.13",
-    "@types/fluent-ffmpeg": "^2.1.20",
     "@types/luxon": "^3.0.0",
-    "@types/qs": "^6.9.7",
-    "@types/spotify-web-api-node": "^5.0.7",
     "autoprefixer": "^10.4.8",
-    "axios": "^0.27.2",
-    "bcrypt": "^5.0.1",
-    "cheerio": "^1.0.0-rc.12",
     "daisyui": "^2.24.0",
-    "enhanced.db": "^0.3.4",
     "esbuild": "^0.14.51",
     "esbuild-style-plugin": "^1.6.0",
     "esbuild-svelte": "^0.7.1",
-    "express": "^4.18.1",
-    "ffmetadata": "^1.7.0",
-    "ffmpeg-static": "^5.1.0",
-    "fluent-ffmpeg": "^2.1.2",
-    "image-downloader": "^4.3.0",
     "luxon": "^3.0.1",
     "postcss": "^8.4.16",
     "sass": "^1.54.0",
-    "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
-    "soundcloud.ts": "^0.4.7",
-    "spotify-web-api-node": "^5.0.2",
     "svelte": "^3.49.0",
     "svelte-preprocess": "^4.10.7",
     "svelte-routing": "^1.6.0",
     "tabler-icons-svelte": "^1.8.0",
     "tailwindcss": "^3.1.8",
     "typescript": "^4.7.4",
-    "ulid": "^2.3.0",
-    "youtube-dl-exec": "^2.1.5",
-    "youtube-sr": "^4.3.1"
+    "ulid": "^2.3.0"
   }
 }

@@ -21,7 +21,7 @@
     passSubmit.classList.add("loading");
     const changed = await API.changePassword(curPass, newPass);
     passSubmit.classList.remove("loading");
-    if (changed.err) return (changeError = changed.message);
+    if (changed.err) return (changeError = changed.message!);
     Auth.logout();
   }
 </script>
@@ -49,7 +49,7 @@
         type="text"
         placeholder="/home/Music"
         class="input input-bordered w-72"
-        value={res.settings.libraryFolder}
+        value={res.libraryFolder}
         bind:this={libraryFolder}
         on:keyup={async () => {
           libraryFolder.classList.remove("input-error");
