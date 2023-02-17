@@ -40,6 +40,11 @@ func HandleArtistAdd(data []byte) {
 	if existingI >= 0 {
 		existing := media.Artists[existingI]
 		artist.ID = existing.ID
+		for k, v := range existing.Providers {
+			if artist.Providers[k] == "" {
+				artist.Providers[k] = v
+			}
+		}
 		for _, alb := range existing.Albums {
 			if i := slices.IndexFunc(artist.Albums, func(a types.Album) bool {
 				return strings.ToLower(a.Name) == strings.ToLower(alb.Name)
