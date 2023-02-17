@@ -2,12 +2,18 @@ package sound
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
 	"log"
+	"os"
+	"path"
 	"time"
 
 	"github.com/itzTheMeow/YTMusic/metadata"
 	"github.com/itzTheMeow/YTMusic/types"
 	"github.com/itzTheMeow/YTMusic/util"
+	"github.com/oklog/ulid/v2"
 	soundcloud "github.com/zackradisic/soundcloud-api"
 )
 
@@ -59,6 +65,28 @@ func ConstructDownloadableFromSoundCloud(track soundcloud.Track) types.Downloada
 			URL:  track.User.PermalinkURL,
 		},
 		URL:   track.PermalinkURL,
-		Embed: `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${track.id}&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true`,
+		Embed: fmt.Sprintf(`https://w.soundcloud.com/player/?url=https%%3A//api.soundcloud.com/tracks/%v&color=%%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true`, track.ID),
 	}
+}
+
+func DownloadSoundcloud(url string) (*string, error) {
+	filepath := path.Join(os.TempDir(), ulid.Make().String())
+
+	result, err := DownloadURL(url)
+	if err != nil {
+		return nil, err
+	}
+	file, err := os.Create(filepath)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	written, err := io.Copy(file, result)
+	if err != nil {
+		return nil, err
+	}
+	if written == 0 {
+		return nil, errors.New("Failed to download track.")
+	}
+	return &filepath, nil
 }

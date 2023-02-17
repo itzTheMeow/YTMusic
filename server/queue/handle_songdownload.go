@@ -30,6 +30,8 @@ func HandleSongDownload(data []byte) {
 	switch item.Provider {
 	case types.SoundProviderYouTube:
 		dlpath, err = sound.DownloadYouTube(item.URL)
+	case types.SoundProviderSoundCloud:
+		dlpath, err = sound.DownloadSoundcloud(item.URL)
 	}
 	if err != nil || dlpath == nil {
 		log.Println(fmt.Sprintf("Failed to download track %v. %v", item.Track.Title, err))
@@ -40,7 +42,7 @@ func HandleSongDownload(data []byte) {
 	trans := new(transcoder.Transcoder)
 	err = trans.Initialize(*dlpath, convertpath)
 	if err != nil {
-		//os.Remove(*dlpath)
+		os.Remove(*dlpath)
 		log.Println(fmt.Sprintf("Failed to init convert track %v. %v", item.Track.Title, err))
 		return
 	}
