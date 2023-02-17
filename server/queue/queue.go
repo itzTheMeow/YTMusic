@@ -53,6 +53,8 @@ func Run() {
 		HandleSongDownload(item.Data)
 	case QAArtistRemove:
 		HandleArtistRemove(item.Data)
+	case QASongDelete:
+		HandleSongDelete(item.Data)
 	}
 
 	Items = Items[1:]

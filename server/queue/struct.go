@@ -9,6 +9,7 @@ const (
 	QAArtistAdd
 	QAArtistRemove
 	QASongDownload
+	QASongDelete
 )
 
 type QueueItem struct {
@@ -33,4 +34,9 @@ type QueuedSongDownload struct {
 	Track    types.Track         `json:"track"`
 	Provider types.SoundProvider `json:"provider"`
 	URL      string              `json:"url"`
+}
+type QueuedSongDelete struct {
+	Artist types.Artist `json:"artist"`
+	Album  types.Album  `json:"album"`
+	Track  types.Track  `json:"track"`
 }

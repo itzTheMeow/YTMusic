@@ -42,4 +42,29 @@ func InitAPITracks() {
 			Error: false,
 		})
 	})
+	App.Post("/api/track_delete", func(c *fiber.Ctx) error {
+		if a := GetAuthorizedAccount(c); a == nil || !a.Permissions.SongRemove {
+			return c.JSON(APIErrorResponse{
+				Error:   true,
+				Message: "Unauthorized.",
+			})
+		}
+		var body APITrackDeleteRequest
+		c.BodyParser(&body)
+		artist, album, track, err := media.GetTrack(body.Artist, body.Album, body.Track)
+		if err != nil {
+			return c.JSON(APIErrorResponse{
+				Error:   true,
+				Message: fmt.Sprint(err),
+			})
+		}
+		queue.Add(queue.QASongDelete, queue.QueuedSongDelete{
+			Artist: *artist,
+			Album:  *album,
+			Track:  *track,
+		})
+		return c.JSON(APIErrorResponse{
+			Error: false,
+		})
+	})
 }

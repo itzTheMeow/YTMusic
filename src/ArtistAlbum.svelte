@@ -164,7 +164,7 @@
                     on:click={async (e) => {
                       //@ts-ignore
                       e.target.classList.add("btn-outline");
-                      await API.post("/track_remove", {
+                      await API.post("/track_delete", {
                         artist: res.a.id,
                         album: res.l.id,
                         track: track.id,

@@ -51,6 +51,11 @@ type APITrackAddRequest struct {
 	Provider types.SoundProvider `json:"provider"`
 	URL      string              `json:"url"`
 }
+type APITrackDeleteRequest struct {
+	Artist string `json:"artist"`
+	Album  string `json:"album"`
+	Track  string `json:"track"`
+}
 
 type WSPacket struct {
 	Type string `json:"type"`
