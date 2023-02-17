@@ -2,6 +2,7 @@ import useAutoprefixer from "autoprefixer";
 import esbuild from "esbuild";
 import postCssPlugin from "esbuild-style-plugin";
 import esbuildSvelte from "esbuild-svelte";
+import fs from "fs";
 import sveltePreprocess from "svelte-preprocess";
 import useTailwind from "tailwindcss";
 
@@ -32,6 +33,9 @@ esbuild
     logLevel: "info",
     target: "es6",
     loader: { ".png": "file" },
+  })
+  .then(() => {
+    fs.copyFileSync("src/index.html", "out/index.html");
   })
   //@ts-ignore
   .catch((error, location) => {
