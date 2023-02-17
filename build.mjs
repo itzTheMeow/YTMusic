@@ -42,5 +42,3 @@ esbuild
     console.warn(`Errors: `, error, location);
     process.exit(1);
   });
-
-setInterval(() => {}, 1000);

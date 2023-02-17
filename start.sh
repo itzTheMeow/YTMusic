@@ -1,4 +1,7 @@
 git pull
 pnpm i
-go run ./server --dev &
 pnpm start
+go build -o out/YTMusic ./server
+cp config.yaml out/config.yaml
+chmod +x out/YTMusic
+./out/YTMusic
