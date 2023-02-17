@@ -57,5 +57,5 @@ func main() {
 		return nil
 	})
 	queue.Add(queue.QALibraryScan, nil)
-	App.Listen(fmt.Sprint("0.0.0.0:", util.Config.Port))
+	App.Listen(fmt.Sprint("127.0.0.1:", util.Config.Port))
 }
