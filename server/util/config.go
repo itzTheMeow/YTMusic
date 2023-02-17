@@ -11,14 +11,16 @@ import (
 )
 
 var Config = struct {
-	Port           int
-	BasePath       string
-	DisableFSChars string
-	YAML           string
+	Port               int
+	BasePath           string
+	AllowUsernameChars string
+	DisableFSChars     string
+	YAML               string
 }{
-	Port:           8777,
-	DisableFSChars: `<>:"/\\|?*`,
-	YAML:           path.Join(Grab(os.Getwd()), "config.yaml"),
+	Port:               8777,
+	AllowUsernameChars: `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-1234567890`,
+	DisableFSChars:     `<>:"/\\|?*`,
+	YAML:               path.Join(Grab(os.Getwd()), "config.yaml"),
 }
 var DevEnv = len(os.Args) > 1 && os.Args[1] == "--dev"
 
