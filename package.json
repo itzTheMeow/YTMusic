@@ -4,7 +4,7 @@
   "description": "Music downloader and manager.",
   "main": "build.mjs",
   "scripts": {
-    "start": "cp src/index.html out/index.html && node .",
+    "start": "mkdir out && cp src/index.html out/index.html && node .",
     "dev": "npm run generate && cp src/index.html out/index.html && node . --watch",
     "generate": "export PATH=${PATH}:`go env GOPATH`/bin && tygo generate"
   },
