@@ -19,5 +19,7 @@ type Account struct {
 }
 
 type Settings struct {
-	LibraryLocation string `json:"libraryLocation"`
+	LibraryFolder       string `yaml:"library-folder" json:"libraryFolder"`
+	SpotifyClientID     string `yaml:"spotify-id" json:"spotifyID"`
+	SpotifyClientSecret string `yaml:"spotify-secret" json:"spotifySecret"`
 }

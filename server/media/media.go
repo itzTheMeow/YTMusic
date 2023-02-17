@@ -10,11 +10,11 @@ import (
 )
 
 func Location() string {
-	if len(util.UserConfig.LibraryLocation) > 0 {
-		if strings.HasPrefix(util.UserConfig.LibraryLocation, ".") {
-			return path.Join(util.Config.BasePath, util.UserConfig.LibraryLocation)
+	if len(util.UserConfig.LibraryFolder) > 0 {
+		if strings.HasPrefix(util.UserConfig.LibraryFolder, ".") {
+			return path.Join(util.Config.BasePath, util.UserConfig.LibraryFolder)
 		} else {
-			return path.Clean(util.UserConfig.LibraryLocation)
+			return path.Clean(util.UserConfig.LibraryFolder)
 		}
 	} else {
 		return path.Join(util.Config.BasePath, "Music")

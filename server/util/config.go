@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/itzTheMeow/YTMusic/types"
 	"gopkg.in/yaml.v3"
 )
 
@@ -19,11 +20,7 @@ var Config = struct {
 }
 var DevEnv = len(os.Args) > 1 && os.Args[1] == "--dev"
 
-var UserConfig struct {
-	LibraryLocation     string `yaml:"library-folder" json:"libraryFolder"`
-	SpotifyClientID     string `yaml:"spotify-id" json:"spotifyID"`
-	SpotifyClientSecret string `yaml:"spotify-secret" json:"spotifySecret"`
-}
+var UserConfig types.Settings
 
 func InitConfig() {
 	if DevEnv {

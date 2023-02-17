@@ -5,7 +5,7 @@
   import ThemePreview from "ThemePreview.svelte";
 
   let scanButton: HTMLDivElement;
-  let libraryLocation: HTMLInputElement;
+  let libraryFolder: HTMLInputElement;
 
   const settingsP = API.getSettings();
 
@@ -49,18 +49,18 @@
         type="text"
         placeholder="/home/Music"
         class="input input-bordered w-72"
-        value={res.settings.libraryLocation}
-        bind:this={libraryLocation}
+        value={res.libraryFolder}
+        bind:this={libraryFolder}
         on:keyup={async () => {
-          libraryLocation.classList.remove("input-error");
-          if (libraryLocation.value) {
+          libraryFolder.classList.remove("input-error");
+          if (libraryFolder.value) {
             //@ts-ignore
-            libraryLocation.nextElementSibling.style.display = "block";
-            await API.setSetting("libraryLocation", libraryLocation.value);
+            libraryFolder.nextElementSibling.style.display = "block";
+            await API.setSetting("libraryFolder", libraryFolder.value);
             //@ts-ignore
-            libraryLocation.nextElementSibling.style.display = "";
+            libraryFolder.nextElementSibling.style.display = "";
           } else {
-            libraryLocation.classList.add("input-error");
+            libraryFolder.classList.add("input-error");
           }
         }}
       />

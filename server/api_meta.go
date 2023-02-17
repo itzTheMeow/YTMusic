@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/itzTheMeow/YTMusic/queue"
+	"github.com/itzTheMeow/YTMusic/util"
 )
 
 func InitAPIMeta() {
@@ -46,5 +47,14 @@ func InitAPIMeta() {
 			})
 		}
 		return c.JSON(queue.Items)
+	})
+	App.Post("/api/settings_get", func(c *fiber.Ctx) error {
+		if a := GetAuthorizedAccount(c); a == nil {
+			return c.JSON(APIErrorResponse{
+				Error:   true,
+				Message: "Unauthorized.",
+			})
+		}
+		return c.JSON(util.UserConfig)
 	})
 }

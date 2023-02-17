@@ -137,8 +137,8 @@ export default class {
       query,
     });
   }
-  public async getSettings(): Res<{ settings: Settings }> {
-    return (await this.post("/settings_get", {})) as any;
+  public async getSettings() {
+    return await this.post<{}, Settings>("/settings_get", {});
   }
   public async setSetting<K extends keyof Settings>(k: K, v: Settings[K]): Res<{}> {
     return (await this.post("/settings_set", { k, v })) as any;

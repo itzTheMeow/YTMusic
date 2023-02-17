@@ -94,7 +94,9 @@ export interface Account {
   permissions: AccountPermissions;
 }
 export interface Settings {
-  libraryLocation: string;
+  libraryFolder: string;
+  spotifyID: string;
+  spotifySecret: string;
 }
 
 //////////
