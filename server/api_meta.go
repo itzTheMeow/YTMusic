@@ -1,9 +1,12 @@
 package main
 
 import (
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/itzTheMeow/YTMusic/queue"
 	"github.com/itzTheMeow/YTMusic/util"
+	"github.com/oklog/ulid/v2"
 )
 
 func InitAPIMeta() {
@@ -38,6 +41,35 @@ func InitAPIMeta() {
 				Message: "Invalid authorization token.",
 			})
 		}
+	})
+	App.Post("/api/pass_change", func(c *fiber.Ctx) error {
+		var body APIPasswordChangeRequest
+		c.BodyParser(&body)
+		account := GetAuthorizedAccount(c)
+		if account == nil {
+			return c.JSON(&APIErrorResponse{
+				Error:   true,
+				Message: "Unauthorized.",
+			})
+		}
+		if !CheckPasswordHash(body.Old, account.Password) {
+			return c.JSON(&APIErrorResponse{
+				Error:   true,
+				Message: "Password is incorrect.",
+			})
+		}
+		if body.New == "" {
+			return c.JSON(&APIErrorResponse{
+				Error:   true,
+				Message: "No password provided.",
+			})
+		}
+		account.Password = HashPassword(body.New)
+		account.Token = strings.ToLower(ulid.Make().String())
+		SetAccount(*account)
+		return c.JSON(&APIErrorResponse{
+			Error: false,
+		})
 	})
 	App.Post("/api/queue_get", func(c *fiber.Ctx) error {
 		if a := GetAuthorizedAccount(c); a == nil {

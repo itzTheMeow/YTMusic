@@ -14,6 +14,10 @@ export interface APILoginRequest {
 export interface APILoginResponse {
   token: string;
 }
+export interface APIPasswordChangeRequest {
+  old: string;
+  new: string;
+}
 export interface APISettingsSetRequest {
   key: string;
   value: string;

@@ -6,6 +6,7 @@ import type {
   APIErrorResponse,
   APILoginRequest,
   APILoginResponse,
+  APIPasswordChangeRequest,
   APISettingsSetRequest,
   APITrackSearchRequest,
   WSPacket,
@@ -20,7 +21,6 @@ import {
   type SoundProvider,
 } from "typings_struct";
 
-type Res<T extends {}> = Promise<({ err: true } & APIErrorResponse) | ({ err: false } & T)>;
 type QueueCallback = (c: QueueItem & { is: "add" | "remove" }) => any;
 
 export const Queue = writable<QueueItem[]>([]);
@@ -99,7 +99,10 @@ export default class {
   private sanitizePath(path: string) {
     return !path.startsWith("/") ? "/" + path : path;
   }
-  public async post<REQ extends {}, RES extends {}>(path: string, data: REQ): Res<RES> {
+  public async post<REQ extends {}, RES extends {}>(
+    path: string,
+    data: REQ
+  ): Promise<({ err: true } & APIErrorResponse) | ({ err: false } & RES)> {
     try {
       return await fetch(this.url + this.sanitizePath(path), {
         method: "POST",
@@ -141,17 +144,17 @@ export default class {
   public async getSettings() {
     return await this.post<{}, Settings>("/settings_get", {});
   }
-  public async setSetting<K extends keyof Settings>(key: K, value: Settings[K]): Res<{}> {
+  public async setSetting<K extends keyof Settings>(key: K, value: Settings[K]) {
     return await this.post<APISettingsSetRequest, {}>("/settings_set", {
       key,
       value: String(value),
     });
   }
-  public async changePassword(oldPass: string, newPass: string): Res<{}> {
-    return (await this.post("/pass_change", {
+  public async changePassword(oldPass: string, newPass: string) {
+    return await this.post<APIPasswordChangeRequest, {}>("/pass_change", {
       old: oldPass,
       new: newPass,
-    })) as any;
+    });
   }
 
   private queueListeners: {

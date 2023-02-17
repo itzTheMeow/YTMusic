@@ -16,6 +16,10 @@ type APILoginRequest struct {
 type APILoginResponse struct {
 	Token string `json:"token"`
 }
+type APIPasswordChangeRequest struct {
+	Old string `json:"old"`
+	New string `json:"new"`
+}
 type APISettingsSetRequest struct {
 	Key   string `json:"key"`
 	Value string `json:"value"`
