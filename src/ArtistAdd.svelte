@@ -7,12 +7,16 @@
   import SwitcherProviders from "SwitcherProviders.svelte";
   import { Check, Dots, Plus } from "tabler-icons-svelte";
   import { QAArtistAdd, type QueuedArtistAdd } from "typings_queue";
-  import { ArtistIsAbsent, ArtistIsPresent, ArtistIsQueued } from "typings_struct";
+  import {
+    ArtistIsAbsent,
+    ArtistIsPresent,
+    ArtistIsQueued,
+    type MetadataProvider,
+  } from "typings_struct";
   import { highlightSelect, searchTimeout } from "utils";
-  import type { MetadataProviders } from "../server/struct";
 
   let searchInput: HTMLInputElement;
-  let selectedProvider: MetadataProviders;
+  let selectedProvider: MetadataProvider;
 
   let searchResults: ReturnType<typeof API.searchArtists>;
   let lastSearched = "";
