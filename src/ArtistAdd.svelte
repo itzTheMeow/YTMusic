@@ -7,6 +7,7 @@
   import SwitcherProviders from "SwitcherProviders.svelte";
   import { Check, Dots, Plus } from "tabler-icons-svelte";
   import { QAArtistAdd, type QueuedArtistAdd } from "typings_queue";
+  import { ArtistIsAbsent, ArtistIsPresent, ArtistIsQueued } from "typings_struct";
   import { highlightSelect, searchTimeout } from "utils";
   import type { MetadataProviders } from "../server/struct";
 
@@ -73,16 +74,17 @@
                     if (wasAdded.find((w) => Object.values(artist.providers).includes(w)))
                       artist.status = 2;
                     switch (artist.status) {
-                      case 2:
+                      case ArtistIsPresent:
                         const d = await API.listArtists();
                         if (d.err) return;
                         navigate(
                           `/artists/${d.find((a) => a.name == artist.name)?.id || artist.id}/manage`
                         );
                         break;
-                      case 1: //@ts-ignore
-                        document.getElementById("queueButton").focus();
+                      case ArtistIsQueued:
+                        document.getElementById("queueButton")?.focus();
                         break;
+                      case ArtistIsAbsent:
                       default:
                         await API.post("artist_add", {
                           id: Object.entries(artist.providers)[0][1],
@@ -94,11 +96,11 @@
                     }
                   }}
                 >
-                  {#if artist.status == 2 || wasAdded.find( (w) => Object.values(artist.providers).includes(w) )}
+                  {#if artist.status == ArtistIsPresent || wasAdded.find( (w) => Object.values(artist.providers).includes(w) )}
                     <div class="text-success">
                       <Check size={40} />
                     </div>
-                  {:else if artist.status == 1}
+                  {:else if artist.status == ArtistIsQueued}
                     <div class="text-primary-content">
                       <Dots size={40} />
                     </div>

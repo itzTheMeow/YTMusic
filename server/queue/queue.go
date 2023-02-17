@@ -43,7 +43,6 @@ func Run() {
 
 	Running = true
 	item := Items[0]
-	Items = Items[1:]
 
 	switch item.Type {
 	case QAArtistAdd:
@@ -56,6 +55,7 @@ func Run() {
 		HandleArtistRemove(item.Data)
 	}
 
+	Items = Items[1:]
 	Running = false
 	for _, upd := range Updaters {
 		upd(false, item)
