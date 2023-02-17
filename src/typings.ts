@@ -47,6 +47,11 @@ export interface APITrackAddRequest {
   provider: any /* types.SoundProvider */;
   url: string;
 }
+export interface APITrackDeleteRequest {
+  artist: string;
+  album: string;
+  track: string;
+}
 export interface WSPacket {
   type: string;
   data: string;

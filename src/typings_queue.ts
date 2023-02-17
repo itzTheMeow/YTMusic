@@ -13,6 +13,7 @@ export const QALibraryScan: QueueAction = 0;
 export const QAArtistAdd: QueueAction = 1;
 export const QAArtistRemove: QueueAction = 2;
 export const QASongDownload: QueueAction = 3;
+export const QASongDelete: QueueAction = 4;
 export interface QueueItem {
   id: string;
   type: QueueAction;
@@ -34,4 +35,9 @@ export interface QueuedSongDownload {
   track: any /* types.Track */;
   provider: any /* types.SoundProvider */;
   url: string;
+}
+export interface QueuedSongDelete {
+  artist: any /* types.Artist */;
+  album: any /* types.Album */;
+  track: any /* types.Track */;
 }
