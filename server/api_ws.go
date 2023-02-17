@@ -45,7 +45,6 @@ func InitAPIWS() {
 		)
 		for {
 			if mt, msg, err = c.ReadMessage(); err != nil {
-				log.Println("Failed read to ws.", err)
 				break
 			}
 			if string(msg) == "wantSync" {
