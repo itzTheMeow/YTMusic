@@ -21,6 +21,7 @@ func main() {
 	log.SetPrefix("=> ")
 	log.Printf("Starting YTMusic...")
 	util.InitConfig()
+	defer Database.Close()
 
 	metadata.InitSpotify()
 	metadata.InitSoundCloud()
