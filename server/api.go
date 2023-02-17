@@ -28,6 +28,9 @@ type APIArtistAddRequest struct {
 	ID       string                 `json:"id"`
 	Provider types.MetadataProvider `json:"provider"`
 }
+type APIArtistRemoveRequest struct {
+	ID string `json:"id"`
+}
 
 type APITrackSearchRequest struct {
 	Query    string              `json:"query"`

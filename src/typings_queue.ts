@@ -11,7 +11,8 @@ export type QueueUpdater = any;
 export type QueueAction = number /* int */;
 export const QALibraryScan: QueueAction = 0;
 export const QAArtistAdd: QueueAction = 1;
-export const QASongDownload: QueueAction = 2;
+export const QAArtistRemove: QueueAction = 2;
+export const QASongDownload: QueueAction = 3;
 export interface QueueItem {
   id: string;
   type: QueueAction;
@@ -23,6 +24,9 @@ export interface QueuedLibraryScan {
 export interface QueuedArtistAdd {
   id: string;
   provider: any /* types.MetadataProvider */;
+}
+export interface QueuedArtistRemove {
+  id: string;
 }
 export interface QueuedSongDownload {
   artist: any /* types.Artist */;

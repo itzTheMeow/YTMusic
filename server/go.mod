@@ -6,6 +6,7 @@ require (
 	github.com/bogem/id3v2/v2 v2.1.4
 	github.com/gofiber/fiber/v2 v2.42.0
 	github.com/gofiber/websocket/v2 v2.1.4
+	github.com/juanefec/soundcloud-api v0.1.6-0.20210626172007-65a6433c9d51
 	github.com/levigross/grequests v0.0.0-20221222020224-9eee758d18d5
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/rapidloop/skv v0.0.0-20180909015525-9def2caac4cc
@@ -26,7 +27,6 @@ require (
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/grafov/m3u8 v0.11.1 // indirect
-	github.com/juanefec/soundcloud-api v0.1.6-0.20210626172007-65a6433c9d51 // indirect
 	github.com/klauspost/compress v1.15.15 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect

@@ -52,6 +52,8 @@ func Run() {
 		HandleLibraryScan(item.Data)
 	case QASongDownload:
 		HandleSongDownload(item.Data)
+	case QAArtistRemove:
+		HandleArtistRemove(item.Data)
 	}
 
 	Running = false

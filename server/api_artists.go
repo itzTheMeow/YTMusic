@@ -71,4 +71,26 @@ func InitAPIArtists() {
 			Message: "Artist not found.",
 		})
 	})
+	App.Post("/api/artist_remove", func(c *fiber.Ctx) error {
+		if a := GetAuthorizedAccount(c); a == nil || !a.Permissions.ArtistRemove {
+			return c.JSON(APIErrorResponse{
+				Error:   true,
+				Message: "Unauthorized.",
+			})
+		}
+		var body APIArtistAddRequest
+		c.BodyParser(&body)
+		if body.ID == "" {
+			return c.JSON(APIErrorResponse{
+				Error:   true,
+				Message: "Request malformed.",
+			})
+		}
+		queue.Add(queue.QAArtistRemove, queue.QueuedArtistRemove{
+			ID: body.ID,
+		})
+		return c.JSON(APIErrorResponse{
+			Error: false,
+		})
+	})
 }

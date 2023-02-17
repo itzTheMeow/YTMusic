@@ -7,6 +7,7 @@ type QueueAction int
 const (
 	QALibraryScan QueueAction = iota
 	QAArtistAdd
+	QAArtistRemove
 	QASongDownload
 )
 
@@ -22,6 +23,9 @@ type QueuedLibraryScan struct {
 type QueuedArtistAdd struct {
 	ID       string                 `json:"id"`
 	Provider types.MetadataProvider `json:"provider"`
+}
+type QueuedArtistRemove struct {
+	ID string `json:"id"`
 }
 type QueuedSongDownload struct {
 	Artist   types.Artist        `json:"artist"`
