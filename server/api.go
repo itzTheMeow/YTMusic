@@ -16,6 +16,10 @@ type APILoginRequest struct {
 type APILoginResponse struct {
 	Token string `json:"token"`
 }
+type APISettingsSetRequest struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
 
 type APIArtistSearchRequest struct {
 	Query    string                 `json:"query"`

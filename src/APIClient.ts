@@ -6,6 +6,7 @@ import type {
   APIErrorResponse,
   APILoginRequest,
   APILoginResponse,
+  APISettingsSetRequest,
   APITrackSearchRequest,
   WSPacket,
 } from "typings";
@@ -140,8 +141,11 @@ export default class {
   public async getSettings() {
     return await this.post<{}, Settings>("/settings_get", {});
   }
-  public async setSetting<K extends keyof Settings>(k: K, v: Settings[K]): Res<{}> {
-    return (await this.post("/settings_set", { k, v })) as any;
+  public async setSetting<K extends keyof Settings>(key: K, value: Settings[K]): Res<{}> {
+    return await this.post<APISettingsSetRequest, {}>("/settings_set", {
+      key,
+      value: String(value),
+    });
   }
   public async changePassword(oldPass: string, newPass: string): Res<{}> {
     return (await this.post("/pass_change", {

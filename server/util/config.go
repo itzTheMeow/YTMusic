@@ -2,6 +2,7 @@ package util
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path"
 
@@ -13,9 +14,11 @@ var Config = struct {
 	Port           int
 	BasePath       string
 	DisableFSChars string
+	YAML           string
 }{
 	Port:           8777,
 	DisableFSChars: `<>:"/\\|?*`,
+	YAML:           path.Join(Grab(os.Getwd()), "config.yaml"),
 }
 var DevEnv = len(os.Args) > 1 && os.Args[1] == "--dev"
 
@@ -28,10 +31,19 @@ func InitConfig() {
 		Config.BasePath, _ = os.Getwd()
 	}
 
-	yamlfile, err := os.ReadFile(path.Join(Grab(os.Getwd()), "config.yaml"))
+	yamlfile, err := os.ReadFile(Config.YAML)
 	if err != nil {
 		fmt.Println("Failed to read YAML config.\n", err)
 	} else {
 		yaml.Unmarshal(yamlfile, &UserConfig)
+		WriteConfig()
+	}
+}
+func WriteConfig() {
+	data, err := yaml.Marshal(UserConfig)
+	if err != nil {
+		log.Println("Failed to write config file. ", err)
+	} else {
+		os.WriteFile(Config.YAML, data, os.ModePerm)
 	}
 }

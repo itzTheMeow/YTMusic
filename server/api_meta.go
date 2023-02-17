@@ -57,4 +57,26 @@ func InitAPIMeta() {
 		}
 		return c.JSON(util.UserConfig)
 	})
+	App.Post("/api/settings_set", func(c *fiber.Ctx) error {
+		if a := GetAuthorizedAccount(c); a == nil || !a.Permissions.Owner {
+			return c.JSON(APIErrorResponse{
+				Error:   true,
+				Message: "Unauthorized.",
+			})
+		}
+		var body APISettingsSetRequest
+		c.BodyParser(&body)
+		switch body.Key {
+		case "libraryFolder":
+			if body.Value == "" {
+				util.UserConfig.LibraryFolder = "./Music"
+			} else {
+				util.UserConfig.LibraryFolder = body.Value
+			}
+			util.WriteConfig()
+		}
+		return c.JSON(APIErrorResponse{
+			Error: false,
+		})
+	})
 }
