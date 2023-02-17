@@ -4,9 +4,9 @@
 WantedBy=multi-user.target
 
 [Service]
-ExecStart=/home/USERNAME/YTMusic/out/YTMusic
-WorkingDirectory=/home/USERNAME/YTMusic/out
-User=USERNAME
+ExecStart=$CWD/out/YTMusic
+WorkingDirectory=$CWD/out
+User=$USER
 Restart=always
 RestartSec=5
 StandardOutput=syslog
