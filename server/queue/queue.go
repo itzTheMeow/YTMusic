@@ -23,6 +23,14 @@ func Add(t QueueAction, data any) {
 	go Run()
 }
 
+type QueueUpdater func(add bool, i *QueueItem)
+
+var Updaters []QueueUpdater
+
+func OnUpdate(fn QueueUpdater) {
+	Updaters = append(Updaters, fn)
+}
+
 var Running = false
 
 func Run() {
@@ -44,6 +52,9 @@ func Run() {
 	}
 
 	Running = false
+	for _, upd := range Updaters {
+		upd(false, item)
+	}
 	if len(Items) > 0 {
 		Run()
 	}

@@ -1,4 +1,5 @@
 import { Auth } from "index";
+import { writable } from "svelte/store";
 import type {
   APIArtistGetRequest,
   APIArtistSearchRequest,
@@ -6,19 +7,71 @@ import type {
   APILoginRequest,
   APILoginResponse,
   APITrackSearchRequest,
+  WSPacket,
 } from "typings";
+import type { QueueItem } from "typings_queue";
 import {
   MetaProviderSpotify,
   type Artist,
   type Downloadable,
   type MetadataProvider,
+  type Settings,
   type SoundProvider,
 } from "typings_struct";
 
 type Res<T extends {}> = Promise<({ err: true } & APIErrorResponse) | ({ err: false } & T)>;
+type QueueCallback = (c: QueueItem & { is: "add" | "remove" }) => any;
+
+export const Queue = writable<QueueItem[]>([]);
 
 export default class {
-  constructor(public readonly url: string) {}
+  public socket: WebSocket;
+  public connected = false;
+  constructor(public readonly url: string) {
+    this.socket = new WebSocket(
+      window.location.protocol.replace("http", "ws") + "//" + window.location.host + "/ws"
+    );
+    this.socket.onopen = () => {
+      this.connected = true;
+    };
+    this.socket.onclose = () => {
+      this.connected = false;
+    };
+    this.socket.onmessage = ({ data }) => {
+      try {
+        const d = JSON.parse(data) as WSPacket;
+        if (d.type == "sync") {
+          Queue.update((q) => {
+            const nq = <QueueItem[]>JSON.parse(data);
+            q.forEach((i) => {
+              if (!nq.find(({ id }) => id == i.id))
+                this.queueListeners.forEach((l) => l.cb({ ...i, is: "remove" }));
+            });
+            nq.forEach((i) => {
+              if (!q.find(({ id }) => id == i.id))
+                this.queueListeners.forEach((l) => l.cb({ ...i, is: "add" }));
+            });
+            return nq;
+          });
+        } else if (d.type == "add") {
+          Queue.update((q) => {
+            const nq = <QueueItem>JSON.parse(data);
+            this.queueListeners.forEach((l) => l.cb({ ...nq, is: "add" }));
+            return [...q, nq];
+          });
+        } else if (d.type == "remove") {
+          Queue.update((q) => {
+            const nq = <QueueItem>JSON.parse(data);
+            this.queueListeners.forEach((l) => l.cb({ ...nq, is: "remove" }));
+            return q.filter(({ id }) => id !== nq.id);
+          });
+        }
+      } catch {}
+    };
+    setInterval(() => {
+      if (this.connected) this.socket.send("wantSync");
+    }, 1000 * 60); // every minute sync queue
+  }
   private sanitizePath(path: string) {
     return !path.startsWith("/") ? "/" + path : path;
   }
@@ -72,5 +125,19 @@ export default class {
       old: oldPass,
       new: newPass,
     })) as any;
+  }
+
+  private queueListeners: {
+    id: number;
+    cb: QueueCallback;
+  }[] = [];
+  public onQueueChange(cb: QueueCallback) {
+    const id = Date.now();
+    this.queueListeners.push({ id, cb });
+    return id;
+  }
+  public offQueueChange(id: number) {
+    const i = this.queueListeners.findIndex((q) => q.id == id);
+    if (i >= 0) this.queueListeners.splice(i, 1);
   }
 }

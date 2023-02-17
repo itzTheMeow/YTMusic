@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/bogem/id3v2/v2 v2.1.4
 	github.com/gofiber/fiber/v2 v2.42.0
+	github.com/gofiber/websocket/v2 v2.1.4
 	github.com/levigross/grequests v0.0.0-20221222020224-9eee758d18d5
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/rapidloop/skv v0.0.0-20180909015525-9def2caac4cc
@@ -21,6 +22,7 @@ require (
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/boltdb/bolt v1.3.1 // indirect
+	github.com/fasthttp/websocket v1.5.1 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect

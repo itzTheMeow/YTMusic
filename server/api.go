@@ -40,3 +40,8 @@ type APITrackAddRequest struct {
 	Provider types.SoundProvider `json:"provider"`
 	URL      string              `json:"url"`
 }
+
+type WSPacket struct {
+	Type string `json:"type"`
+	Data string `json:"data"`
+}

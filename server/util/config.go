@@ -17,7 +17,7 @@ var Config = struct {
 	Port:           8777,
 	DisableFSChars: `<>:"/\\|?*`,
 }
-var DevEnv = os.Args[1] == "--dev"
+var DevEnv = len(os.Args) > 1 && os.Args[1] == "--dev"
 
 var UserConfig struct {
 	LibraryLocation     string `yaml:"library-folder" json:"libraryFolder"`

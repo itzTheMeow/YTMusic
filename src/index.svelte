@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Queue } from "APIClient";
   import ArtistAdd from "ArtistAdd.svelte";
   import ArtistAlbum from "ArtistAlbum.svelte";
   import ArtistManage from "ArtistManage.svelte";
@@ -9,9 +10,9 @@
   import { onDestroy, onMount } from "svelte";
   import { link, Route, Router } from "svelte-routing";
   import { ListSearch, Logout, Settings } from "tabler-icons-svelte";
-  import type { QueuedAction } from "../server/struct";
+  import type { QueueItem } from "typings_queue";
+  import ulid from "ulid";
   import Home from "./Home.svelte";
-  import { Queue } from "./queue";
 
   if (!Auth.isAuthorized) window.location.href = "/login";
 
@@ -19,7 +20,7 @@
 
   let nav: HTMLDivElement;
   let pageContent: HTMLDivElement;
-  let q: QueuedAction[] = [];
+  let q: QueueItem[] = [];
   Queue.subscribe((val) => (q = val));
   const setint = setInterval(() => (q = q), 900);
 
@@ -42,7 +43,7 @@
     <ul class="menu menu-horizontal p-0">
       <!-- svelte-ignore a11y-label-has-associated-control -->
       <div class="dropdown dropdown-end">
-        <label tabindex="0" class="btn btn-ghost btn-circle relative" id="queueButton">
+        <label class="btn btn-ghost btn-circle relative" id="queueButton">
           <ListSearch />
           {#if q.length}
             <div class="badge badge-primary absolute top-0 right-0">
@@ -51,7 +52,6 @@
           {/if}
         </label>
         <div
-          tabindex="0"
           class="mt-3 p-3 shadow menu menu-compact dropdown-content bg-base-200
             rounded-lg overflow-x-hidden w-max"
           style="max-width:30vw;max-height:50vh;"
@@ -61,7 +61,7 @@
               <div>
                 <div class="badge badge-secondary badge-outline">{qi.type}</div>
                 <div class="text-sm">
-                  Added {DateTime.fromMillis(qi.time || Date.now()).toRelative()}
+                  Added {DateTime.fromMillis(ulid.decodeTime(qi.id)).toRelative()}
                 </div>
                 <!-- TODO: add more details
               {#if qi.type == 'ArtistAdd'}

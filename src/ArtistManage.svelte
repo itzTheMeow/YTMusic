@@ -2,10 +2,10 @@
   import ArtistProviders from "ArtistProviders.svelte";
   import { API, config } from "index";
   import Loader from "Loader.svelte";
-  import { offQueueChange, onQueueChange } from "queue";
   import { onDestroy } from "svelte";
   import { link, navigate } from "svelte-routing";
   import { ExternalLink } from "tabler-icons-svelte";
+  import { QALibraryScan } from "typings_queue";
   import type { Album } from "typings_struct";
 
   export let id: string;
@@ -29,14 +29,14 @@
     clearInterval(bari);
     albumSearchBar.focus();
   });
-  const i = onQueueChange(async (e) => {
-    if (e.type == "LibraryScan") {
+  const i = API.onQueueChange(async (e) => {
+    if (e.type == QALibraryScan && e.is == "remove") {
       const d = await API.fetchArtist(id);
       artistDetails = new Promise((r) => r(d));
     }
   });
   onDestroy(() => {
-    offQueueChange(i);
+    API.offQueueChange(i);
     clearInterval(bari);
   });
 

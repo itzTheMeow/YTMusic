@@ -36,3 +36,7 @@ export interface APITrackAddRequest {
   provider: any /* types.SoundProvider */;
   url: string;
 }
+export interface WSPacket {
+  type: string;
+  data: string;
+}

@@ -4,10 +4,10 @@
   import { API } from "index";
   import Loader from "Loader.svelte";
   import { Duration } from "luxon";
-  import { offQueueChange, onQueueChange } from "queue";
   import { onDestroy } from "svelte";
   import { link } from "svelte-routing";
   import { Download, ExternalLink, Trash } from "tabler-icons-svelte";
+  import { QALibraryScan } from "typings_queue";
   import type { Album, Artist } from "typings_struct";
 
   export let id: string;
@@ -29,8 +29,9 @@
     );
   });
 
-  const i = onQueueChange(async (e) => {
-    if (e.type == "LibraryScan") {
+  //TODO: redo this to not use await
+  const i = API.onQueueChange(async (e) => {
+    if (e.type == QALibraryScan && e.is == "remove") {
       const oldLib = JSON.stringify(((await new Promise((r) => albumDetails.then(r))) as any).l);
       const res = await API.fetchArtist(id);
       if (res.err) return (albumDetails = new Promise((r) => r(res.message!)));
@@ -49,7 +50,7 @@
       );
     }
   });
-  onDestroy(() => offQueueChange(i));
+  onDestroy(() => API.offQueueChange(i));
 </script>
 
 {#await albumDetails}
