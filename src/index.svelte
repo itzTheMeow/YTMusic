@@ -43,7 +43,8 @@
     <ul class="menu menu-horizontal p-0">
       <!-- svelte-ignore a11y-label-has-associated-control -->
       <div class="dropdown dropdown-end">
-        <label class="btn btn-ghost btn-circle relative" id="queueButton">
+        <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+        <label tabindex="0" class="btn btn-ghost btn-circle relative" id="queueButton">
           <ListSearch />
           {#if q.length}
             <div class="badge badge-primary absolute top-0 right-0">
@@ -51,10 +52,12 @@
             </div>
           {/if}
         </label>
+        <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
         <div
           class="mt-3 p-3 shadow menu menu-compact dropdown-content bg-base-200
             rounded-lg overflow-x-hidden w-max"
           style="max-width:30vw;max-height:50vh;"
+          tabindex="0"
         >
           {#if q.length}
             {#each q as qi (qi.id)}
