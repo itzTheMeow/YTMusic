@@ -3,6 +3,7 @@ package metadata
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/itzTheMeow/YTMusic/types"
 	"github.com/itzTheMeow/YTMusic/util"
@@ -28,7 +29,10 @@ func InitSpotify() {
 		log.Printf("Couldn't get token for spotify: %v", err)
 	} else {
 		log.Print("Obtained spotify access token.")
-		SpotifyClient = spotify.New(spotifyauth.New().Client(ctx, token))
+		auth := spotifyauth.New().Client(ctx, token)
+		SpotifyClient = spotify.New(auth)
+		time.Sleep(token.Expiry.Sub(time.Now()))
+		go InitSpotify()
 	}
 }
 
