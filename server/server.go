@@ -53,7 +53,7 @@ func main() {
 	})
 
 	App.Hooks().OnListen(func() error {
-		log.Printf(fmt.Sprintf("Server listening on port %v.", util.Config.Port))
+		log.Printf(fmt.Sprintf("YTMusic is online and listening on port %v.", util.Config.Port))
 		return nil
 	})
 	queue.Add(queue.QALibraryScan, nil)
