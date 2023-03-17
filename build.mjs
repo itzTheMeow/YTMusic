@@ -11,7 +11,7 @@ esbuild
   .build({
     entryPoints: [`./src/index.ts`],
     bundle: true,
-    outdir: `./out/public`,
+    outdir: `./dist`,
     mainFields: ["svelte", "browser", "module", "main"],
     minify: false,
     sourcemap: "inline",
@@ -35,7 +35,7 @@ esbuild
     loader: { ".png": "file" },
   })
   .then(() => {
-    fs.copyFileSync("src/index.html", "out/index.html");
+    fs.copyFileSync("src/index.html", "dist/index.html");
   })
   //@ts-ignore
   .catch((error, location) => {

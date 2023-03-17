@@ -1,12 +1,14 @@
 package main
 
 import (
+	"embed"
 	"fmt"
 	"log"
-	"path"
+	"net/http"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/itzTheMeow/YTMusic/metadata"
 	"github.com/itzTheMeow/YTMusic/queue"
 	"github.com/itzTheMeow/YTMusic/types"
@@ -15,6 +17,9 @@ import (
 )
 
 var App *fiber.App
+
+//go:embed dist/*
+var public embed.FS
 
 func main() {
 	log.SetFlags(log.Ltime | log.Lmsgprefix)
@@ -47,10 +52,14 @@ func main() {
 	InitAPIArtists()
 	InitAPITracks()
 	InitAPIWS()
-	App.Static("/", path.Join(util.Config.BasePath, "public"))
-	App.Get("*", func(c *fiber.Ctx) error {
-		return c.SendFile(path.Join(util.Config.BasePath, "index.html"))
-	})
+
+	App.Use("/", filesystem.New(
+		filesystem.Config{
+			Root:         http.FS(public),
+			NotFoundFile: "dist/index.html",
+			PathPrefix:   "dist",
+		},
+	))
 
 	App.Hooks().OnListen(func() error {
 		log.Printf(fmt.Sprintf("YTMusic is online and listening on port %v.", util.Config.Port))

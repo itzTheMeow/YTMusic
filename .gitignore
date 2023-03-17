@@ -1,6 +1,11 @@
-node_modules
-database.db
-Music
-.tmp_dl
-out
+# Node
+node_modules/
+
+# Bundled Files
+out/
+dist/
+
+# For Usage
+Music/
 config.yaml
+database.db
