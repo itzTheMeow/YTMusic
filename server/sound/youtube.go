@@ -30,7 +30,7 @@ type pipedAPISearchResponse struct {
 }
 
 func SearchYoutube(query string) []types.Downloadable {
-	res, err := grequests.Get("https://pipedapi.kavin.rocks/search", &grequests.RequestOptions{
+	res, err := grequests.Get("https://pipedapi.tokhmi.xyz/search", &grequests.RequestOptions{
 		Params: map[string]string{
 			"q":      query,
 			"filter": "videos",
