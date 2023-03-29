@@ -1,4 +1,4 @@
-pnpm run outdir
+mkdir out
 
 git pull
 rm -rf dist
