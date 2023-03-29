@@ -1,4 +1,4 @@
-pnpm run outdir
+mkdir out
 
 rm -rf server/dist
 mkdir server/dist
