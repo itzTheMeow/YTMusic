@@ -1,3 +1,4 @@
+import { variants } from "@catppuccin/palette";
 import { writable } from "svelte/store";
 
 export const Themes = [
@@ -11,6 +12,7 @@ export const Themes = [
   "dracula",
   "forest",
   "synthwave",
+  ...Object.keys(variants),
 ];
 
 export const localTheme = writable(localStorage.getItem("theme") || Themes[0]);

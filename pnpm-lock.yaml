@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@catppuccin/palette': ^0.1.7
   '@tsconfig/svelte': ^3.0.0
   '@types/luxon': ^3.0.0
   autoprefixer: ^10.4.8
@@ -21,6 +22,7 @@ specifiers:
   ulid: ^2.3.0
 
 dependencies:
+  '@catppuccin/palette': 0.1.7
   '@tsconfig/svelte': 3.0.0
   '@types/luxon': 3.2.0
   autoprefixer: 10.4.13_postcss@8.4.21
@@ -41,6 +43,10 @@ dependencies:
   ulid: 2.3.0
 
 packages:
+
+  /@catppuccin/palette/0.1.7:
+    resolution: {integrity: sha512-tgYE1PQLEs4Nz/OA28/kD0WhJKQEvXcuL2BPVdyHYQr0zb9l03lAwRXt7ZAP5PPuczFq0BgemPPdAdG+T2FZug==}
+    dev: false
 
   /@esbuild/linux-loong64/0.14.54:
     resolution: {integrity: sha512-bZBrLAIX1kpWelV0XemxBZllyRmM6vgFQQG2GdNb+r3Fkp0FOh1NJSvekXDs7jq70k4euu1cryLMfU+mTXlEpw==}

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"path"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -24,7 +26,11 @@ var public embed.FS
 func main() {
 	log.SetFlags(log.Ltime | log.Lmsgprefix)
 	log.SetPrefix("=> ")
-	log.Printf("Starting YTMusic...")
+	if util.DevEnv {
+		log.Printf("Starting YTMusic in development mode...")
+	} else {
+		log.Printf("Starting YTMusic...")
+	}
 	util.InitConfig()
 	defer Database.Close()
 
@@ -53,13 +59,19 @@ func main() {
 	InitAPITracks()
 	InitAPIWS()
 
-	App.Use("/", filesystem.New(
-		filesystem.Config{
+	if !util.DevEnv {
+		App.Use("/", filesystem.New(filesystem.Config{
 			Root:         http.FS(public),
 			NotFoundFile: "dist/index.html",
 			PathPrefix:   "dist",
-		},
-	))
+		}))
+	} else {
+		App.Use("/", filesystem.New(filesystem.Config{
+			Root:         http.FS(os.DirFS(path.Join(util.Grab(os.Getwd()), "../dist"))),
+			NotFoundFile: "index.html",
+			PathPrefix:   "",
+		}))
+	}
 
 	App.Hooks().OnListen(func() error {
 		log.Printf(fmt.Sprintf("YTMusic is online and listening on port %v.", util.Config.Port))

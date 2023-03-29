@@ -5,8 +5,9 @@
   "main": "build.mjs",
   "scripts": {
     "start": "node .",
-    "dev": "npm run generate && cp src/index.html out/index.html && cp out server && node . --watch",
-    "generate": "export PATH=${PATH}:`go env GOPATH`/bin && tygo generate"
+    "dev": "node . --watch",
+    "generate": "export PATH=${PATH}:`go env GOPATH`/bin && tygo generate",
+    "outdir": "rm -rf out && mkdir out"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
   },
   "homepage": "https://github.com/itzTheMeow/YTMusic#readme",
   "dependencies": {
+    "@catppuccin/palette": "^0.1.7",
     "@tsconfig/svelte": "^3.0.0",
     "@types/luxon": "^3.0.0",
     "autoprefixer": "^10.4.8",

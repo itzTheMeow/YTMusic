@@ -1,3 +1,5 @@
+const catppuccin = require("@catppuccin/palette");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{svelte,js,ts}"],
@@ -14,6 +16,23 @@ module.exports = {
       "dracula",
       "forest",
       "synthwave",
+      ...Object.entries(catppuccin.variants).map((v) => ({
+        [v[0]]: {
+          primary: v[1].sapphire.hex,
+          "primary-content": v[1].mantle.hex,
+          secondary: v[1].pink.hex,
+          accent: v[1].lavender.hex,
+          "base-100": v[1].base.hex,
+          "base-200": v[1].surface0.hex,
+          "base-300": v[1].surface1.hex,
+          neutral: v[1].crust.hex,
+          "neutral-content": v[1].text.hex,
+          success: v[1].green.hex,
+          warning: v[1].yellow.hex,
+          error: v[1].red.hex,
+          "base-content": v[1].text.hex,
+        },
+      })),
       {
         discord: {
           primary: "#5865f2",

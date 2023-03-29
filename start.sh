@@ -1,3 +1,5 @@
+pnpm run outdir
+
 git pull
 rm -rf dist
 pnpm i

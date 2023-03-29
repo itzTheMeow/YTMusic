@@ -7,6 +7,7 @@ import (
 	"path"
 
 	"github.com/itzTheMeow/YTMusic/types"
+	"golang.org/x/exp/slices"
 	"gopkg.in/yaml.v3"
 )
 
@@ -22,7 +23,7 @@ var Config = struct {
 	DisableFSChars:     `<>:"/\\|?*`,
 	YAML:               path.Join(Grab(os.Getwd()), "config.yaml"),
 }
-var DevEnv = len(os.Args) > 1 && os.Args[1] == "--dev"
+var DevEnv = slices.Index(os.Args, "--dev") != -1
 
 var UserConfig types.Settings
 
