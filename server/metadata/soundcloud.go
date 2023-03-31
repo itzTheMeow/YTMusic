@@ -50,11 +50,7 @@ func FetchSoundCloudArtist(id string) (*types.Artist, error) {
 			return nil, err
 		}
 		for _, track := range tracks {
-			// soundcloud go+ tracks have a SNIP policy and SUB_HIGH_TIER monetization model
-			// these only download the first 30sec
-			if track.Policy != "BLOCK" && track.Policy != "SNIP" && track.MonetizationModel != "SUB_HIGH_TIER" {
-				artist.Albums = append(artist.Albums, ConstructTrackAlbumFromSoundCloud(track))
-			}
+			artist.Albums = append(artist.Albums, ConstructTrackAlbumFromSoundCloud(track))
 		}
 		return &artist, nil
 	} else {

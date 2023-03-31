@@ -38,6 +38,11 @@ func SearchSoundCloud(query string) []types.Downloadable {
 			if err != nil {
 				continue
 			}
+			// soundcloud go+ tracks have a SNIP policy and SUB_HIGH_TIER monetization model
+			// these only download the first 30sec
+			if track.Policy == "BLOCK" || track.Policy == "SNIP" || track.MonetizationModel == "SUB_HIGH_TIER" {
+				continue
+			}
 			list = append(list, ConstructDownloadableFromSoundCloud(track))
 		}
 	} else {
