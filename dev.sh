@@ -1,4 +1,5 @@
 mkdir out
+kill-port 8777
 
 rm -rf server/dist
 mkdir server/dist

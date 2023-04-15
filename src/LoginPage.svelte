@@ -27,7 +27,7 @@
     Submit.classList.add("loading");
     const res = await API.login(Username.value, Password.value);
     Submit.classList.remove("loading");
-    if (res.err) return (ERROR = res.message);
+    if (res.err) return (ERROR = res.message || "Error");
     Auth.getAuthorized(res.token);
   }
 
