@@ -10,19 +10,26 @@
 
   export let id: string;
 
-  let filteredLetter = "";
-  function getLetters(artists: Album[]) {
-    const allLetters = [...new Set(artists.map((l) => l.name[0].toUpperCase()))].sort();
+  function getLetters(albums: Album[]) {
+    const allLetters = [...new Set(albums.map((l) => l.name[0].toUpperCase()))].sort();
     const filtered = allLetters.filter((l) => config.nonSymbol.includes(l));
     const ret = filtered.length !== allLetters.length ? ["#", ...filtered] : allLetters;
-    if (!filteredLetter) filteredLetter = ret[0];
+    if (!ret.includes(albumFilter)) albumFilter = ret[0];
     return ret;
   }
+  function getYears(albums: Album[]) {
+    const allYears = [...new Set(albums.map((l) => l.year))].sort((a, b) => b - a).map(String);
+    if (!allYears.includes(albumFilter)) albumFilter = allYears[0];
+    return allYears.map(String);
+  }
 
-  let albumSearchBar: HTMLInputElement;
-  let albumSearch = "";
-  let artistDetails = API.fetchArtist(id);
-  let delButton: HTMLDivElement;
+  let albumFilterType: "name" | "year" = "name",
+    albumFilter = "";
+
+  let albumSearchBar: HTMLInputElement,
+    albumSearch = "",
+    artistDetails = API.fetchArtist(id),
+    delButton: HTMLDivElement;
 
   const bari = setInterval(() => {
     if (!albumSearchBar) return;
@@ -156,24 +163,43 @@
       bind:value={albumSearch}
     />
     {#if !albumSearch}
-      <div class="btn-group w-full justify-center mt-3">
-        {#each getLetters(artist.albums) as letter}
-          <button
-            class="btn {filteredLetter == letter ? 'btn-active' : ''}"
-            on:click={() => (filteredLetter = letter)}>{letter}</button
-          >
-        {/each}
+      <div class="flex w-full justify-center items-center mt-3 gap-3">
+        <select class="select bg-neutral" bind:value={albumFilterType}>
+          <option value="name">Name</option>
+          <option value="year">Year</option>
+        </select>
+        <div class="btn-group flex-wrap hidden md:inline-flex">
+          {#each albumFilterType == "year" ? getYears(artist.albums) : getLetters(artist.albums) as filter}
+            <button
+              class="btn {albumFilter == filter ? 'btn-active' : ''}"
+              on:click={() => (albumFilter = filter)}
+            >
+              {filter}
+            </button>
+          {/each}
+        </div>
+        <select class="select bg-neutral flex-wrap inline-flex md:hidden" bind:value={albumFilter}>
+          {#each albumFilterType == "year" ? getYears(artist.albums) : getLetters(artist.albums) as filter}
+            <option value={filter}>
+              {filter}
+            </option>
+          {/each}
+        </select>
       </div>
     {/if}
     <div class="flex gap-2 flex-wrap flex-row justify-center mt-3">
-      {#each (albumSearch ? artist.albums
+      {#each (() => {
+        if (albumSearch) return artist.albums
             .filter((a) => a.name.toLowerCase().includes(albumSearch.toLowerCase()))
-            .slice(0, 15) : artist.albums.filter((a) => {
-            if (config.nonSymbol.includes(filteredLetter)) return a.name
-                .toUpperCase()
-                .startsWith(filteredLetter);
-            else return !config.nonSymbol.includes(a.name.toUpperCase()[0]);
-          })).sort( (a1, a2) => (a1.name.toLowerCase() > a2.name.toLowerCase() ? 1 : -1) ) as album (album.id)}
+            .slice(0, 15);
+        if (albumFilterType == "year") return artist.albums.filter((a) => a.year == Number(albumFilter));
+        return artist.albums.filter((a) => {
+          if (config.nonSymbol.includes(albumFilter)) return a.name
+              .toUpperCase()
+              .startsWith(albumFilter);
+          else return !config.nonSymbol.includes(a.name.toUpperCase()[0]);
+        });
+      })().sort( (a1, a2) => (a1.name.toLowerCase() > a2.name.toLowerCase() ? 1 : -1) ) as album (album.id)}
         <div class="card w-64 bg-base-300 shadow-xl">
           <figure>
             <img src={album.image} alt={album.name} class="w-full aspect-square" />
