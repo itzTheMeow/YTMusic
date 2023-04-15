@@ -24,6 +24,7 @@
     "@tabler/icons-svelte": "^2.16.0",
     "@tsconfig/svelte": "^4.0.1",
     "@types/luxon": "^3.3.0",
+    "@types/tinycolor2": "^1.4.3",
     "autoprefixer": "^10.4.14",
     "daisyui": "^2.51.5",
     "esbuild": "^0.14.51",
@@ -38,6 +39,7 @@
     "svelte-preprocess": "^5.0.3",
     "svelte-routing": "^1.6.0",
     "tailwindcss": "^3.3.1",
+    "tinycolor2": "^1.6.0",
     "typescript": "^5.0.4",
     "ulid": "^2.3.0"
   }

@@ -43,7 +43,6 @@ export default class {
       console.log("Socket D/C: " + reason);
     });
     this.socket.on("sync", (nq: QueueItem[]) => {
-      console.log(nq);
       Queue.update((q) => {
         q.forEach((i) => {
           if (!nq.find(({ id }) => id == i.id))
