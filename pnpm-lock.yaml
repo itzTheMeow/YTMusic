@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@catppuccin/palette': ^0.1.8
+  '@tabler/icons-svelte': ^2.16.0
   '@tsconfig/svelte': ^4.0.1
   '@types/luxon': ^3.3.0
   autoprefixer: ^10.4.14
@@ -17,13 +18,13 @@ specifiers:
   svelte: ^3.58.0
   svelte-preprocess: ^5.0.3
   svelte-routing: ^1.6.0
-  tabler-icons-svelte: ^1.8.0
   tailwindcss: ^3.3.1
   typescript: ^5.0.4
   ulid: ^2.3.0
 
 dependencies:
   '@catppuccin/palette': 0.1.8
+  '@tabler/icons-svelte': 2.16.0_svelte@3.58.0
   '@tsconfig/svelte': 4.0.1
   '@types/luxon': 3.3.0
   autoprefixer: 10.4.14_postcss@8.4.21
@@ -39,7 +40,6 @@ dependencies:
   svelte: 3.58.0
   svelte-preprocess: 5.0.3_asy7sqv3phnqcc34pgmnb2i3bq
   svelte-routing: 1.6.0_kxq5ayp4qfv2n6flkngpsntzw4
-  tabler-icons-svelte: 1.10.0_svelte@3.58.0
   tailwindcss: 3.3.1_postcss@8.4.21
   typescript: 5.0.4
   ulid: 2.3.0
@@ -116,6 +116,19 @@ packages:
 
   /@socket.io/component-emitter/3.1.0:
     resolution: {integrity: sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==}
+    dev: false
+
+  /@tabler/icons-svelte/2.16.0_svelte@3.58.0:
+    resolution: {integrity: sha512-gOhGl8c53ao7Y7ZsjRNCRMogTVlzGf8B7qkzX+52CVeGCYBR1wIu2cDIz9Nq51lVTmZBzr5Ogr5Bv89H2a7heg==}
+    peerDependencies:
+      svelte: ^3.49.0
+    dependencies:
+      '@tabler/icons': 2.16.0
+      svelte: 3.58.0
+    dev: false
+
+  /@tabler/icons/2.16.0:
+    resolution: {integrity: sha512-1kaPH5APIWGtXe0W0eQ9g4MdfaQJ2gh95TAa94lNAqRR0JeC3fkD0yXGCcUiNK4GnGDv3UtPSCd3dbdKTe1b2A==}
     dev: false
 
   /@tsconfig/svelte/4.0.1:
@@ -1309,15 +1322,6 @@ packages:
       pascal-case: 3.1.2
       svelte: 3.58.0
       typescript: 5.0.4
-    dev: false
-
-  /tabler-icons-svelte/1.10.0_svelte@3.58.0:
-    resolution: {integrity: sha512-BERFRwLW+nLnEXrC1yc3TCwM9LxlMqixnQiMIF/u9XESbYXUCi6udjwvSGmwLepAD0DI9OdXBrZvfPBan7Dzcg==}
-    deprecated: Package no longer supported. Switch to @tabler/icons-svelte.
-    peerDependencies:
-      svelte: '>=3.31.0 <=4'
-    dependencies:
-      svelte: 3.58.0
     dev: false
 
   /tailwindcss/3.3.1_postcss@8.4.21:

@@ -1,14 +1,20 @@
 <script lang="ts">
-  import { API } from "index";
+  import {
+    IconArrowBack,
+    IconDownload,
+    IconExternalLink,
+    IconEye,
+    IconX,
+  } from "@tabler/icons-svelte";
   import Loader from "Loader.svelte";
-  import { DateTime } from "luxon";
   import ProviderIcon from "ProviderIcon.svelte";
-  import { onDestroy } from "svelte";
   import SwitcherProviders from "SwitcherProviders.svelte";
-  import { ArrowBack, Download, ExternalLink, Eye, X } from "tabler-icons-svelte";
+  import { API } from "index";
+  import { DateTime } from "luxon";
+  import { onDestroy } from "svelte";
   import type { APITrackAddRequest } from "typings";
   import type { Album, Artist, Downloadable, SoundProvider, Track } from "typings_struct";
-  import { highlightSelect, Providers, searchTimeout, stringDuration } from "utils";
+  import { Providers, highlightSelect, searchTimeout, stringDuration } from "utils";
 
   export let artist: Artist;
   export let album: Album;
@@ -74,7 +80,7 @@
           style="aspect-ratio: 560 / 315;"
         />
         <div class="btn btn-square" on:click={() => (embedding = null)}>
-          <ArrowBack />
+          <IconArrowBack />
         </div>
         <div
           class="btn btn-sm btn-square btn-primary"
@@ -83,7 +89,7 @@
             handleDL(e, embedding.url);
           }}
         >
-          <Download />
+          <IconDownload />
         </div>
       </div>
     {:else}
@@ -169,13 +175,13 @@
                         class="btn btn-sm btn-square btn-primary"
                         on:click={(e) => handleDL(e, dl.url)}
                       >
-                        <Download />
+                        <IconDownload />
                       </div>
                       <div
                         class="btn btn-sm btn-square btn-secondary"
                         on:click={() => (embedding = dl)}
                       >
-                        <Eye />
+                        <IconEye />
                       </div>
                       <a
                         class="btn btn-sm btn-square btn-accent"
@@ -183,7 +189,7 @@
                         target="_blank"
                         rel="noreferrer"
                       >
-                        <ExternalLink />
+                        <IconExternalLink />
                       </a>
                     </div>
                   </div>
@@ -194,6 +200,6 @@
         {/await}
       </div>
     {/if}
-    <a href={"#"} class="btn btn-sm btn-circle absolute right-2 top-2"><X /></a>
+    <a href={"#"} class="btn btn-sm btn-circle absolute right-2 top-2"><IconX /></a>
   </div>
 </div>

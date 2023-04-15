@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { IconDownload, IconExternalLink, IconTrash } from "@tabler/icons-svelte";
   import ArtistProviders from "ArtistProviders.svelte";
   import ArtistTrackAdd from "ArtistTrackAdd.svelte";
   import { API } from "index";
@@ -6,7 +7,6 @@
   import { Duration } from "luxon";
   import { onDestroy } from "svelte";
   import { link } from "svelte-routing";
-  import { Download, ExternalLink, Trash } from "tabler-icons-svelte";
   import { QALibraryScan } from "typings_queue";
   import type { Album, Artist } from "typings_struct";
 
@@ -86,7 +86,7 @@
             <div class="flex items-center gap-1">
               <div class="text-3xl">{res.l.name} ({res.l.year})</div>
               <a class="text-secondary" href={res.l.url} target="_blank" rel="noreferrer"
-                ><ExternalLink size={32} /></a
+                ><IconExternalLink size={32} /></a
               >
             </div>
             <div class="flex items-center gap-1">
@@ -171,11 +171,11 @@
                       });
                     }}
                   >
-                    <Trash />
+                    <IconTrash />
                   </div>
                 {:else}
                   <a class="btn btn-square btn-sm btn-primary" href={`#${track.id}`}>
-                    <Download />
+                    <IconDownload />
                   </a>
                 {/if}
                 <a
@@ -184,7 +184,7 @@
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <ExternalLink />
+                  <IconExternalLink />
                 </a>
               </td>
             </tr>

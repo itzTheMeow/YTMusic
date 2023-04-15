@@ -1,15 +1,15 @@
 <script lang="ts">
+  import { IconListSearch, IconLogout, IconSettings } from "@tabler/icons-svelte";
   import { Queue } from "APIClient";
   import ArtistAdd from "ArtistAdd.svelte";
   import ArtistAlbum from "ArtistAlbum.svelte";
   import ArtistManage from "ArtistManage.svelte";
   import Artists from "Artists.svelte";
+  import SettingsPage from "Settings.svelte";
   import { Auth } from "index";
   import { DateTime } from "luxon";
-  import SettingsPage from "Settings.svelte";
   import { onDestroy, onMount } from "svelte";
-  import { link, Route, Router } from "svelte-routing";
-  import { ListSearch, Logout, Settings } from "tabler-icons-svelte";
+  import { Route, Router, link } from "svelte-routing";
   import type { QueueItem } from "typings_queue";
   import { decodeTime } from "ulid";
   import Home from "./Home.svelte";
@@ -45,7 +45,7 @@
       <div class="dropdown dropdown-end">
         <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
         <label tabindex="0" class="btn btn-ghost btn-circle relative" id="queueButton">
-          <ListSearch />
+          <IconListSearch />
           {#if q.length}
             <div class="badge badge-primary absolute top-0 right-0">
               {q.length}
@@ -83,10 +83,10 @@
         </div>
       </div>
       <a class="btn btn-ghost btn-circle" href="/settings" use:link>
-        <Settings />
+        <IconSettings />
       </a>
       <button class="btn btn-ghost btn-circle" on:click={() => Auth.logout()}>
-        <Logout />
+        <IconLogout />
       </button>
     </ul>
   </div>

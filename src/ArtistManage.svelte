@@ -1,10 +1,10 @@
 <script lang="ts">
+  import { IconExternalLink } from "@tabler/icons-svelte";
   import ArtistProviders from "ArtistProviders.svelte";
   import { API, config } from "index";
   import Loader from "Loader.svelte";
   import { onDestroy } from "svelte";
   import { link, navigate } from "svelte-routing";
-  import { ExternalLink } from "tabler-icons-svelte";
   import { QALibraryScan } from "typings_queue";
   import type { Album } from "typings_struct";
 
@@ -74,7 +74,7 @@
             <div class="flex items-center gap-1">
               <div class="text-3xl">{artist.name}</div>
               <a class="text-secondary" href={artist.url} target="_blank" rel="noreferrer"
-                ><ExternalLink size={32} /></a
+                ><IconExternalLink size={32} /></a
               >
             </div>
             <div class="flex gap-1">
@@ -182,7 +182,7 @@
             <h2 class="card-title">
               {album.name}
               <a class="text-secondary" href={album.url} target="_blank" rel="noreferrer"
-                ><ExternalLink /></a
+                ><IconExternalLink /></a
               >
             </h2>
             <div class="card-actions">

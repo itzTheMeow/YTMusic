@@ -1,11 +1,11 @@
 <script lang="ts">
+  import { IconCheck, IconDots, IconPlus } from "@tabler/icons-svelte";
   import ArtistCard from "ArtistCard.svelte";
-  import { API } from "index";
   import Loader from "Loader.svelte";
+  import SwitcherProviders from "SwitcherProviders.svelte";
+  import { API } from "index";
   import { onDestroy, onMount } from "svelte";
   import { navigate } from "svelte-routing";
-  import SwitcherProviders from "SwitcherProviders.svelte";
-  import { Check, Dots, Plus } from "tabler-icons-svelte";
   import { QAArtistAdd, type QueuedArtistAdd } from "typings_queue";
   import {
     ArtistIsAbsent,
@@ -102,15 +102,15 @@
                 >
                   {#if artist.status == ArtistIsPresent || wasAdded.find( (w) => Object.values(artist.providers).includes(w) )}
                     <div class="text-success">
-                      <Check size={40} />
+                      <IconCheck size={40} />
                     </div>
                   {:else if artist.status == ArtistIsQueued}
                     <div class="text-primary-content">
-                      <Dots size={40} />
+                      <IconDots size={40} />
                     </div>
                   {:else}
                     <div class="text-primary hover:text-success">
-                      <Plus size={40} />
+                      <IconPlus size={40} />
                     </div>
                   {/if}
                 </div>

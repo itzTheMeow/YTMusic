@@ -50,7 +50,7 @@ export default class {
             this.queueListeners.forEach((l) => l.cb({ ...i, is: "remove" }));
         });
         nq.forEach((i) => {
-          i.data = JSON.parse(atob(i.data));
+          i.data = atob(i.data);
           if (!q.find(({ id }) => id == i.id))
             this.queueListeners.forEach((l) => l.cb({ ...i, is: "add" }));
         });
@@ -59,14 +59,14 @@ export default class {
     });
     this.socket.on("add", (nq: QueueItem) => {
       Queue.update((q) => {
-        nq.data = JSON.parse(atob(nq.data));
+        nq.data = atob(nq.data);
         this.queueListeners.forEach((l) => l.cb({ ...nq, is: "add" }));
         return [...q, nq];
       });
     });
     this.socket.on("remove", (nq: QueueItem) => {
       Queue.update((q) => {
-        nq.data = JSON.parse(atob(nq.data));
+        nq.data = atob(nq.data);
         this.queueListeners.forEach((l) => l.cb({ ...nq, is: "remove" }));
         return q.filter(({ id }) => id !== nq.id);
       });

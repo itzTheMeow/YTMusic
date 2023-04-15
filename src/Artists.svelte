@@ -1,10 +1,10 @@
 <script lang="ts">
+  import { IconPlus, IconSettings } from "@tabler/icons-svelte";
   import ArtistCard from "ArtistCard.svelte";
   import { API, config } from "index";
   import Loader from "Loader.svelte";
   import { onDestroy } from "svelte";
   import { link } from "svelte-routing";
-  import { Plus, Settings } from "tabler-icons-svelte";
   import type { Artist } from "typings_struct";
 
   let filteredLetter = "";
@@ -37,7 +37,7 @@
       {artists.err ? 0 : artists.length.toLocaleString()} Artists
     </div>
     <a class="btn btn-primary btn-square btn-outline btn-sm" href="/artists/add" use:link>
-      <Plus size={32} />
+      <IconPlus size={32} />
     </a>
     <input
       type="text"
@@ -72,7 +72,7 @@
         <ArtistCard {artist}>
           <a class="ml-auto mb-auto cursor-pointer" href={`/artists/${artist.id}/manage`} use:link>
             <div class="text-primary">
-              <Settings size={40} />
+              <IconSettings size={40} />
             </div>
           </a>
         </ArtistCard>
