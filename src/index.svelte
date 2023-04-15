@@ -12,6 +12,7 @@
   import { Route, Router, link } from "svelte-routing";
   import type { QueueItem } from "typings_queue";
   import { decodeTime } from "ulid";
+  import { QueueActions } from "utils";
   import Home from "./Home.svelte";
 
   if (!Auth.isAuthorized) window.location.href = "/login";
@@ -62,7 +63,7 @@
           {#if q.length}
             {#each q as qi (qi.id)}
               <div>
-                <div class="badge badge-secondary badge-outline">{qi.type}</div>
+                <div class="badge badge-secondary badge-outline">{QueueActions[qi.type]}</div>
                 <div class="text-sm">
                   Added {DateTime.fromMillis(decodeTime(qi.id)).toRelative()}
                 </div>

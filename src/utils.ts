@@ -1,5 +1,13 @@
 import { Duration } from "luxon";
 import {
+  QAArtistAdd,
+  QAArtistRemove,
+  QALibraryScan,
+  QASongDelete,
+  QASongDownload,
+  type QueueAction,
+} from "typings_queue";
+import {
   MetaProviderBandLab,
   MetaProviderKonami,
   MetaProviderSoundCloud,
@@ -27,6 +35,13 @@ export const Permissions: { [key in keyof AccountPermissions]: string } = {
   songDownload: "Allows downloading new songs.",
   songRemove: "Allows deleting downloaded songs.",
   songRemoveSelf: "Allows deleting only songs downloaded by the user.",
+};
+export const QueueActions: { [key in QueueAction]: string } = {
+  [QAArtistAdd]: "ArtistAdd",
+  [QAArtistRemove]: "ArtistRemove",
+  [QALibraryScan]: "LibraryScan",
+  [QASongDelete]: "SongDelete",
+  [QASongDownload]: "SongDownload",
 };
 
 export function stringDuration(duration: number) {
