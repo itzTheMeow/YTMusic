@@ -1,4 +1,5 @@
 import { Auth } from "index";
+import { Socket, io } from "socket.io-client";
 import { writable } from "svelte/store";
 import type {
   APIArtistGetRequest,
@@ -9,7 +10,6 @@ import type {
   APIPasswordChangeRequest,
   APISettingsSetRequest,
   APITrackSearchRequest,
-  WSPacket,
 } from "typings";
 import type { QueueItem } from "typings_queue";
 import {
@@ -26,75 +26,51 @@ type QueueCallback = (c: QueueItem & { is: "add" | "remove" }) => any;
 export const Queue = writable<QueueItem[]>([]);
 
 export default class {
-  public socket: WebSocket | null = null;
-  public connected = false;
+  public socket: Socket | null = null;
   constructor(public readonly url: string) {
     this.connect();
     setInterval(() => {
-      if (this.connected) this.socket?.send("wantSync");
+      if (this.socket?.connected) this.socket.emit("wantSync");
     }, 1000 * 60); // every minute sync queue
   }
   public connect() {
-    this.connected = false;
-    if (this.socket) {
-      const sock = this.socket;
-      sock.close();
-      this.socket.onopen = () => sock.close();
-      this.socket.onclose = this.socket.onerror = this.socket.onmessage = null;
-    }
-    this.socket = new WebSocket(
-      window.location.protocol.replace("http", "ws") + "//" + window.location.host + "/ws"
-    );
-    this.socket.onopen = () => {
-      this.connected = true;
-      console.log("Socket Connect");
-    };
-    this.socket.onclose = () => {
-      this.connected = false;
-      console.log("Socket D/C");
-      this.socket?.close();
-      setTimeout(() => this.connect(), 1000);
-    };
-    this.socket.onerror = (e) => {
-      this.connected = false;
-      console.error("Socket Error", e);
-      this.socket?.close();
-      setTimeout(() => this.connect(), 1000);
-    };
-    this.socket.onmessage = ({ data }) => {
-      try {
-        const d = JSON.parse(data) as WSPacket;
-        if (d.type == "sync") {
-          Queue.update((q) => {
-            const nq = <QueueItem[]>JSON.parse(d.data);
-            q.forEach((i) => {
-              if (!nq.find(({ id }) => id == i.id))
-                this.queueListeners.forEach((l) => l.cb({ ...i, is: "remove" }));
-            });
-            nq.forEach((i) => {
-              i.data = atob(i.data);
-              if (!q.find(({ id }) => id == i.id))
-                this.queueListeners.forEach((l) => l.cb({ ...i, is: "add" }));
-            });
-            return nq;
-          });
-        } else if (d.type == "add") {
-          Queue.update((q) => {
-            const nq = <QueueItem>JSON.parse(d.data);
-            nq.data = atob(nq.data);
-            this.queueListeners.forEach((l) => l.cb({ ...nq, is: "add" }));
-            return [...q, nq];
-          });
-        } else if (d.type == "remove") {
-          Queue.update((q) => {
-            const nq = <QueueItem>JSON.parse(d.data);
-            nq.data = atob(nq.data);
-            this.queueListeners.forEach((l) => l.cb({ ...nq, is: "remove" }));
-            return q.filter(({ id }) => id !== nq.id);
-          });
-        }
-      } catch {}
-    };
+    if (this.socket) this.socket.disconnect();
+    this.socket = io();
+    this.socket.on("connect", () => {
+      console.log("Socket Connected");
+    });
+    this.socket.on("disconnect", (reason) => {
+      console.log("Socket D/C: " + reason);
+    });
+    this.socket.on("sync", (nq: QueueItem[]) => {
+      console.log(nq);
+      Queue.update((q) => {
+        q.forEach((i) => {
+          if (!nq.find(({ id }) => id == i.id))
+            this.queueListeners.forEach((l) => l.cb({ ...i, is: "remove" }));
+        });
+        nq.forEach((i) => {
+          i.data = JSON.parse(i.data);
+          if (!q.find(({ id }) => id == i.id))
+            this.queueListeners.forEach((l) => l.cb({ ...i, is: "add" }));
+        });
+        return nq;
+      });
+    });
+    this.socket.on("add", (nq: QueueItem) => {
+      Queue.update((q) => {
+        nq.data = JSON.parse(nq.data);
+        this.queueListeners.forEach((l) => l.cb({ ...nq, is: "add" }));
+        return [...q, nq];
+      });
+    });
+    this.socket.on("remove", (nq: QueueItem) => {
+      Queue.update((q) => {
+        nq.data = JSON.parse(nq.data);
+        this.queueListeners.forEach((l) => l.cb({ ...nq, is: "remove" }));
+        return q.filter(({ id }) => id !== nq.id);
+      });
+    });
   }
   private sanitizePath(path: string) {
     return !path.startsWith("/") ? "/" + path : path;

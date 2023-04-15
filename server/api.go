@@ -56,8 +56,3 @@ type APITrackDeleteRequest struct {
 	Album  string `json:"album"`
 	Track  string `json:"track"`
 }
-
-type WSPacket struct {
-	Type string `json:"type"`
-	Data string `json:"data"`
-}

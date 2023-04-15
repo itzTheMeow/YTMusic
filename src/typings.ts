@@ -52,7 +52,3 @@ export interface APITrackDeleteRequest {
   album: string;
   track: string;
 }
-export interface WSPacket {
-  type: string;
-  data: string;
-}
