@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/itzTheMeow/YTMusic/types"
+	"github.com/itzTheMeow/YTMusic/util"
 	"github.com/levigross/grequests"
 	"github.com/oklog/ulid/v2"
 )
@@ -30,7 +31,7 @@ type pipedAPISearchResponse struct {
 }
 
 func SearchYoutube(query string) []types.Downloadable {
-	res, err := grequests.Get("https://pipedapi-libre.kavin.rocks/search", &grequests.RequestOptions{
+	res, err := grequests.Get(util.Config.YouTube+"/search", &grequests.RequestOptions{
 		Params: map[string]string{
 			"q":      query,
 			"filter": "videos",

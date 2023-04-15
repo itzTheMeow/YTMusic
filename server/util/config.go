@@ -17,11 +17,13 @@ var Config = struct {
 	AllowUsernameChars string
 	DisableFSChars     string
 	YAML               string
+	YouTube            string
 }{
 	Port:               8777,
 	AllowUsernameChars: `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-1234567890`,
 	DisableFSChars:     `<>:"/\\|?*`,
 	YAML:               path.Join(Grab(os.Getwd()), "config.yaml"),
+	YouTube:            "https://pipedapi.kavin.rocks",
 }
 var DevEnv = slices.Index(os.Args, "--dev") != -1
 
