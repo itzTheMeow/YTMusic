@@ -23,7 +23,7 @@ var Config = struct {
 	AllowUsernameChars: `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-1234567890`,
 	DisableFSChars:     `<>:"/\\|?*`,
 	YAML:               path.Join(Grab(os.Getwd()), "config.yaml"),
-	YouTube:            "https://pipedapi.kavin.rocks",
+	YouTube:            "https://watchapi.whatever.social",
 }
 var DevEnv = slices.Index(os.Args, "--dev") != -1
 
