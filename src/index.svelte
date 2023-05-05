@@ -14,6 +14,7 @@
   import { decodeTime } from "ulid";
   import { QueueActions } from "utils";
   import Home from "./Home.svelte";
+  import Logo from "./logo.png";
 
   if (!Auth.isAuthorized) window.location.href = "/login";
 
@@ -32,6 +33,10 @@
     clearInterval(setint);
   });
 </script>
+
+<svelte:head>
+  <link rel="icon" href={Logo} />
+</svelte:head>
 
 <div class="navbar bg-base-100" bind:this={nav}>
   <div class="navbar-start">
