@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
 
   import { API, Auth, config } from "./index";
-  import Logo from "./logo.png";
 
   if (Auth.isAuthorized) window.location.href = "/";
 
