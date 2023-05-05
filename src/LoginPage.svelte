@@ -35,7 +35,7 @@
 </script>
 
 <div class="flex flex-col items-center justify-center h-screen">
-  <img src={Logo} alt={config.brandName} class="w-24 mb-1" />
+  <img src={Logo} alt={config.brandName} class="w-32 mb-1" />
   <div class="text-3xl font-bold mb-3">{config.brandName}</div>
   <input
     type="text"
