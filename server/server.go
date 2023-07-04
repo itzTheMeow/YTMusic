@@ -35,7 +35,7 @@ func main() {
 	defer Database.Close()
 
 	go metadata.InitSpotify()
-	go metadata.InitSoundCloud()
+	//go metadata.InitSoundCloud()
 
 	App = fiber.New(fiber.Config{
 		DisableStartupMessage: true,
