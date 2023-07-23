@@ -5,3 +5,6 @@ spotify-secret: "" # Your spotify app secret.
 
 # Location of the music library. Relative to the (if specified) working directory.
 library-folder: "./Music"
+
+# The Piped API instance to use. No trailing slash.
+piped-api: "https://pipedapi.kavin.rocks"
