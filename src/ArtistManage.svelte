@@ -2,7 +2,7 @@
   import { IconExternalLink } from "@tabler/icons-svelte";
   import ArtistProviders from "ArtistProviders.svelte";
   import { API, config } from "index";
-  import Loader from "Loader.svelte";
+  import Loader from "ui/Loader.svelte";
   import { onDestroy } from "svelte";
   import { link, navigate } from "svelte-routing";
   import { QALibraryScan } from "typings_queue";

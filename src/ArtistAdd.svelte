@@ -1,7 +1,7 @@
 <script lang="ts">
   import { IconCheck, IconDots, IconPlus } from "@tabler/icons-svelte";
   import ArtistCard from "ArtistCard.svelte";
-  import Loader from "Loader.svelte";
+  import Loader from "ui/Loader.svelte";
   import SwitcherProviders from "SwitcherProviders.svelte";
   import { API } from "index";
   import { onDestroy, onMount } from "svelte";

@@ -3,7 +3,7 @@
   import ArtistProviders from "ArtistProviders.svelte";
   import ArtistTrackAdd from "ArtistTrackAdd.svelte";
   import { API } from "index";
-  import Loader from "Loader.svelte";
+  import Loader from "ui/Loader.svelte";
   import { Duration } from "luxon";
   import { onDestroy } from "svelte";
   import { link } from "svelte-routing";
