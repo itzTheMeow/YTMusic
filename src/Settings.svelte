@@ -1,6 +1,6 @@
 <script lang="ts">
   import { API, Auth } from "index";
-  import Loader from "Loader.svelte";
+  import Loader from "ui/Loader.svelte";
   import { Themes } from "Theme";
   import ThemePreview from "ThemePreview.svelte";
 

@@ -2,7 +2,7 @@
   import { IconPlus, IconSettings } from "@tabler/icons-svelte";
   import ArtistCard from "ArtistCard.svelte";
   import { API, config } from "index";
-  import Loader from "Loader.svelte";
+  import Loader from "ui/Loader.svelte";
   import { onDestroy } from "svelte";
   import { link } from "svelte-routing";
   import type { Artist } from "typings_struct";

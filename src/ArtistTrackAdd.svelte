@@ -6,7 +6,7 @@
     IconEye,
     IconX,
   } from "@tabler/icons-svelte";
-  import Loader from "Loader.svelte";
+  import Loader from "ui/Loader.svelte";
   import ProviderIcon from "ProviderIcon.svelte";
   import SwitcherProviders from "SwitcherProviders.svelte";
   import { API } from "index";
