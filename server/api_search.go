@@ -59,13 +59,8 @@ func InitAPISearch() {
 		}
 		var body APITrackSearchRequest
 		c.BodyParser(&body)
-		var list []types.Downloadable
-		switch body.Provider {
-		case types.SoundProviderYouTube:
-			list = sound.SearchYoutube(body.Query)
-		case types.SoundProviderSoundCloud:
-			list = sound.SearchSoundCloud(body.Query)
-		default:
+		list := sound.Search(body.Provider, body.Query)
+		if list == nil {
 			return c.JSON(&APIErrorResponse{
 				Error:   true,
 				Message: "Invalid provider ID.",
