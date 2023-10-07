@@ -3,7 +3,11 @@ package metadata
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"net/http"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/itzTheMeow/YTMusic/types"
 	"github.com/oklog/ulid/v2"
@@ -133,6 +137,47 @@ func SearchBandLabArtists(query string) []types.Artist {
 	return append(make([]types.Artist, 0), ConstructArtistFromBandLab(payload))
 }
 
+func FetchBandLabArtist(id string) (*types.Artist, error) {
+	res, err := http.Get(fmt.Sprintf("%v/users/%v", API, id))
+	if err != nil {
+		return nil, err
+	}
+	var bartist BandLabArtist
+	json.NewDecoder(res.Body).Decode(&bartist)
+	artist := ConstructArtistFromBandLab(bartist)
+
+	albumList := rollingRequest[BandLabAlbum](fmt.Sprintf("%v/users/%v/albums?limit=100&state=Released", API, bartist.ID))
+	for _, alb := range albumList {
+		res, err := http.Get(fmt.Sprintf("%v/albums/%v", API, alb.ID))
+		if err != nil {
+			continue
+		}
+		var payload BandLabAlbum
+		json.NewDecoder(res.Body).Decode(&payload)
+		artist.Albums = append(artist.Albums, ConstructTrackAlbumFromBandLab(payload))
+	}
+
+	trackList := rollingRequest[BandLabPost](fmt.Sprintf("%v/users/%v/track-posts?limit=100", API, bartist.ID))
+	for _, track := range trackList {
+		// detect if there are any duplicate tracks already added from an album
+		found := false
+		for _, alb := range artist.Albums {
+			for _, trk := range alb.Tracks {
+				if trk.UUID == track.ID {
+					found = true
+				}
+			}
+		}
+		if found {
+			continue
+		}
+
+		artist.Albums = append(artist.Albums, ConstructPostTrackFromBandLab(track))
+	}
+
+	return &artist, nil
+}
+
 func ConstructArtistFromBandLab(artist BandLabArtist) types.Artist {
 	genres := make([]string, 0)
 	for _, genre := range artist.Genres {
@@ -148,5 +193,62 @@ func ConstructArtistFromBandLab(artist BandLabArtist) types.Artist {
 		Followers: artist.Counters.Followers,
 		Icon:      artist.Picture.Small,
 		Providers: providers,
+	}
+}
+func ConstructTrackAlbumFromBandLab(album BandLabAlbum) types.Album {
+	tracks := make([]types.Track, 0)
+	for i, track := range album.Tracks {
+		tracks = append(tracks, types.Track{
+			ID:       ulid.Make().String(),
+			Title:    track.Name,
+			UUID:     track.ID,
+			Explicit: track.IsExplicit,
+			URL:      "https://bandlab.com/post/" + track.ID,
+			Number:   i + 1,
+			Duration: int(math.Floor(float64(track.Duration * 1000))),
+		})
+	}
+
+	year, err := strconv.Atoi(strings.Split(album.ReleaseDate, "-")[0])
+	if err != nil {
+		year = time.Now().Year()
+	}
+
+	return types.Album{
+		ID:       ulid.Make().String(),
+		UUID:     album.ID,
+		Type:     "album",
+		Name:     album.Name,
+		URL:      fmt.Sprintf("https://bandlab.com/%v/albums/%v", album.Artist.Username, album.ID),
+		Image:    album.Picture.Medium,
+		Year:     year,
+		Provider: types.MetaProviderBandLab,
+		Tracks:   tracks,
+	}
+}
+func ConstructPostTrackFromBandLab(post BandLabPost) types.Album {
+	year, err := strconv.Atoi(strings.Split(post.CreatedOn, "-")[0])
+	if err != nil {
+		year = time.Now().Year()
+	}
+
+	return types.Album{
+		ID:       ulid.Make().String(),
+		UUID:     post.ID,
+		Type:     "single",
+		Name:     post.Track.Name,
+		URL:      "https://bandlab.com/post/" + post.ID,
+		Image:    post.Track.Picture.Medium,
+		Year:     year,
+		Provider: types.MetaProviderBandLab,
+		Tracks: append(make([]types.Track, 0), types.Track{
+			ID:       ulid.Make().String(),
+			Title:    post.Track.Name,
+			UUID:     post.ID,
+			Explicit: post.IsExplicit,
+			URL:      "https://bandlab.com/post/" + post.ID,
+			Number:   1,
+			Duration: int(math.Floor(float64(post.Track.Sample.Duration * 1000))),
+		}),
 	}
 }

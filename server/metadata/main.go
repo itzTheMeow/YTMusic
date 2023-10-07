@@ -24,6 +24,8 @@ func Fetch(provider types.MetadataProvider, id string) (*types.Artist, error) {
 		return FetchSpotifyArtist(id)
 	case types.MetaProviderSoundCloud:
 		return FetchSoundCloudArtist(id)
+	case types.MetaProviderBandLab:
+		return FetchBandLabArtist(id)
 	default:
 		return nil, errors.New("Invalid provider ID.")
 	}
