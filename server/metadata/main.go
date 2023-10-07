@@ -12,6 +12,8 @@ func Search(provider types.MetadataProvider, query string) []types.Artist {
 		return SearchSpotifyArtists(query)
 	case types.MetaProviderSoundCloud:
 		return SearchSoundCloudArtists(query)
+	case types.MetaProviderBandLab:
+		return SearchBandLabArtists(query)
 	default:
 		return nil
 	}

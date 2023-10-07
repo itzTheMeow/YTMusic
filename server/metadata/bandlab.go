@@ -2,7 +2,11 @@ package metadata
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+
+	"github.com/itzTheMeow/YTMusic/types"
+	"github.com/oklog/ulid/v2"
 )
 
 type BandLabPicture struct {
@@ -117,4 +121,32 @@ func rollingRequest[T Fetchable](URL string) []T {
 		}
 	}
 	return data
+}
+
+func SearchBandLabArtists(query string) []types.Artist {
+	res, err := http.Get(fmt.Sprintf("%v/users/%v", API, query))
+	if err != nil {
+		return make([]types.Artist, 0)
+	}
+	var payload BandLabArtist
+	json.NewDecoder(res.Body).Decode(&payload)
+	return append(make([]types.Artist, 0), ConstructArtistFromBandLab(payload))
+}
+
+func ConstructArtistFromBandLab(artist BandLabArtist) types.Artist {
+	genres := make([]string, 0)
+	for _, genre := range artist.Genres {
+		genres = append(genres, genre.Name)
+	}
+	providers := make(map[types.MetadataProvider]string)
+	providers[types.MetaProviderBandLab] = artist.ID
+	return types.Artist{
+		ID:        ulid.Make().String(),
+		Name:      artist.Name,
+		URL:       "https://bandlab.com/" + artist.Username,
+		Genres:    genres,
+		Followers: artist.Counters.Followers,
+		Icon:      artist.Picture.Small,
+		Providers: providers,
+	}
 }
