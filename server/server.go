@@ -78,9 +78,5 @@ func main() {
 		return nil
 	})
 	queue.Add(queue.QALibraryScan, nil)
-	bindAddress := os.Getenv("VOPONO_HOST_IP")
-	if bindAddress == "" {
-		bindAddress = "0.0.0.0"
-	}
-	App.Listen(fmt.Sprint(bindAddress+":", util.Config.Port))
+	App.Listen(fmt.Sprint("0.0.0.0:", util.Config.Port))
 }
