@@ -11,7 +11,6 @@ import (
 	"github.com/bogem/id3v2/v2"
 	"github.com/itzTheMeow/YTMusic/media"
 	"github.com/itzTheMeow/YTMusic/sound"
-	"github.com/itzTheMeow/YTMusic/types"
 	"github.com/levigross/grequests"
 	"github.com/xfrr/goffmpeg/transcoder"
 )
@@ -28,12 +27,7 @@ func HandleSongDownload(data []byte) {
 	var (
 		dlpath *string
 	)
-	switch item.Provider {
-	case types.SoundProviderYouTube:
-		dlpath, err = sound.DownloadYouTube(item.URL)
-	case types.SoundProviderSoundCloud:
-		dlpath, err = sound.DownloadSoundcloud(item.URL)
-	}
+	dlpath, err = sound.Download(item.Provider, item.URL)
 	if err != nil || dlpath == nil {
 		log.Println(fmt.Sprintf("Failed to download track %v. %v", item.Track.Title, err))
 		return
