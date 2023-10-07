@@ -22,13 +22,8 @@ func InitAPISearch() {
 		}
 		var body APIArtistSearchRequest
 		c.BodyParser(&body)
-		var artists []types.Artist
-		switch body.Provider {
-		case types.MetaProviderSpotify:
-			artists = metadata.SearchSpotifyArtists(body.Query)
-		case types.MetaProviderSoundCloud:
-			artists = metadata.SearchSoundCloudArtists(body.Query)
-		default:
+		artists := metadata.Search(body.Provider, body.Query)
+		if artists == nil {
 			return c.JSON(&APIErrorResponse{
 				Error:   true,
 				Message: "Invalid provider ID.",
