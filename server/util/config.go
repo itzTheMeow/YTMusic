@@ -17,7 +17,6 @@ var Config = struct {
 	AllowUsernameChars string
 	DisableFSChars     string
 	YAML               string
-	YouTube            string
 }{
 	Port:               8777,
 	AllowUsernameChars: `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-1234567890`,
