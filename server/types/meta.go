@@ -23,5 +23,5 @@ type Settings struct {
 	SpotifyClientID     string `yaml:"spotify-id" json:"spotifyID"`
 	SpotifyClientSecret string `yaml:"spotify-secret" json:"spotifySecret"`
 	PipedAPI            string `yaml:"piped-api" json:"pipedAPI"`
-	YTDLCommand         string `yaml:"ytdl-command" json:"ytdlCommand"`
+	YTDLCommand         []string `yaml:"ytdl-command" json:"ytdlCommand"`
 }
