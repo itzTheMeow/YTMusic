@@ -2,14 +2,22 @@ package sound
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
+
+	"github.com/itzTheMeow/YTMusic/util"
 )
 
 // partially taken from https://github.com/wader/goutubedl/blob/master/goutubedl.go#L420
 func DownloadURL(url string) (io.Reader, error) {
-	cmd := exec.CommandContext(context.Background(), "yt-dlp", url, "-o", "-", "--force-ipv4")
+	args := make([]string, 0)
+	for _, arg := range util.UserConfig.YTDLCommand {
+		args = append(args, fmt.Sprintf(arg, url))
+	}
+
+	cmd := exec.CommandContext(context.Background(), args[0], args[1:]...)
 
 	reader, w := io.Pipe()
 	cmd.Stderr = os.Stderr
