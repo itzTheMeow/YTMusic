@@ -19,9 +19,9 @@ type Account struct {
 }
 
 type Settings struct {
-	LibraryFolder       string `yaml:"library-folder" json:"libraryFolder"`
-	SpotifyClientID     string `yaml:"spotify-id" json:"spotifyID"`
-	SpotifyClientSecret string `yaml:"spotify-secret" json:"spotifySecret"`
-	PipedAPI            string `yaml:"piped-api" json:"pipedAPI"`
+	LibraryFolder       string   `yaml:"library-folder" json:"libraryFolder"`
+	SpotifyClientID     string   `yaml:"spotify-id" json:"spotifyID"`
+	SpotifyClientSecret string   `yaml:"spotify-secret" json:"spotifySecret"`
+	PipedAPI            string   `yaml:"piped-api" json:"pipedAPI"`
 	YTDLCommand         []string `yaml:"ytdl-command" json:"ytdlCommand"`
 }
