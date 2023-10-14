@@ -2,10 +2,10 @@ package sound
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/itzTheMeow/YTMusic/util"
 )
@@ -14,7 +14,7 @@ import (
 func DownloadURL(url string) (io.Reader, error) {
 	args := make([]string, 0)
 	for _, arg := range util.UserConfig.YTDLCommand {
-		args = append(args, fmt.Sprintf(arg, url))
+		args = append(args, strings.Replace(arg, "%URL%", url, -1))
 	}
 
 	cmd := exec.CommandContext(context.Background(), args[0], args[1:]...)

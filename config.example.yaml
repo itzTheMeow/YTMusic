@@ -9,6 +9,5 @@ library-folder: "./Music"
 # The Piped API instance to use. No trailing slash.
 piped-api: "https://pipedapi.kavin.rocks"
 
-# The command to use for downloading media. Output should be made to stdout. '%v' is replaced with the URL to download.
-# https://pkg.go.dev/fmt
-ytdl-command: ["yt-dlp", "%v", "-o", "-"]
+# The command to use for downloading media. Output should be made to stdout. '%URL%' is replaced with the URL to download.
+ytdl-command: ["yt-dlp", "%URL%", "-o", "-"]
