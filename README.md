@@ -62,7 +62,7 @@ Save your new app and then click _Settings_ in the top right.
 
 Copy the _Client ID_, this is your `spotify-id`. Click to view the _Client Secret_, copy that to `spotify-secret`.
 
-You can now pretty much never touch spotify again.
+Paste the values in the config. You can now pretty much never touch spotify again.
 
 It's recommended to keep your `library-folder` set to `./Music` while you're testing but you can change it later in the web ui.
 
