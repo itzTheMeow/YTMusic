@@ -81,6 +81,12 @@ pnpm start
 # Move the Built Client
 mv dist server
 
+# Move Into Server
+cd server
+# Install Dependencies
+go get
+# Move Back
+cd ..
 # Build the Server
 go build -o out/YTMusic ./server
 # Allow Execution
