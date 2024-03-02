@@ -2,7 +2,7 @@
 
 <br />
 
-[![Repo Stars](https://img.shields.io/github/stars/itzTheMeow/YTMusic?style=flat-square&label=Stars&color=661ae6)](https://github.com/itzTheMeow/YTMusic)
+[![Repo Stars](https://img.shields.io/github/stars/itzTheMeow/YTMusic?style=flat-square&color=661ae6)](https://github.com/itzTheMeow/YTMusic)
 
 A music downloader dashboard.
 
