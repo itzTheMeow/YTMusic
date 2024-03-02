@@ -8,6 +8,9 @@ A music downloader dashboard.
 
 ## Getting Started
 
+> [!IMPORTANT]
+> This tutorial assumes linux as your operating system. The instructions/commands may be slightly different for windows/macos. Linux is the only officially supported operating system.
+
 ### Prerequisites
 
 - [Node.js](https://nodejs.org) is required for the client. The instructions use v20.11.1 but any future versions should work fine.
@@ -68,13 +71,51 @@ It's recommended to keep your `library-folder` set to `./Music` while you're tes
 
 You can change the `piped-api` instance if the default one is giving you trouble. You can get a list of instances [here](https://github.com/TeamPiped/Piped/wiki/Instances). Just use them at your own risk.
 
-### Building the Client
+### Building YTMusic
 
 ```bash
 # Install Dependencies
 pnpm install
 # Build the Client
 pnpm start
+# Move the Built Client
+mv dist server
+
+# Build the Server
+go build -o out/YTMusic ./server
+# Allow Execution
+chmod +x out/YTMusic
 ```
 
-After the client has finished building, there should be a `dist` directory. Move that into the `server` directory. _(`mv dist server` on linux)_
+### Run the Server
+
+You can run the server by executing the `YTMusic` binary in the `out` directory.
+
+```bash
+# Move Into Out Directory
+cd out
+# Start YTMusic
+./YTMusic
+```
+
+You will be given a default admin password to log in with:
+
+> Automatically created account "admin" with password "XXXXXX". Please change your password once logging in.
+
+Go to http://localhost:8777 in your browser and log in with username `admin` and the password you were given.
+
+Click the settings icon in the top right and change the password to the panel. Once you change the password you'll have to log in again. The username always stays admin.
+
+**You can now use YTMusic!**
+
+You'll notice a database.db has been created in your `out` directory. That houses your account information.
+
+You can rename the `out` directory to something else and move it elsewhere since the build process is finished. Change the library location in settings on the web panel to store your music somewhere else.
+
+## Development
+
+There is no development instructions at this time. The project is currently in maintenance mode.
+
+## License
+
+This project is licensed under the GNU General Public License v3.0.
