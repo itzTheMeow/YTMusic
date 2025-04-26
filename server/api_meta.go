@@ -106,6 +106,13 @@ func InitAPIMeta() {
 				util.UserConfig.LibraryFolder = body.Value
 			}
 			util.WriteConfig()
+		case "pipedAPI":
+			if body.Value == "" {
+				util.UserConfig.PipedAPI = "https://pipedapi.kavin.rocks"
+			} else {
+				util.UserConfig.PipedAPI = body.Value
+			}
+			util.WriteConfig()
 		}
 		return c.JSON(APIErrorResponse{
 			Error: false,

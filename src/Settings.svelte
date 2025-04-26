@@ -5,8 +5,7 @@
   import ThemePreview from "ThemePreview.svelte";
 
   let scanButton: HTMLDivElement;
-  let libraryFolder: HTMLInputElement,
-  pipedAPI: HTMLInputElement;
+  let libraryFolder: HTMLInputElement, pipedAPI: HTMLInputElement;
 
   const settingsP = API.getSettings();
 
@@ -67,7 +66,7 @@
       />
       <div class="hidden w-max h-max">
         <Loader />
-      </div> 
+      </div>
     </div>
     <div class="text-md font-semibold mb-1 mt-2">Piped API</div>
     <div class="flex items-center">
@@ -92,7 +91,7 @@
       />
       <div class="hidden w-max h-max">
         <Loader />
-      </div> 
+      </div>
     </div>
     <div class="text-md font-semibold mb-1 mt-2">Change Password</div>
     <div class="flex items-center gap-2">

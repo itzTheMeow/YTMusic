@@ -12,8 +12,8 @@ importers:
         specifier: ^0.1.8
         version: 0.1.8
       '@tabler/icons-svelte':
-        specifier: ^2.16.0
-        version: 2.47.0(svelte@3.59.2)
+        specifier: 2.16.0
+        version: 2.16.0(svelte@3.59.2)
       '@tsconfig/svelte':
         specifier: ^4.0.1
         version: 4.0.1
@@ -213,13 +213,13 @@ packages:
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
 
-  '@tabler/icons-svelte@2.47.0':
-    resolution: {integrity: sha512-xL2NyCUUhBQv0lXylgNCpfHtMW4Ihu0hCacaYXeX+NiS1LO0geqXk/0lkrBH+u/ZLX6vyqUYNFjawjzmxthFjw==}
+  '@tabler/icons-svelte@2.16.0':
+    resolution: {integrity: sha512-gOhGl8c53ao7Y7ZsjRNCRMogTVlzGf8B7qkzX+52CVeGCYBR1wIu2cDIz9Nq51lVTmZBzr5Ogr5Bv89H2a7heg==}
     peerDependencies:
-      svelte: '>=3 <5'
+      svelte: ^3.49.0
 
-  '@tabler/icons@2.47.0':
-    resolution: {integrity: sha512-4w5evLh+7FUUiA1GucvGj2ReX2TvOjEr4ejXdwL/bsjoSkof6r1gQmzqI+VHrE2CpJpB3al7bCTulOkFa/RcyA==}
+  '@tabler/icons@2.16.0':
+    resolution: {integrity: sha512-1kaPH5APIWGtXe0W0eQ9g4MdfaQJ2gh95TAa94lNAqRR0JeC3fkD0yXGCcUiNK4GnGDv3UtPSCd3dbdKTe1b2A==}
 
   '@tsconfig/svelte@4.0.1':
     resolution: {integrity: sha512-B+XlGpmuAQzJqDoBATNCvEPqQg0HkO7S8pM14QDI5NsmtymzRexQ1N+nX2H6RTtFbuFgaZD4I8AAi8voGg0GLg==}
@@ -1201,12 +1201,12 @@ snapshots:
 
   '@socket.io/component-emitter@3.1.2': {}
 
-  '@tabler/icons-svelte@2.47.0(svelte@3.59.2)':
+  '@tabler/icons-svelte@2.16.0(svelte@3.59.2)':
     dependencies:
-      '@tabler/icons': 2.47.0
+      '@tabler/icons': 2.16.0
       svelte: 3.59.2
 
-  '@tabler/icons@2.47.0': {}
+  '@tabler/icons@2.16.0': {}
 
   '@tsconfig/svelte@4.0.1': {}
 

@@ -39,7 +39,7 @@ export interface Artist {
   genres: string[];
   followers: number /* int */;
   icon: string;
-  providers: { [key: MetadataProvider]: string};
+  providers: { [key: MetadataProvider]: string };
   status?: ArtistStatus;
   /**
    * Extended Artist
@@ -97,6 +97,7 @@ export interface Settings {
   libraryFolder: string;
   spotifyID: string;
   spotifySecret: string;
+  pipedAPI: string;
 }
 
 //////////
